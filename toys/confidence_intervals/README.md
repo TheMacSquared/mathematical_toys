@@ -11,7 +11,7 @@ Aplikacja pomaga studentom opanować kluczowe umiejętności:
 Każde pytanie zawiera:
 - Treść zadania z przedziałami ufności
 - **Wizualizację przedziałów CI** na osi liczbowej
-- Pytanie typu TAK/NIE/NIE MOŻNA POWIEDZIEĆ
+- Pytanie z 3 odpowiedziami: **TAK, JEST WIĘKSZE/WYŻSZE** | **TAK, JEST MNIEJSZE/NIŻSZE** | **NIE MOŻNA POWIEDZIEĆ**
 - Szczegółowe wyjaśnienie po odpowiedzi
 - Podświetlenie obszaru decyzyjnego na wykresie
 
@@ -20,18 +20,18 @@ Każde pytanie zawiera:
 ### 1. Pojedynczy przedział vs wartość (20 pytań)
 **Przykład:** "CI 95%: [14; 22] zł. Czy średnia > 20 zł?"
 
-**Zasady:**
-- Wartość **poza przedziałem** → można stwierdzić (TAK/NIE)
-- Wartość **wewnątrz przedziału** → NIE MOŻNA stwierdzić
-- Wartość **na granicy** → NIE MOŻNA stwierdzić
+**Odpowiedzi:**
+- **TAK, JEST WIĘKSZE/WYŻSZE** - gdy testowana wartość jest **poza przedziałem po lewej stronie** (średnia > wartość)
+- **TAK, JEST MNIEJSZE/NIŻSZE** - gdy testowana wartość jest **poza przedziałem po prawej stronie** (średnia < wartość)
+- **NIE MOŻNA POWIEDZIEĆ** - gdy wartość jest **wewnątrz przedziału** lub **na granicy**
 
-### 2. Porównanie dwóch grup (20 pytań)
+### 2. Porównanie dwóch grup (28 pytań)
 **Przykład:** "CI Warszawa [18; 24] vs Wrocław [14; 20]. Czy Warszawa droższa?"
 
-**Zasady:**
-- Przedziały **rozdzielone** → można stwierdzić (TAK/NIE)
-- Przedziały **nakładają się** → NIE MOŻNA stwierdzić
-- Przedziały **stykają się** → NIE MOŻNA stwierdzić (traktowane jak nakładanie)
+**Odpowiedzi:**
+- **TAK, JEST WIĘKSZE/WYŻSZE** - gdy przedziały są **rozdzielone** i CI1 > CI2
+- **TAK, JEST MNIEJSZE/NIŻSZE** - gdy przedziały są **rozdzielone** i CI1 < CI2
+- **NIE MOŻNA POWIEDZIEĆ** - gdy przedziały się **nakładają** (nawet minimalnie)
 
 ## Technologie
 
@@ -142,7 +142,7 @@ Sprawdza odpowiedź użytkownika
 ```json
 {
   "question_id": 1,
-  "answer": "nie_mozna_powiedziec"  // "tak" | "nie" | "nie_mozna_powiedziec"
+  "answer": "nie_mozna_powiedziec"  // "tak_wieksze" | "tak_mniejsze" | "nie_mozna_powiedziec"
 }
 ```
 
@@ -169,7 +169,7 @@ Sprawdza odpowiedź użytkownika
   "tested_value": 20,
   "comparison": "greater",
   "unit": "zł",
-  "correct": "nie_mozna_powiedziec",
+  "correct": "nie_mozna_powiedziec",  // "tak_wieksze" | "tak_mniejsze" | "nie_mozna_powiedziec"
   "explanation": "Wartość 20 zł znajduje się WEWNĄTRZ przedziału ufności [14; 22]. ..."
 }
 ```
@@ -190,7 +190,7 @@ Sprawdza odpowiedź użytkownika
   "ci2_upper": 20,
   "ci2_label": "Wrocław",
   "unit": "zł",
-  "correct": "nie_mozna_powiedziec",
+  "correct": "nie_mozna_powiedziec",  // "tak_wieksze" | "tak_mniejsze" | "nie_mozna_powiedziec"
   "explanation": "Przedziały SIĘ NAKŁADAJĄ (część wspólna: [18; 20]). ..."
 }
 ```

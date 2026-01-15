@@ -23,7 +23,7 @@
       "ci2_upper": 170,
       "ci2_label": "Kobiety",
       "unit": "cm",
-      "correct": "tak",
+      "correct": "tak_wieksze",
       "explanation": "Przedziały ufności dla mężczyzn [175; 185] i kobiet [160; 170] SĄ CAŁKOWICIE ROZDZIELONE (nie nakładają się). Najniższa wartość dla mężczyzn (175 cm) jest wyższa niż najwyższa wartość dla kobiet (170 cm). Z ufnością 95% możemy stwierdzić, że średni wzrost mężczyzn JEST WYŻSZY niż kobiet."
     },
     {
@@ -36,7 +36,7 @@
       "ci2_upper": 95,
       "ci2_label": "Grupa B",
       "unit": "jednostek",
-      "correct": "tak",
+      "correct": "tak_wieksze",
       "explanation": "Przedziały ufności dla Grupy A [100; 120] i Grupy B [80; 95] SĄ CAŁKOWICIE ROZDZIELONE. Najniższa wartość dla A (100) jest wyższa niż najwyższa wartość dla B (95). Z ufnością 95% możemy stwierdzić, że Grupa A JEST BARDZIEJ WYDAJNA niż Grupa B."
     },
     {
@@ -49,7 +49,7 @@
       "ci2_upper": 16,
       "ci2_label": "Wrocław",
       "unit": "zł",
-      "correct": "tak",
+      "correct": "tak_wieksze",
       "explanation": "Przedziały ufności dla Warszawy [18; 24] i Wrocławia [10; 16] SĄ CAŁKOWICIE ROZDZIELONE. Z ufnością 95% możemy stwierdzić, że Warszawa JEST DROŻSZA niż Wrocław."
     },
     {
@@ -62,7 +62,7 @@
       "ci2_upper": 80,
       "ci2_label": "Wrocław",
       "unit": "jednostek",
-      "correct": "nie",
+      "correct": "tak_mniejsze",
       "explanation": "Przedziały ufności dla Warszawy [50; 60] i Wrocławia [70; 80] SĄ CAŁKOWICIE ROZDZIELONE, ale przedział dla Wrocławia jest POWYŻEJ przedziału dla Warszawy. Z ufnością 95% możemy stwierdzić, że Warszawa NIE JEST WYŻSZA niż Wrocław (Wrocław jest wyższy)."
     },
     {
@@ -153,7 +153,7 @@
       "ci2_upper": 16,
       "ci2_label": "Wrocław",
       "unit": "zł",
-      "correct": "nie",
+      "correct": "tak_wieksze",
       "explanation": "Przedziały dla Warszawy [18; 24] i Wrocławia [10; 16] SĄ ROZDZIELONE, ale przedział Warszawy jest POWYŻEJ przedziału Wrocławia. Z ufnością 95% możemy stwierdzić, że Warszawa NIE JEST NIŻSZA niż Wrocław (Warszawa jest wyższa)."
     },
     {
@@ -166,7 +166,7 @@
       "ci2_upper": 32,
       "ci2_label": "Wrocław",
       "unit": "zł",
-      "correct": "tak",
+      "correct": "tak_mniejsze",
       "explanation": "Przedziały dla Warszawy [18; 24] i Wrocławia [26; 32] SĄ ROZDZIELONE, a przedział Warszawy jest PONIŻEJ przedziału Wrocławia. Najwyższa wartość dla Warszawy (24) jest niższa niż najniższa wartość dla Wrocławia (26). Z ufnością 95% możemy stwierdzić, że Warszawa JEST NIŻSZA niż Wrocław."
     },
     {
@@ -179,7 +179,7 @@
       "ci2_upper": 60,
       "ci2_label": "Grupa B",
       "unit": "jednostek",
-      "correct": "nie",
+      "correct": "tak_mniejsze",
       "explanation": "Przedziały dla Grupy A [50; 55] i Grupy B [56; 60] SĄ ROZDZIELONE (mały odstęp między nimi), ale przedział A jest PONIŻEJ przedziału B. Z ufnością 95% możemy stwierdzić, że Grupa A NIE JEST WYŻSZA niż Grupa B (B jest wyższa)."
     },
     {
@@ -218,7 +218,7 @@
       "ci2_upper": 0,
       "ci2_label": "Kontrola",
       "unit": "jednostek",
-      "correct": "tak",
+      "correct": "tak_wieksze",
       "explanation": "Przedziały [2; 10] i [-5; 0] SĄ ROZDZIELONE, a przedział Przed-Po jest POWYŻEJ przedziału Kontroli. Z ufnością 95% możemy stwierdzić, że efekt w grupie Przed-Po JEST WIĘKSZY (dodatni) niż w kontroli (ujemny lub zerowy)."
     },
     {
@@ -244,7 +244,7 @@
       "ci2_upper": 57,
       "ci2_label": "Grupa B",
       "unit": "jednostek",
-      "correct": "nie",
+      "correct": "tak_mniejsze",
       "explanation": "Oba przedziały są WĄSKIE i ROZDZIELONE: A [50; 52] jest PONIŻEJ B [55; 57]. Wysoką precyzję pomiaru (wąskie przedziały) pozwala z ufnością 95% stwierdzić, że Grupa A NIE JEST WYŻSZA niż Grupa B (B jest wyższa)."
     },
     {
@@ -257,7 +257,7 @@
       "ci2_upper": 80,
       "ci2_label": "Grupa B",
       "unit": "jednostek",
-      "correct": "tak",
+      "correct": "tak_mniejsze",
       "explanation": "Mimo że jest 3 grupy (C nakłada się z A), pytanie dotyczy tylko A vs B. Przedziały A [50; 60] i B [70; 80] SĄ ROZDZIELONE, a A jest PONIŻEJ B. Z ufnością 95% możemy stwierdzić, że Grupa A JEST NIŻSZA niż Grupa B. Grupa C jest nieistotna dla tej konkretnej porównania."
     },
     {

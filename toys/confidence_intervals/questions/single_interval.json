@@ -18,7 +18,7 @@
       "ci_upper": 6.8,
       "tested_value": 7,
       "unit": "kg",
-      "correct": "nie",
+      "correct": "nie_mozna_powiedziec",
       "explanation": "Wartość 7 kg znajduje się POWYŻEJ górnej granicy przedziału ufności (6.8 kg). Z ufnością 95% możemy stwierdzić, że średnia waga NIE PRZEKRACZA 7 kg, ponieważ cały przedział [5.2; 6.8] jest poniżej 7 kg.",
       "comparison": "greater"
     },
@@ -29,7 +29,7 @@
       "ci_upper": 140,
       "tested_value": 110,
       "unit": "mmHg",
-      "correct": "tak",
+      "correct": "tak_wieksze",
       "explanation": "Wartość 110 mmHg znajduje się PONIŻEJ dolnej granicy przedziału ufności (120 mmHg). Z ufnością 95% możemy stwierdzić, że średnie ciśnienie PRZEKRACZA 110 mmHg, ponieważ cały przedział [120; 140] jest powyżej 110 mmHg.",
       "comparison": "greater"
     },
@@ -40,7 +40,7 @@
       "ci_upper": 150,
       "tested_value": 90,
       "unit": "dni",
-      "correct": "tak",
+      "correct": "tak_wieksze",
       "explanation": "Wartość 90 dni znajduje się PONIŻEJ dolnej granicy przedziału ufności (100 dni). Z ufnością 95% możemy stwierdzić, że średnia PRZEKRACZA 90 dni, ponieważ cały przedział [100; 150] jest powyżej 90 dni.",
       "comparison": "greater"
     },
@@ -84,7 +84,7 @@
       "ci_upper": 80,
       "tested_value": 40,
       "unit": "kg/m²",
-      "correct": "tak",
+      "correct": "tak_wieksze",
       "explanation": "Wartość 40 kg/m² znajduje się PONIŻEJ dolnej granicy przedziału ufności (50 kg/m²). Z ufnością 95% możemy stwierdzić, że średnie BMI PRZEKRACZA 40 kg/m².",
       "comparison": "greater"
     },
@@ -95,7 +95,7 @@
       "ci_upper": 22,
       "tested_value": 12,
       "unit": "zł",
-      "correct": "nie",
+      "correct": "nie_mozna_powiedziec",
       "explanation": "Wartość 12 zł znajduje się PONIŻEJ dolnej granicy przedziału ufności (14 zł). Z ufnością 95% możemy stwierdzić, że średnia NIE JEST MNIEJSZA niż 12 zł (czyli średnia > 12 zł), ponieważ cały przedział [14; 22] jest powyżej 12 zł.",
       "comparison": "less"
     },
@@ -106,7 +106,7 @@
       "ci_upper": 22,
       "tested_value": 25,
       "unit": "zł",
-      "correct": "tak",
+      "correct": "tak_mniejsze",
       "explanation": "Wartość 25 zł znajduje się POWYŻEJ górnej granicy przedziału ufności (22 zł). Z ufnością 95% możemy stwierdzić, że średnia JEST MNIEJSZA niż 25 zł, ponieważ cały przedział [14; 22] jest poniżej 25 zł.",
       "comparison": "less"
     },
@@ -117,7 +117,7 @@
       "ci_upper": 22,
       "tested_value": 30,
       "unit": "zł",
-      "correct": "tak",
+      "correct": "tak_mniejsze",
       "explanation": "Wartość 30 zł znajduje się POWYŻEJ górnej granicy przedziału ufności (22 zł). Z ufnością 95% możemy stwierdzić, że średnia JEST MNIEJSZA niż 30 zł.",
       "comparison": "less"
     },
@@ -150,7 +150,7 @@
       "ci_upper": 19,
       "tested_value": 20,
       "unit": "jednostek",
-      "correct": "nie",
+      "correct": "nie_mozna_powiedziec",
       "explanation": "Wartość 20 znajduje się POWYŻEJ górnej granicy wąskiego przedziału ufności [18; 19]. Z ufnością 95% możemy stwierdzić, że średnia NIE PRZEKRACZA 20 jednostek. Wąski przedział oznacza większą precyzję pomiaru.",
       "comparison": "greater"
     },
@@ -183,7 +183,7 @@
       "ci_upper": -2,
       "tested_value": 0,
       "unit": "punktów",
-      "correct": "nie",
+      "correct": "nie_mozna_powiedziec",
       "explanation": "Wartość 0 znajduje się POWYŻEJ górnej granicy przedziału ufności [-10; -2]. Z ufnością 95% możemy stwierdzić, że średnia różnica NIE PRZEKRACZA 0 (jest ujemna), ponieważ cały przedział jest poniżej 0.",
       "comparison": "greater"
     },
@@ -194,7 +194,7 @@
       "ci_upper": 10,
       "tested_value": 0,
       "unit": "punktów",
-      "correct": "tak",
+      "correct": "tak_wieksze",
       "explanation": "Wartość 0 znajduje się PONIŻEJ dolnej granicy przedziału ufności [2; 10]. Z ufnością 95% możemy stwierdzić, że średnia różnica PRZEKRACZA 0 (jest dodatnia), ponieważ cały przedział jest powyżej 0.",
       "comparison": "greater"
     },
@@ -216,7 +216,7 @@
       "ci_upper": 24.5,
       "tested_value": 25,
       "unit": "°C",
-      "correct": "nie",
+      "correct": "nie_mozna_powiedziec",
       "explanation": "Wartość 25°C znajduje się POWYŻEJ górnej granicy przedziału ufności [22.5; 24.5]°C. Z ufnością 95% możemy stwierdzić, że średnia temperatura NIE PRZEKRACZA 25°C, ponieważ cały przedział jest poniżej 25°C.",
       "comparison": "greater"
     }

@@ -220,7 +220,7 @@ header .subtitle {
 /* Przyciski odpowiedzi */
 .answers-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
     margin-bottom: 30px;
 }
@@ -245,10 +245,6 @@ header .subtitle {
 
 .btn-answer:active:not(:disabled) {
     transform: translateY(0);
-}
-
-.btn-answer-wide {
-    grid-column: 1 / -1;
 }
 
 .btn-answer.correct {
@@ -468,14 +464,6 @@ header .subtitle {
 
     .question-text {
         font-size: 1.05rem;
-    }
-
-    .answers-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .btn-answer-wide {
-        grid-column: 1;
     }
 
     .finish-actions {
