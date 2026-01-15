@@ -6,7 +6,7 @@ import sys
 
 app = Flask(__name__)
 
-# === Ładowanie pytań z JSON ===
+# === Ładowanie konfiguracji i pytań ===
 def get_bundle_dir():
     """Zwraca ścieżkę do katalogu z plikami (dev vs .exe)"""
     if getattr(sys, 'frozen', False):
@@ -16,33 +16,71 @@ def get_bundle_dir():
         # Dev mode
         return os.path.dirname(__file__)
 
-def load_questions():
-    """Wczytuje pytania z questions.json"""
+def load_quiz_config():
+    """Wczytuje konfigurację quizów z quiz_config.json"""
     bundle_dir = get_bundle_dir()
-    json_path = os.path.join(bundle_dir, 'questions.json')
+    config_path = os.path.join(bundle_dir, 'quiz_config.json')
 
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(config_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    return data['quizzes']
+
+def load_questions_for_quiz(quiz_id):
+    """Wczytuje pytania dla danego quizu"""
+    bundle_dir = get_bundle_dir()
+
+    # Znajdź konfigurację quizu
+    quiz_config = next((q for q in QUIZ_CONFIG if q['id'] == quiz_id), None)
+
+    if not quiz_config:
+        raise ValueError(f"Quiz '{quiz_id}' nie znaleziony w konfiguracji")
+
+    # Ścieżka do pliku pytań
+    questions_path = os.path.join(bundle_dir, 'questions', quiz_config['file'])
+
+    with open(questions_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     return data['questions']
 
-# Wczytaj pytania na starcie aplikacji (cache)
-ALL_QUESTIONS = load_questions()
+# Wczytaj konfigurację quizów na starcie
+QUIZ_CONFIG = load_quiz_config()
+
+# Cache pytań dla każdego quizu
+QUESTIONS_CACHE = {}
 
 # === Sesja quizu (in-memory, per-user) ===
 # W uproszczeniu: jedna globalna sesja (wystarczy dla single-user desktop app)
 quiz_session = {
+    'current_quiz_id': None,
     'remaining_questions': [],  # ID pytań do wylosowania
-    'shuffled': False
+    'shuffled': False,
+    'questions': []  # Aktualne pytania (cache dla bieżącego quizu)
 }
+
+# === ROUTING ===
 
 @app.route('/')
 def index():
-    """Strona główna - renderuje interfejs quizu"""
-    return render_template('index.html')
+    """Strona główna - menu wyboru quizu"""
+    return render_template('menu.html', quizzes=QUIZ_CONFIG)
 
-@app.route('/api/start', methods=['POST'])
-def start_quiz():
+@app.route('/quiz/<quiz_id>')
+def quiz(quiz_id):
+    """Strona quizu dla danego ID"""
+    # Znajdź konfigurację quizu
+    quiz_config = next((q for q in QUIZ_CONFIG if q['id'] == quiz_id), None)
+
+    if not quiz_config:
+        return "Quiz not found", 404
+
+    return render_template('quiz.html', quiz=quiz_config)
+
+# === API ENDPOINTS ===
+
+@app.route('/api/quiz/<quiz_id>/start', methods=['POST'])
+def start_quiz(quiz_id):
     """
     Inicjalizuje sesję quizu: tasuje pytania
 
@@ -50,12 +88,21 @@ def start_quiz():
         JSON: {success: bool, total_questions: int}
     """
     try:
+        # Wczytaj pytania dla quizu (z cache lub z pliku)
+        if quiz_id not in QUESTIONS_CACHE:
+            QUESTIONS_CACHE[quiz_id] = load_questions_for_quiz(quiz_id)
+
+        questions = QUESTIONS_CACHE[quiz_id]
+
         # Tasuj wszystkie pytania
-        question_ids = [q['id'] for q in ALL_QUESTIONS]
+        question_ids = [q['id'] for q in questions]
         random.shuffle(question_ids)
 
+        # Zapisz w sesji
+        quiz_session['current_quiz_id'] = quiz_id
         quiz_session['remaining_questions'] = question_ids
         quiz_session['shuffled'] = True
+        quiz_session['questions'] = questions
 
         return jsonify({
             'success': True,
@@ -68,23 +115,24 @@ def start_quiz():
             'error': f'Błąd inicjalizacji: {str(e)}'
         }), 500
 
-@app.route('/api/next', methods=['GET'])
-def next_question():
+@app.route('/api/quiz/<quiz_id>/next', methods=['GET'])
+def next_question(quiz_id):
     """
     Zwraca kolejne pytanie (bez odpowiedzi)
 
     Returns:
         JSON: {
             success: bool,
-            question: {id, question},  # BEZ 'correct' i 'explanation'
+            question: {id, question, ...},  # BEZ 'correct' i 'explanation'
             remaining: int,            # ile pytań zostało
             finished: bool             # czy koniec pytań
         }
     """
     try:
-        # Jeśli nie shufflowano, zrób to teraz
-        if not quiz_session['shuffled']:
-            start_quiz()
+        # Sprawdź czy quiz jest zainicjalizowany
+        if quiz_session['current_quiz_id'] != quiz_id or not quiz_session['shuffled']:
+            # Auto-inicjalizacja
+            start_quiz(quiz_id)
 
         # Sprawdź czy są pytania
         if not quiz_session['remaining_questions']:
@@ -96,18 +144,25 @@ def next_question():
 
         # Pobierz kolejne pytanie
         next_id = quiz_session['remaining_questions'][0]
-        question = next((q for q in ALL_QUESTIONS if q['id'] == next_id), None)
+        question = next((q for q in quiz_session['questions'] if q['id'] == next_id), None)
 
         if not question:
             raise ValueError(f"Pytanie ID {next_id} nie znalezione")
 
+        # Przygotuj odpowiedź (bez correct i explanation)
+        response_question = {
+            'id': question['id'],
+            'question': question['question']
+        }
+
+        # Dla quizów z losowaniem odpowiedzi (testy) - dodaj all_options
+        if 'all_options' in question:
+            response_question['all_options'] = question['all_options']
+
         return jsonify({
             'success': True,
             'finished': False,
-            'question': {
-                'id': question['id'],
-                'question': question['question']
-            },
+            'question': response_question,
             'remaining': len(quiz_session['remaining_questions'])
         })
 
@@ -117,8 +172,8 @@ def next_question():
             'error': f'Błąd pobierania pytania: {str(e)}'
         }), 500
 
-@app.route('/api/check', methods=['POST'])
-def check_answer():
+@app.route('/api/quiz/<quiz_id>/check', methods=['POST'])
+def check_answer(quiz_id):
     """
     Sprawdza odpowiedź użytkownika
 
@@ -139,7 +194,7 @@ def check_answer():
         user_answer = data.get('answer')
 
         # Znajdź pytanie
-        question = next((q for q in ALL_QUESTIONS if q['id'] == question_id), None)
+        question = next((q for q in quiz_session['questions'] if q['id'] == question_id), None)
 
         if not question:
             raise ValueError(f"Pytanie ID {question_id} nie znalezione")
@@ -169,6 +224,24 @@ def check_answer():
             'success': False,
             'error': f'Błąd sprawdzania odpowiedzi: {str(e)}'
         }), 500
+
+@app.route('/api/quiz-config')
+def get_quiz_config():
+    """Zwraca konfigurację aktualnego quizu"""
+    quiz_id = quiz_session.get('current_quiz_id')
+
+    if not quiz_id:
+        return jsonify({'success': False, 'error': 'Brak aktywnego quizu'}), 400
+
+    quiz_config = next((q for q in QUIZ_CONFIG if q['id'] == quiz_id), None)
+
+    if not quiz_config:
+        return jsonify({'success': False, 'error': 'Quiz nie znaleziony'}), 404
+
+    return jsonify({
+        'success': True,
+        'quiz': quiz_config
+    })
 
 if __name__ == '__main__':
     # Uruchom serwer Flask (tylko dla testów - w produkcji używamy PyWebView)

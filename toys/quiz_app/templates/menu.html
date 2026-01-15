@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizy Statystyczne - Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Quizy Statystyczne</h1>
+            <p class="subtitle">Wybierz quiz, który chcesz rozpocząć</p>
+        </header>
+
+        <main class="menu-container">
+            <div class="quiz-grid">
+                {% for quiz in quizzes %}
+                <a href="/quiz/{{ quiz.id }}" class="quiz-card">
+                    <div class="quiz-emoji">{{ quiz.emoji }}</div>
+                    <h2 class="quiz-title">{{ quiz.name }}</h2>
+                    <p class="quiz-description">{{ quiz.description }}</p>
+                    <div class="quiz-cta">Rozpocznij →</div>
+                </a>
+                {% endfor %}
+            </div>
+        </main>
+
+        <footer class="menu-footer">
+            <p>🎓 Narzędzia do nauki statystyki</p>
+        </footer>
+    </div>
+</body>
+</html>

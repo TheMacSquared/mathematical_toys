@@ -1,3 +1,7 @@
+// Konfiguracja quizu (przekazana z backend przez quiz.html)
+const QUIZ_CONFIG = window.QUIZ_CONFIG;
+const QUIZ_ID = document.body.dataset.quizId;
+
 // Stan quizu
 let currentQuestion = null;
 let answered = false;
@@ -6,7 +10,7 @@ let answered = false;
 let startScreen, questionScreen, finishScreen, loadingEl;
 let btnStart, btnNext, btnRestart;
 let questionText, feedbackBox, feedbackHeader, feedbackText;
-let answerButtons;
+let answersGrid;
 
 document.addEventListener('DOMContentLoaded', function() {
     // Pobranie elementów
@@ -23,17 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
     feedbackBox = document.getElementById('feedback-box');
     feedbackHeader = document.getElementById('feedback-header');
     feedbackText = document.getElementById('feedback-text');
-
-    answerButtons = document.querySelectorAll('.btn-answer');
+    answersGrid = document.getElementById('answers-grid');
 
     // Event listeners
     btnStart.addEventListener('click', startQuiz);
     btnRestart.addEventListener('click', startQuiz);
     btnNext.addEventListener('click', loadNextQuestion);
-
-    answerButtons.forEach(btn => {
-        btn.addEventListener('click', handleAnswer);
-    });
 });
 
 /**
@@ -43,8 +42,8 @@ async function startQuiz() {
     try {
         showLoading();
 
-        // Wywołaj /api/start (shuffle pytań)
-        const response = await fetch('/api/start', {
+        // Wywołaj /api/quiz/{id}/start
+        const response = await fetch(`/api/quiz/${QUIZ_ID}/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -78,10 +77,9 @@ async function loadNextQuestion() {
         // Reset stanu
         answered = false;
         feedbackBox.classList.add('hidden');
-        enableAnswerButtons();
 
-        // Pobierz pytanie z /api/next
-        const response = await fetch('/api/next');
+        // Pobierz pytanie z /api/quiz/{id}/next
+        const response = await fetch(`/api/quiz/${QUIZ_ID}/next`);
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
@@ -95,6 +93,9 @@ async function loadNextQuestion() {
                 // Wyświetl pytanie
                 currentQuestion = data.question;
                 questionText.textContent = currentQuestion.question;
+
+                // Wygeneruj przyciski odpowiedzi
+                generateAnswerButtons();
             }
         } else {
             alert('Błąd: ' + data.error);
@@ -108,6 +109,71 @@ async function loadNextQuestion() {
 }
 
 /**
+ * Generuj przyciski odpowiedzi na podstawie konfiguracji quizu
+ */
+function generateAnswerButtons() {
+    // Wyczyść poprzednie przyciski
+    answersGrid.innerHTML = '';
+
+    let options = [];
+
+    // Określ opcje odpowiedzi na podstawie typu quizu
+    if (QUIZ_CONFIG.answer_type === 'multiple_choice_4' ||
+        QUIZ_CONFIG.answer_type === 'multiple_choice_3') {
+        // Stałe opcje (typy zmiennych, rozkłady)
+        options = QUIZ_CONFIG.options;
+    } else if (QUIZ_CONFIG.answer_type === 'multiple_choice_random') {
+        // Losowe 3 opcje z puli (testy statystyczne)
+        options = getRandomOptions(currentQuestion.all_options, 3);
+    }
+
+    // Dostosuj grid do liczby opcji
+    if (options.length === 3) {
+        answersGrid.className = 'answers-grid grid-3';
+    } else if (options.length === 4) {
+        answersGrid.className = 'answers-grid grid-4';
+    }
+
+    // Utwórz przyciski
+    options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-answer';
+
+        if (typeof option === 'string') {
+            // Dla testów - opcje są stringami
+            btn.dataset.answer = option;
+            btn.textContent = option;
+        } else {
+            // Dla innych quizów - opcje to obiekty {value, label}
+            btn.dataset.answer = option.value;
+            btn.textContent = option.label;
+        }
+
+        btn.addEventListener('click', handleAnswer);
+        answersGrid.appendChild(btn);
+    });
+}
+
+/**
+ * Losuj n opcji z tablicy, zapewniając że correct jest w wyniku
+ */
+function getRandomOptions(allOptions, n) {
+    // Znajdź poprawną odpowiedź (musi być w pytaniu)
+    const correctAnswer = currentQuestion.correct || allOptions[0];
+
+    // Usuń correct z puli
+    const otherOptions = allOptions.filter(opt => opt !== correctAnswer);
+
+    // Wylosuj (n-1) niepoprawnych odpowiedzi
+    const shuffled = otherOptions.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, n - 1);
+
+    // Dodaj correct i wymieszaj wszystko
+    const result = [...selected, correctAnswer];
+    return result.sort(() => 0.5 - Math.random());
+}
+
+/**
  * Obsługa wyboru odpowiedzi
  */
 async function handleAnswer(event) {
@@ -118,8 +184,8 @@ async function handleAnswer(event) {
     try {
         showLoading();
 
-        // Wyślij odpowiedź do /api/check
-        const response = await fetch('/api/check', {
+        // Wyślij odpowiedź do /api/quiz/{id}/check
+        const response = await fetch(`/api/quiz/${QUIZ_ID}/check`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -165,6 +231,8 @@ async function handleAnswer(event) {
  * Podświetl poprawną odpowiedź (zielone) i niepoprawną (czerwone)
  */
 function highlightCorrectAnswer(correctAnswer, userAnswer) {
+    const answerButtons = answersGrid.querySelectorAll('.btn-answer');
+
     answerButtons.forEach(btn => {
         const answer = btn.dataset.answer;
 
@@ -180,20 +248,11 @@ function highlightCorrectAnswer(correctAnswer, userAnswer) {
  * Wyłącz przyciski odpowiedzi (po odpowiedzi)
  */
 function disableAnswerButtons() {
+    const answerButtons = answersGrid.querySelectorAll('.btn-answer');
+
     answerButtons.forEach(btn => {
         btn.disabled = true;
         btn.style.cursor = 'not-allowed';
-    });
-}
-
-/**
- * Włącz przyciski odpowiedzi (nowe pytanie)
- */
-function enableAnswerButtons() {
-    answerButtons.forEach(btn => {
-        btn.disabled = false;
-        btn.style.cursor = 'pointer';
-        btn.classList.remove('correct', 'incorrect');
     });
 }
 

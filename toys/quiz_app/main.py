@@ -17,12 +17,12 @@ def main():
 
     # Utwórz okno PyWebView
     window = webview.create_window(
-        title='Quiz - Typy Zmiennych',
+        title='Quizy Statystyczne',
         url='http://127.0.0.1:5001',
-        width=900,
-        height=800,
+        width=1000,
+        height=850,
         resizable=True,
-        min_size=(700, 600)
+        min_size=(800, 600)
     )
 
     webview.start()

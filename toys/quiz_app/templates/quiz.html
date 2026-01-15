@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz - Typy Zmiennych</title>
+    <title>{{ quiz.emoji }} {{ quiz.name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body data-quiz-id="{{ quiz.id }}">
     <div class="container">
         <header>
-            <h1>📝 Quiz - Typy Zmiennych Losowych</h1>
-            <p class="subtitle">Rozpoznaj rodzaj zmiennej: ilościowa (dyskretna/ciągła) czy jakościowa (porządkowa/nominalna)</p>
+            <a href="/" class="back-button">← Menu główne</a>
+            <h1>{{ quiz.emoji }} {{ quiz.name }}</h1>
+            <p class="subtitle">{{ quiz.description }}</p>
         </header>
 
         <main class="quiz-container">
             <!-- Stan: przed startem -->
             <div id="start-screen" class="screen active">
                 <p class="welcome-text">
-                    W tym quizie nauczysz się rozróżniać cztery typy zmiennych statystycznych.
-                    Po każdej odpowiedzi otrzymasz wyjaśnienie.
+                    Rozpocznij quiz i sprawdź swoją wiedzę!
+                    Po każdej odpowiedzi otrzymasz szczegółowe wyjaśnienie.
                 </p>
                 <button id="btn-start" class="btn-primary btn-large">
                     🚀 Rozpocznij Quiz
@@ -31,19 +32,9 @@
                     <p id="question-text" class="question-text"></p>
                 </div>
 
-                <div class="answers-grid">
-                    <button class="btn-answer" data-answer="ilosciowa_dyskretna">
-                        📊 Ilościowa dyskretna
-                    </button>
-                    <button class="btn-answer" data-answer="ilosciowa_ciagla">
-                        📈 Ilościowa ciągła
-                    </button>
-                    <button class="btn-answer" data-answer="jakosciowa_porzadkowa">
-                        🎚️ Jakościowa porządkowa
-                    </button>
-                    <button class="btn-answer" data-answer="jakosciowa_nominalna">
-                        🏷️ Jakościowa nominalna
-                    </button>
+                <!-- Dynamiczne przyciski odpowiedzi (generowane przez JS) -->
+                <div id="answers-grid" class="answers-grid">
+                    <!-- Przyciski będą wstawione przez JavaScript -->
                 </div>
 
                 <div id="feedback-box" class="feedback-box hidden">
@@ -60,9 +51,14 @@
                 <div class="finish-box">
                     <h2>🎉 Gratulacje!</h2>
                     <p>Przeszedłeś przez wszystkie pytania w quizie.</p>
-                    <button id="btn-restart" class="btn-primary btn-large">
-                        🔄 Zacznij od Nowa
-                    </button>
+                    <div class="finish-buttons">
+                        <button id="btn-restart" class="btn-primary btn-large">
+                            🔄 Zacznij od Nowa
+                        </button>
+                        <a href="/" class="btn-secondary btn-large">
+                            📋 Menu główne
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -71,6 +67,10 @@
         </main>
     </div>
 
+    <!-- Przekazanie konfiguracji quizu do JavaScript -->
+    <script>
+        window.QUIZ_CONFIG = {{ quiz | tojson | safe }};
+    </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
