@@ -99,13 +99,6 @@
       "explanation": "Obie zmienne kategorialne (nominalne). Test chi-kwadrat niezależności."
     },
     {
-      "id": 17,
-      "question": "Badanie wpływu rodzaju nawozu (A/B/C) i metody podlewania (1/2) na wzrost roślin",
-      "correct": "ANOVA dwuczynnikowa",
-      "all_options": ["ANOVA jednoczynnikowa", "ANOVA dwuczynnikowa", "Test chi-kwadrat", "Test t dla dwóch prób niezależnych", "Korelacja Pearsona"],
-      "explanation": "Dwa czynniki (nawóz: 3 poziomy, podlewanie: 2 poziomy) i ich interakcja. ANOVA dwuczynnikowa."
-    },
-    {
       "id": 18,
       "question": "Badanie związku między wiekiem (ciągła) a dochodem (ciągła)",
       "correct": "Korelacja Pearsona",
@@ -146,6 +139,111 @@
       "correct": "Test t dla prób zależnych",
       "all_options": ["Test t dla jednej próby", "Test t dla dwóch prób niezależnych", "Test t dla prób zależnych", "ANOVA jednoczynnikowa", "Test chi-kwadrat"],
       "explanation": "Te same osoby, pomiary przed i po = próby zależne (sparowane). Test t dla prób zależnych."
+    },
+    {
+      "id": 26,
+      "question": "Badanie czy średni czas dojazdu do pracy (35 min) różni się od zakładanej normy 30 minut",
+      "correct": "Test t dla jednej próby",
+      "all_options": ["Test t dla jednej próby", "Test t dla dwóch prób niezależnych", "ANOVA jednoczynnikowa", "Test proporcji", "Korelacja Pearsona"],
+      "explanation": "Porównujemy średnią z próby (35 min) z ustaloną wartością teoretyczną (30 min). Test t dla jednej próby."
+    },
+    {
+      "id": 27,
+      "question": "Porównanie średniego poziomu stresu w trzech grupach zawodowych (lekarze, nauczyciele, inżynierowie)",
+      "correct": "ANOVA jednoczynnikowa",
+      "all_options": ["Test t dla dwóch prób niezależnych", "ANOVA jednoczynnikowa", "Test chi-kwadrat", "Korelacja Pearsona", "Test proporcji"],
+      "explanation": "Porównujemy średnie z 3 niezależnych grup zawodowych. ANOVA jednoczynnikowa jest odpowiednia do porównania więcej niż 2 grup."
+    },
+    {
+      "id": 28,
+      "question": "Badanie związku między czasem nauki a wynikiem egzaminu (obie zmienne ciągłe)",
+      "correct": "Korelacja Pearsona",
+      "all_options": ["Korelacja Pearsona", "Test chi-kwadrat", "ANOVA jednoczynnikowa", "Test t dla dwóch prób niezależnych", "Test proporcji"],
+      "explanation": "Dwie zmienne ciągłe (czas w godzinach, wynik w punktach), badamy siłę i kierunek związku. Korelacja Pearsona."
+    },
+    {
+      "id": 29,
+      "question": "Porównanie średniej masy ciała pacjentów przed i po diecie (te same osoby)",
+      "correct": "Test t dla prób zależnych",
+      "all_options": ["Test t dla jednej próby", "Test t dla dwóch prób niezależnych", "Test t dla prób zależnych", "ANOVA jednoczynnikowa", "Test chi-kwadrat"],
+      "explanation": "Te same osoby mierzone dwukrotnie (przed i po diecie) = próby zależne (sparowane). Test t dla prób zależnych."
+    },
+    {
+      "id": 30,
+      "question": "Badanie czy istnieje związek między wykształceniem (podstawowe/średnie/wyższe) a statusem pracy (pracuje/nie pracuje)",
+      "correct": "Test chi-kwadrat",
+      "all_options": ["Test chi-kwadrat", "Test proporcji", "ANOVA jednoczynnikowa", "Korelacja Pearsona", "Test t dla dwóch prób niezależnych"],
+      "explanation": "Obie zmienne kategorialne (wykształcenie: 3 kategorie, status pracy: 2 kategorie). Test chi-kwadrat niezależności."
+    },
+    {
+      "id": 31,
+      "question": "Porównanie średniej ceny mieszkań między Warszawą a Krakowem",
+      "correct": "Test t dla dwóch prób niezależnych",
+      "all_options": ["Test t dla jednej próby", "Test t dla dwóch prób niezależnych", "ANOVA jednoczynnikowa", "Test chi-kwadrat", "Korelacja Pearsona"],
+      "explanation": "Dwie niezależne grupy (mieszkania w Warszawie vs mieszkania w Krakowie). Test t dla dwóch prób niezależnych."
+    },
+    {
+      "id": 32,
+      "question": "Badanie czy odsetek osób palących (28%) różni się od średniej krajowej 25%",
+      "correct": "Test proporcji",
+      "all_options": ["Test proporcji", "Test chi-kwadrat", "Test t dla jednej próby", "ANOVA jednoczynnikowa", "Korelacja Pearsona"],
+      "explanation": "Porównujemy proporcję z próby (28%) z wartością referencyjną (25%). Test proporcji dla jednej próby."
+    },
+    {
+      "id": 33,
+      "question": "Badanie związku między wiekiem samochodu a kosztami napraw (obie zmienne ciągłe)",
+      "correct": "Korelacja Pearsona",
+      "all_options": ["Korelacja Pearsona", "Test chi-kwadrat", "Test t dla dwóch prób niezależnych", "ANOVA jednoczynnikowa", "Test proporcji"],
+      "explanation": "Dwie zmienne ciągłe (wiek w latach, koszt w złotych), zakładamy liniowy związek. Korelacja Pearsona."
+    },
+    {
+      "id": 34,
+      "question": "Porównanie średniego poziomu hemoglobiny w 5 grupach etnicznych",
+      "correct": "ANOVA jednoczynnikowa",
+      "all_options": ["Test t dla dwóch prób niezależnych", "ANOVA jednoczynnikowa", "Test chi-kwadrat", "Korelacja Pearsona", "Test proporcji"],
+      "explanation": "5 niezależnych grup, porównanie średnich. ANOVA jednoczynnikowa do porównania wielu grup jednocześnie."
+    },
+    {
+      "id": 35,
+      "question": "Badanie czy rozkład głosów na 4 kandydatów różni się od równomiernego (każdy po 25%)",
+      "correct": "Test chi-kwadrat",
+      "all_options": ["Test chi-kwadrat", "ANOVA jednoczynnikowa", "Test proporcji", "Test t dla jednej próby", "Korelacja Pearsona"],
+      "explanation": "Test chi-kwadrat zgodności sprawdza czy obserwowany rozkład głosów różni się od rozkładu równomiernego (teoretycznego)."
+    },
+    {
+      "id": 36,
+      "question": "Porównanie średniego poziomu lęku przed i po terapii (te same osoby)",
+      "correct": "Test t dla prób zależnych",
+      "all_options": ["Test t dla jednej próby", "Test t dla dwóch prób niezależnych", "Test t dla prób zależnych", "ANOVA jednoczynnikowa", "Test chi-kwadrat"],
+      "explanation": "Te same osoby, pomiary powtórzone (przed i po terapii) = próby zależne. Test t dla prób zależnych."
+    },
+    {
+      "id": 37,
+      "question": "Badanie czy średni IQ w grupie (105) różni się od normy populacyjnej 100",
+      "correct": "Test t dla jednej próby",
+      "all_options": ["Test t dla jednej próby", "Test t dla dwóch prób niezależnych", "Test proporcji", "ANOVA jednoczynnikowa", "Test chi-kwadrat"],
+      "explanation": "Porównujemy średnią z próby (105) z ustaloną wartością populacyjną (100). Test t dla jednej próby."
+    },
+    {
+      "id": 38,
+      "question": "Badanie czy odsetek absencji chorobowej różni się między działem A (12%) a działem B (18%)",
+      "correct": "Test proporcji",
+      "all_options": ["Test proporcji", "Test chi-kwadrat", "Test t dla dwóch prób niezależnych", "ANOVA jednoczynnikowa", "Korelacja Pearsona"],
+      "explanation": "Porównujemy dwie proporcje (12% vs 18%) między dwoma niezależnymi grupami. Test różnicy proporcji."
+    },
+    {
+      "id": 39,
+      "question": "Badanie związku między doświadczeniem zawodowym a wysokością zarobków (obie ciągłe)",
+      "correct": "Korelacja Pearsona",
+      "all_options": ["Korelacja Pearsona", "Test chi-kwadrat", "ANOVA jednoczynnikowa", "Test t dla dwóch prób niezależnych", "Test proporcji"],
+      "explanation": "Dwie zmienne ciągłe (doświadczenie w latach, zarobki w złotych), badamy związek liniowy. Korelacja Pearsona."
+    },
+    {
+      "id": 40,
+      "question": "Porównanie średniej koncentracji przed egzaminem, w trakcie i po egzaminie (te same osoby)",
+      "correct": "ANOVA jednoczynnikowa",
+      "all_options": ["Test t dla dwóch prób niezależnych", "ANOVA jednoczynnikowa", "Test t dla prób zależnych", "Test chi-kwadrat", "Korelacja Pearsona"],
+      "explanation": "Trzy pomiary na tych samych osobach. Mimo że próby są zależne, do porównania 3+ pomiarów powtarzanych używamy ANOVA jednoczynnikowa dla pomiarów powtarzanych (ANOVA z powtarzanymi pomiarami)."
     }
   ]
 }

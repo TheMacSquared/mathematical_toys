@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przedziały Ufności - Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Przedziały Ufności - Quiz Interpretacyjny</h1>
+            <p class="subtitle">Naucz się poprawnie interpretować przedziały ufności w praktycznych przykładach</p>
+        </header>
+
+        <main class="menu-container">
+            <h2>Wybierz tryb quizu</h2>
+
+            <div class="modes-grid">
+                {% for mode in modes %}
+                <a href="/quiz/{{ mode.id }}" class="mode-card">
+                    <div class="mode-emoji">{{ mode.emoji }}</div>
+                    <h3>{{ mode.name }}</h3>
+                    <p class="mode-description">{{ mode.description }}</p>
+                    <div class="mode-footer">
+                        <span class="btn-start">Rozpocznij →</span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </main>
+
+        <div class="description">
+            <h3>O Przedziałach Ufności</h3>
+            <p><strong>Przedział ufności (CI)</strong> to zakres wartości, w którym z określonym prawdopodobieństwem (np. 95%) znajduje się nieznany parametr populacji (np. średnia).</p>
+
+            <h4>Kluczowe zasady interpretacji:</h4>
+            <ul>
+                <li><strong>Pojedynczy przedział vs wartość:</strong>
+                    <ul>
+                        <li>Jeśli testowana wartość jest <strong>poza przedziałem</strong> CI → możemy stwierdzić, czy średnia jest większa/mniejsza</li>
+                        <li>Jeśli testowana wartość jest <strong>wewnątrz przedziału</strong> CI → <strong>nie możemy</strong> stwierdzić różnicy</li>
+                    </ul>
+                </li>
+                <li><strong>Porównanie dwóch grup:</strong>
+                    <ul>
+                        <li>Jeśli przedziały CI <strong>nie nakładają się</strong> → możemy stwierdzić, która średnia jest wyższa</li>
+                        <li>Jeśli przedziały CI <strong>nakładają się</strong> → <strong>nie możemy</strong> stwierdzić różnicy</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

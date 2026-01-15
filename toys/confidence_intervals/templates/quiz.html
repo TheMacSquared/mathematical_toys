@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ mode.emoji }} {{ mode.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body data-mode-id="{{ mode.id }}">
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <a href="/" class="btn-back">← Powrót do menu</a>
+                <div class="progress-info">
+                    <span id="question-counter">Pytanie 0 / 20</span>
+                </div>
+            </div>
+            <h1>{{ mode.emoji }} {{ mode.name }}</h1>
+            <p class="subtitle">{{ mode.description }}</p>
+        </header>
+
+        <main class="quiz-container">
+            <!-- Ekran startowy -->
+            <div id="start-screen" class="screen active">
+                <div class="welcome-box">
+                    <p class="welcome-text">{{ mode.description }}</p>
+                    <p class="instructions">Po każdej odpowiedzi zobaczysz wizualizację przedziałów ufności wraz z wyjaśnieniem.</p>
+                    <button id="btn-start" class="btn-primary btn-large">
+                        🚀 Rozpocznij Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ekran pytania -->
+            <div id="question-screen" class="screen">
+                <div class="question-box">
+                    <p id="question-text" class="question-text"></p>
+                </div>
+
+                <!-- Wizualizacja przedziałów CI -->
+                <div class="visualization-container">
+                    <svg id="ci-visualization" width="100%" height="200"></svg>
+                </div>
+
+                <!-- Przyciski odpowiedzi -->
+                <div class="answers-grid">
+                    <button class="btn-answer" data-answer="tak">TAK</button>
+                    <button class="btn-answer" data-answer="nie">NIE</button>
+                    <button class="btn-answer btn-answer-wide" data-answer="nie_mozna_powiedziec">
+                        NIE MOŻNA POWIEDZIEĆ
+                    </button>
+                </div>
+
+                <!-- Feedback po odpowiedzi -->
+                <div id="feedback-box" class="feedback-box hidden">
+                    <div id="feedback-header" class="feedback-header"></div>
+                    <p id="feedback-text" class="feedback-text"></p>
+                    <button id="btn-next" class="btn-primary">
+                        ➡️ Następne pytanie
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ekran końcowy -->
+            <div id="finish-screen" class="screen">
+                <div class="finish-box">
+                    <h2>🎉 Gratulacje!</h2>
+                    <p>Przeszedłeś przez wszystkie pytania w tym quizie.</p>
+                    <div class="finish-actions">
+                        <button id="btn-restart" class="btn-primary btn-large">
+                            🔄 Zacznij od Nowa
+                        </button>
+                        <a href="/" class="btn-secondary btn-large">
+                            ← Powrót do Menu
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="loading" class="loading">Ładowanie...</div>
+        </main>
+    </div>
+
+    <!-- Przekazanie konfiguracji do JavaScript -->
+    <script>
+        window.MODE_CONFIG = {{ mode | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='visualizer.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
