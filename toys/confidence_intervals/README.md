@@ -167,11 +167,16 @@ Sprawdza odpowiedź użytkownika
   "ci_lower": 14,
   "ci_upper": 22,
   "tested_value": 20,
+  "comparison": "greater",
   "unit": "zł",
   "correct": "nie_mozna_powiedziec",
   "explanation": "Wartość 20 zł znajduje się WEWNĄTRZ przedziału ufności [14; 22]. ..."
 }
 ```
+
+**Pole `comparison`:**
+- `"greater"` - pytanie o ">", "przekracza", "większa niż" → wizualizacja [value, →)
+- `"less"` - pytanie o "<", "mniejsza niż", "poniżej" → wizualizacja (←, value]
 
 ### Tryb 2: two_intervals.json
 ```json
@@ -196,8 +201,9 @@ Aplikacja używa D3.js do rysowania przedziałów ufności **od razu po załadow
 
 **Tryb 1:**
 - Oś liczbowa z przedziałem CI (niebieski prostokąt)
-- Testowana wartość (pomarańczowa linia przerywana przed odpowiedzią, czerwona po)
-- Po odpowiedzi: podświetlenie obszaru decyzyjnego + zmiana koloru CI
+- Testowany PRZEDZIAŁ (nie punkt): np. ">20" to [20, →), "<20" to (←, 20]
+- Przedział testowany pokazany jako prostokąt ze strzałką (pomarańczowy przed, czerwony po)
+- Po odpowiedzi: przedział testowany zmienia kolor + zmiana koloru CI
 
 **Tryb 2:**
 - Dwa przedziały CI na jednej osi (niebieski + pomarańczowy)
@@ -207,13 +213,13 @@ Aplikacja używa D3.js do rysowania przedziałów ufności **od razu po załadow
 - Przedział CI (tryb 1): niebieski (`#4A90E2`)
 - Przedział CI 1 (tryb 2): niebieski (`#4A90E2`)
 - Przedział CI 2 (tryb 2): pomarańczowy (`#F39C12`)
-- Testowana wartość: pomarańczowy (`#F39C12`)
+- Przedział testowany (tryb 1): pomarańczowy (`#F39C12`)
 
 **Kolory po odpowiedzi:**
-- Poprawna odpowiedź: zielony (`#27AE60`)
-- Błędna odpowiedź: czerwony (`#E74C3C`)
-- Nakładanie/NIE MOŻNA: żółty (`#F1C40F`)
-- Testowana wartość: czerwony (`#E74C3C`)
+- Poprawna odpowiedź CI: zielony (`#27AE60`)
+- Błędna odpowiedź CI: czerwony (`#E74C3C`)
+- Przedział testowany: czerwony (`#E74C3C`)
+- Nakładanie/NIE MOŻNA (tryb 2): żółty (`#F1C40F`)
 
 ## Edycja pytań
 

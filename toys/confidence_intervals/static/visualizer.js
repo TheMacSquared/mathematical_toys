@@ -48,10 +48,10 @@ const CIVisualizer = {
      * Tryb 1: Pojedynczy przedział vs wartość
      */
     drawSingleInterval(data, isAnswered, isCorrect) {
-        const { ci_lower, ci_upper, tested_value, unit } = data;
+        const { ci_lower, ci_upper, tested_value, unit, comparison } = data;
 
-        // Oblicz zakres osi X
-        const padding = (ci_upper - ci_lower) * 0.3;
+        // Oblicz zakres osi X - rozszerzony aby pokazać przedział testowany
+        const padding = (ci_upper - ci_lower) * 0.5;
         const xMin = Math.min(ci_lower, tested_value) - padding;
         const xMax = Math.max(ci_upper, tested_value) + padding;
 
@@ -118,35 +118,100 @@ const CIVisualizer = {
             .style('fill', ciColor)
             .text(`CI 95%: [${ci_lower}; ${ci_upper}]`);
 
-        // Rysuj testowaną wartość jako pionową linię
-        // Przed odpowiedzią: pomarańczowy (neutralny)
-        // Po odpowiedzi: czerwony
+        // Rysuj testowany PRZEDZIAŁ (nie punkt)
+        // Np. "przekracza 20" to przedział [20, ∞), "mniejsza niż 20" to (-∞, 20]
+        // Przed odpowiedzią: pomarańczowy (neutralny), po: czerwony
         const valueColor = isAnswered ? '#E74C3C' : '#F39C12';
 
-        g.append('line')
-            .attr('x1', xScale(tested_value))
-            .attr('x2', xScale(tested_value))
-            .attr('y1', yCenter - 40)
-            .attr('y2', yCenter + 40)
-            .attr('stroke', valueColor)
-            .attr('stroke-width', 3)
-            .attr('stroke-dasharray', '5,5')
-            .attr('opacity', 0.8);
+        // Określ kierunek przedziału
+        const isGreater = comparison === 'greater'; // > (w prawo)
+        const isLess = comparison === 'less';       // < (w lewo)
 
-        // Etykieta testowanej wartości
-        g.append('text')
-            .attr('x', xScale(tested_value))
-            .attr('y', yCenter + 55)
-            .attr('text-anchor', 'middle')
-            .style('font-size', '11px')
-            .style('font-weight', 'bold')
-            .style('fill', valueColor)
-            .text(`↑ Wartość testowana: ${tested_value}`);
+        // Rysuj przedział jako prostokąt + strzałkę
+        const rectY = yCenter + 20;
+        const rectHeight = 25;
 
-        // Podświetlenie obszaru decyzyjnego (po odpowiedzi)
-        if (isAnswered) {
-            this.highlightDecisionRegion(g, xScale, yCenter, ci_lower, ci_upper, tested_value, isCorrect);
+        if (isGreater) {
+            // Przedział [tested_value, →)
+            const rectX = xScale(tested_value);
+            const rectWidth = xScale(xMax) - rectX;
+
+            g.append('rect')
+                .attr('x', rectX)
+                .attr('y', rectY)
+                .attr('width', rectWidth)
+                .attr('height', rectHeight)
+                .attr('fill', valueColor)
+                .attr('opacity', 0.15)
+                .attr('stroke', valueColor)
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,3');
+
+            // Strzałka w prawo
+            g.append('polygon')
+                .attr('points', `${xScale(xMax)-10},${rectY+rectHeight/2-6} ${xScale(xMax)},${rectY+rectHeight/2} ${xScale(xMax)-10},${rectY+rectHeight/2+6}`)
+                .attr('fill', valueColor);
+
+            // Linia pionowa na początku przedziału
+            g.append('line')
+                .attr('x1', rectX)
+                .attr('x2', rectX)
+                .attr('y1', rectY)
+                .attr('y2', rectY + rectHeight)
+                .attr('stroke', valueColor)
+                .attr('stroke-width', 3);
+
+            // Etykieta
+            g.append('text')
+                .attr('x', (rectX + xScale(xMax)) / 2)
+                .attr('y', rectY + rectHeight + 15)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '11px')
+                .style('font-weight', 'bold')
+                .style('fill', valueColor)
+                .text(`Pytanie: > ${tested_value}`);
+        } else if (isLess) {
+            // Przedział (←, tested_value]
+            const rectX = xScale(xMin);
+            const rectWidth = xScale(tested_value) - rectX;
+
+            g.append('rect')
+                .attr('x', rectX)
+                .attr('y', rectY)
+                .attr('width', rectWidth)
+                .attr('height', rectHeight)
+                .attr('fill', valueColor)
+                .attr('opacity', 0.15)
+                .attr('stroke', valueColor)
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,3');
+
+            // Strzałka w lewo
+            g.append('polygon')
+                .attr('points', `${xScale(xMin)+10},${rectY+rectHeight/2-6} ${xScale(xMin)},${rectY+rectHeight/2} ${xScale(xMin)+10},${rectY+rectHeight/2+6}`)
+                .attr('fill', valueColor);
+
+            // Linia pionowa na końcu przedziału
+            g.append('line')
+                .attr('x1', xScale(tested_value))
+                .attr('x2', xScale(tested_value))
+                .attr('y1', rectY)
+                .attr('y2', rectY + rectHeight)
+                .attr('stroke', valueColor)
+                .attr('stroke-width', 3);
+
+            // Etykieta
+            g.append('text')
+                .attr('x', (rectX + xScale(tested_value)) / 2)
+                .attr('y', rectY + rectHeight + 15)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '11px')
+                .style('font-weight', 'bold')
+                .style('fill', valueColor)
+                .text(`Pytanie: < ${tested_value}`);
         }
+
+        // Podświetlenie już jest - przedział testowany zmienia kolor na czerwony po odpowiedzi
     },
 
     /**
