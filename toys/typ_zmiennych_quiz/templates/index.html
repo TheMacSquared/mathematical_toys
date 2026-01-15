@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Typy Zmiennych</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Quiz - Typy Zmiennych Losowych</h1>
+            <p class="subtitle">Rozpoznaj rodzaj zmiennej: ilościowa (dyskretna/ciągła) czy jakościowa (porządkowa/nominalna)</p>
+        </header>
+
+        <main class="quiz-container">
+            <!-- Stan: przed startem -->
+            <div id="start-screen" class="screen active">
+                <p class="welcome-text">
+                    W tym quizie nauczysz się rozróżniać cztery typy zmiennych statystycznych.
+                    Po każdej odpowiedzi otrzymasz wyjaśnienie.
+                </p>
+                <button id="btn-start" class="btn-primary btn-large">
+                    🚀 Rozpocznij Quiz
+                </button>
+            </div>
+
+            <!-- Stan: pytanie -->
+            <div id="question-screen" class="screen">
+                <div class="question-box">
+                    <p id="question-text" class="question-text"></p>
+                </div>
+
+                <div class="answers-grid">
+                    <button class="btn-answer" data-answer="ilosciowa_dyskretna">
+                        📊 Ilościowa dyskretna
+                    </button>
+                    <button class="btn-answer" data-answer="ilosciowa_ciagla">
+                        📈 Ilościowa ciągła
+                    </button>
+                    <button class="btn-answer" data-answer="jakosciowa_porzadkowa">
+                        🎚️ Jakościowa porządkowa
+                    </button>
+                    <button class="btn-answer" data-answer="jakosciowa_nominalna">
+                        🏷️ Jakościowa nominalna
+                    </button>
+                </div>
+
+                <div id="feedback-box" class="feedback-box hidden">
+                    <div id="feedback-header" class="feedback-header"></div>
+                    <p id="feedback-text" class="feedback-text"></p>
+                    <button id="btn-next" class="btn-primary">
+                        ➡️ Następne pytanie
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stan: koniec -->
+            <div id="finish-screen" class="screen">
+                <div class="finish-box">
+                    <h2>🎉 Gratulacje!</h2>
+                    <p>Przeszedłeś przez wszystkie pytania w quizie.</p>
+                    <button id="btn-restart" class="btn-primary btn-large">
+                        🔄 Zacznij od Nowa
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="loading" class="loading">Ładowanie...</div>
+        </main>
+
+        <div class="description">
+            <h3>O Typach Zmiennych</h3>
+            <ul>
+                <li><strong>Ilościowa dyskretna:</strong> Przyjmuje wartości przeliczalne (liczby całkowite, zliczalne). Np. liczba dzieci, liczba samochodów.</li>
+                <li><strong>Ilościowa ciągła:</strong> Przyjmuje dowolne wartości z przedziału (nieprzeliczalne). Np. wzrost, waga, temperatura.</li>
+                <li><strong>Jakościowa porządkowa:</strong> Kategorie z naturalnym porządkiem. Np. wykształcenie, ocena w skali (słabo/średnio/dobrze).</li>
+                <li><strong>Jakościowa nominalna:</strong> Kategorie bez porządku. Np. kolor oczu, płeć, marka samochodu.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "Wiek pacjenta w pełnych latach (np. 25, 34, 67)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Wiek w pełnych latach to liczba całkowita, którą można policzyć. To zmienna ilościowa dyskretna."
+    },
+    {
+      "id": 2,
+      "question": "Wzrost osoby w metrach (np. 1.75, 1.82, 1.65)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Wzrost może przyjmować dowolne wartości z przedziału, ograniczone tylko dokładnością pomiaru. To zmienna ilościowa ciągła."
+    },
+    {
+      "id": 3,
+      "question": "Poziom wykształcenia (podstawowe, średnie, wyższe)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Poziom wykształcenia można uporządkować, ale różnice między kategoriami nie są równe. To zmienna jakościowa porządkowa."
+    },
+    {
+      "id": 4,
+      "question": "Kolor oczu (niebieski, brązowy, zielony)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Kolor oczu to kategorie bez naturalnego porządku. To zmienna jakościowa nominalna."
+    },
+    {
+      "id": 5,
+      "question": "Liczba dzieci w rodzinie (0, 1, 2, 3, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba dzieci to wartości przeliczalne (liczby całkowite nieujemne). To zmienna ilościowa dyskretna."
+    },
+    {
+      "id": 6,
+      "question": "Temperatura ciała w °C (np. 36.6, 37.2, 38.5)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Temperatura może przyjmować dowolne wartości w zakresie, z dokładnością do dziesiętnych miejsc. To zmienna ilościowa ciągła."
+    },
+    {
+      "id": 7,
+      "question": "Ocena w szkole (niedostateczny, dostateczny, dobry, bardzo dobry, celujący)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Oceny mają naturalny porządek (celujący > bardzo dobry > ...), ale odstępy między nimi nie są równe. To zmienna jakościowa porządkowa."
+    },
+    {
+      "id": 8,
+      "question": "Marka samochodu (Toyota, Ford, BMW, Audi)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Marki samochodów to kategorie bez porządku. Nie można powiedzieć, że jedna marka jest 'większa' od drugiej. To zmienna jakościowa nominalna."
+    },
+    {
+      "id": 9,
+      "question": "Liczba goli strzelonych w meczu (0, 1, 2, 3, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba goli to wartości przeliczalne (liczby całkowite). To zmienna ilościowa dyskretna."
+    },
+    {
+      "id": 10,
+      "question": "Czas biegu na 100m w sekundach (np. 10.23, 11.05, 12.87)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Czas może przyjmować dowolne wartości z przedziału, mierzone z dokładnością do setnych sekundy. To zmienna ilościowa ciągła."
+    },
+    {
+      "id": 11,
+      "question": "Rozmiar koszulki (XS, S, M, L, XL, XXL)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Rozmiary koszulek mają naturalny porządek (XXL > XL > L > ...). To zmienna jakościowa porządkowa."
+    },
+    {
+      "id": 12,
+      "question": "Płeć biologiczna (męska, żeńska)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Płeć to kategoria bez porządku. To zmienna jakościowa nominalna (dwie kategorie)."
+    },
+    {
+      "id": 13,
+      "question": "Liczba błędów w teście (0, 1, 2, 3, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba błędów to wartości przeliczalne. To zmienna ilościowa dyskretna."
+    },
+    {
+      "id": 14,
+      "question": "Ciśnienie krwi w mmHg (np. 120.5, 135.2, 110.8)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Ciśnienie może przyjmować dowolne wartości z przedziału. To zmienna ilościowa ciągła."
+    },
+    {
+      "id": 15,
+      "question": "Poziom zadowolenia (bardzo niezadowolony, niezadowolony, neutralny, zadowolony, bardzo zadowolony)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Poziom zadowolenia można uporządkować, ale różnice między kategoriami nie są równe. To zmienna jakościowa porządkowa."
+    },
+    {
+      "id": 16,
+      "question": "Grupa krwi (A, B, AB, 0)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Grupy krwi to kategorie bez naturalnego porządku. To zmienna jakościowa nominalna."
+    },
+    {
+      "id": 17,
+      "question": "Liczba stron w książce (200, 350, 487, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba stron to wartości przeliczalne (liczby całkowite dodatnie). To zmienna ilościowa dyskretna."
+    },
+    {
+      "id": 18,
+      "question": "Waga produktu w kilogramach (np. 0.5, 1.2, 3.7)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Waga może przyjmować dowolne wartości, ograniczone tylko dokładnością wagi. To zmienna ilościowa ciągła."
+    },
+    {
+      "id": 19,
+      "question": "Stopień wojskowy (szeregowy, kapral, sierżant, chorąży, podporucznik, ...)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Stopnie wojskowe mają ścisłą hierarchię (porządek), ale różnice między nimi nie są liczbowe. To zmienna jakościowa porządkowa."
+    },
+    {
+      "id": 20,
+      "question": "Narodowość (polska, niemiecka, francuska, ...)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Narodowości to kategorie bez porządku. To zmienna jakościowa nominalna."
+    },
+    {
+      "id": 21,
+      "question": "Liczba pokoi w mieszkaniu (1, 2, 3, 4, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba pokoi to wartości przeliczalne. To zmienna ilościowa dyskretna."
+    },
+    {
+      "id": 22,
+      "question": "Stężenie glukozy we krwi w mg/dl (np. 85.3, 120.7, 95.1)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Stężenie może przyjmować dowolne wartości z przedziału. To zmienna ilościowa ciągła."
+    },
+    {
+      "id": 23,
+      "question": "Etap nowotworu (I, II, III, IV)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Etapy nowotworu mają naturalny porządek (IV > III > II > I), określający zaawansowanie choroby. To zmienna jakościowa porządkowa."
+    },
+    {
+      "id": 24,
+      "question": "Typ silnika (benzynowy, diesel, elektryczny, hybrydowy)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Typy silników to kategorie bez naturalnego porządku. To zmienna jakościowa nominalna."
+    },
+    {
+      "id": 25,
+      "question": "Liczba wypadków na skrzyżowaniu w ciągu roku (0, 1, 2, 3, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba wypadków to wartości przeliczalne. To zmienna ilościowa dyskretna."
+    }
+  ]
+}
