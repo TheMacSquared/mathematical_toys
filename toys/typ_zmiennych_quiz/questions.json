@@ -329,6 +329,126 @@
       "question": "Liczba gatunków ptaków zaobserwowanych na obszarze (15, 28, 42, ...)",
       "correct": "ilosciowa_dyskretna",
       "explanation": "Liczba gatunków to wartości przeliczalne (liczby całkowite). To zmienna ilościowa dyskretna. (ochrona środowiska)"
+    },
+    {
+      "id": 56,
+      "question": "Liczba polubień posta na Instagramie (45, 230, 1582, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba polubień to wartości przeliczalne (liczby całkowite). To zmienna ilościowa dyskretna. (media społecznościowe)"
+    },
+    {
+      "id": 57,
+      "question": "Czas spędzony na TikToku w godzinach dziennie (np. 1.5, 3.2, 0.8)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Czas może przyjmować dowolne wartości z przedziału, mierzony z dokładnością do minut. To zmienna ilościowa ciągła. (media społecznościowe)"
+    },
+    {
+      "id": 58,
+      "question": "Platforma social media (Instagram, TikTok, YouTube, Twitter/X, Snapchat)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Platformy to kategorie bez naturalnego porządku. To zmienna jakościowa nominalna. (media społecznościowe)"
+    },
+    {
+      "id": 59,
+      "question": "Poziom zaangażowania na social mediach (niski, średni, wysoki, bardzo wysoki)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Poziomy zaangażowania można uporządkować (bardzo wysoki > wysoki > średni > niski), ale różnice między nimi nie są precyzyjnie określone. To zmienna jakościowa porządkowa. (media społecznościowe)"
+    },
+    {
+      "id": 60,
+      "question": "Liczba obserwujących na Instagramie (523, 1240, 5890, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba obserwujących to wartości przeliczalne (liczby całkowite). To zmienna ilościowa dyskretna. (media społecznościowe)"
+    },
+    {
+      "id": 61,
+      "question": "Rating gry w sklepie App Store (1, 2, 3, 4, 5 gwiazdek)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Rating ma naturalny porządek (5 > 4 > 3 > 2 > 1), ale różnice między gwiazdkami nie są równe (różnica między 1 a 2 może być postrzegana inaczej niż między 4 a 5). To zmienna jakościowa porządkowa. (gry, aplikacje)"
+    },
+    {
+      "id": 62,
+      "question": "Gatunek filmu (akcja, komedia, horror, dramat, science fiction)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Gatunki filmów to kategorie bez naturalnego porządku. To zmienna jakościowa nominalna. (rozrywka)"
+    },
+    {
+      "id": 63,
+      "question": "Czas trwania filmu w minutach (np. 95.0, 122.0, 148.0)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Czas może przyjmować dowolne wartości (choć zwykle zaokrąglane do pełnych minut, technicznie są to wartości ciągłe). To zmienna ilościowa ciągła. (rozrywka)"
+    },
+    {
+      "id": 64,
+      "question": "Liczba gier rozegranych w League of Legends w sezonie (45, 230, 587, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba gier to wartości przeliczalne (liczby całkowite). To zmienna ilościowa dyskretna. (gry)"
+    },
+    {
+      "id": 65,
+      "question": "Ranga w CS:GO (Silver, Gold Nova, Master Guardian, Legendary Eagle, Global Elite)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Rangi w grze mają ścisły porządek określający poziom umiejętności (Global Elite > Legendary Eagle > ... > Silver). To zmienna jakościowa porządkowa. (gry)"
+    },
+    {
+      "id": 66,
+      "question": "Typ postaci w grze RPG (wojownik, mag, łucznik, kleryk)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Klasy postaci to kategorie bez naturalnego porządku. To zmienna jakościowa nominalna. (gry)"
+    },
+    {
+      "id": 67,
+      "question": "Procent ukończenia gry (np. 45.5%, 78.3%, 100.0%)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Procent ukończenia może przyjmować dowolne wartości z przedziału 0-100%. To zmienna ilościowa ciągła. (gry)"
+    },
+    {
+      "id": 68,
+      "question": "Liczba wyświetleń filmu na YouTube (1520, 45890, 1234567, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba wyświetleń to wartości przeliczalne (liczby całkowite). To zmienna ilościowa dyskretna. (media społecznościowe)"
+    },
+    {
+      "id": 69,
+      "question": "Preferowana muzyka (pop, rock, hip-hop, jazz, elektroniczna)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Gatunki muzyczne to kategorie bez naturalnego porządku. To zmienna jakościowa nominalna. (rozrywka)"
+    },
+    {
+      "id": 70,
+      "question": "Poziom trudności gry (łatwy, normalny, trudny, bardzo trudny, ekstremalny)",
+      "correct": "jakosciowa_porzadkowa",
+      "explanation": "Poziomy trudności mają naturalny porządek (ekstremalny > bardzo trudny > trudny > normalny > łatwy). To zmienna jakościowa porządkowa. (gry)"
+    },
+    {
+      "id": 71,
+      "question": "Średni czas reakcji w grze FPS w milisekundach (np. 185.3, 210.7, 245.2)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Czas reakcji może przyjmować dowolne wartości z przedziału, mierzony z dużą dokładnością. To zmienna ilościowa ciągła. (gry)"
+    },
+    {
+      "id": 72,
+      "question": "Liczba przyjaciół na Facebooku (123, 456, 789, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba przyjaciół to wartości przeliczalne (liczby całkowite). To zmienna ilościowa dyskretna. (media społecznościowe)"
+    },
+    {
+      "id": 73,
+      "question": "Rozmiar ekranu smartfona w calach (np. 5.8, 6.1, 6.7)",
+      "correct": "ilosciowa_ciagla",
+      "explanation": "Rozmiar ekranu może przyjmować dowolne wartości z przedziału, mierzony po przekątnej. To zmienna ilościowa ciągła. (technologia)"
+    },
+    {
+      "id": 74,
+      "question": "Marka smartfona (iPhone, Samsung, Xiaomi, Huawei, OnePlus)",
+      "correct": "jakosciowa_nominalna",
+      "explanation": "Marki telefonów to kategorie bez naturalnego porządku. To zmienna jakościowa nominalna. (technologia)"
+    },
+    {
+      "id": 75,
+      "question": "Liczba zrobionych zdjęć na wakacjach (45, 230, 578, ...)",
+      "correct": "ilosciowa_dyskretna",
+      "explanation": "Liczba zdjęć to wartości przeliczalne (liczby całkowite). To zmienna ilościowa dyskretna. (rozrywka)"
     }
   ]
 }
