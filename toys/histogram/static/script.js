@@ -55,6 +55,12 @@ function setupInputs() {
                 if (isNaN(value)) {
                     return;
                 }
+
+                // Walidacja dla parametrów które muszą być > 0
+                // (binwidth i sd - czekaj na pełną wartość np. "0.5")
+                if ((input.param === 'binwidth' || input.param === 'sd') && value <= 0) {
+                    return;
+                }
             }
 
             // Aktualizuj parametry
