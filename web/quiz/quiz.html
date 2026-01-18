@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ quiz.emoji }} {{ quiz.name }}</title>
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Quiz Statystyczny</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body data-quiz-id="{{ quiz.id }}">
+<body>
     <div class="container">
         <header>
-            <a href="/" class="back-button">← Menu główne</a>
-            <h1>{{ quiz.emoji }} {{ quiz.name }}</h1>
-            <p class="subtitle">{{ quiz.description }}</p>
+            <a href="index.html" class="back-button">&larr; Menu glowne</a>
+            <h1 id="quiz-title">Quiz</h1>
+            <p id="quiz-subtitle" class="subtitle"></p>
         </header>
 
         <main class="quiz-container">
             <!-- Stan: przed startem -->
             <div id="start-screen" class="screen active">
                 <p class="welcome-text">
-                    Rozpocznij quiz i sprawdź swoją wiedzę!
-                    Po każdej odpowiedzi otrzymasz szczegółowe wyjaśnienie.
+                    Rozpocznij quiz i sprawdz swoja wiedze!
+                    Po kazdej odpowiedzi otrzymasz szczegolowe wyjasnienie.
                 </p>
                 <button id="btn-start" class="btn-primary btn-large">
-                    🚀 Rozpocznij Quiz
+                    Rozpocznij Quiz
                 </button>
             </div>
 
@@ -33,16 +33,15 @@
                     <p id="question-text" class="question-text"></p>
                 </div>
 
-                <!-- Dynamiczne przyciski odpowiedzi (generowane przez JS) -->
+                <!-- Dynamiczne przyciski odpowiedzi -->
                 <div id="answers-grid" class="answers-grid">
-                    <!-- Przyciski będą wstawione przez JavaScript -->
                 </div>
 
                 <div id="feedback-box" class="feedback-box hidden">
                     <div id="feedback-header" class="feedback-header"></div>
                     <p id="feedback-text" class="feedback-text"></p>
                     <button id="btn-next" class="btn-primary">
-                        ➡️ Następne pytanie
+                        Nastepne pytanie
                     </button>
                 </div>
             </div>
@@ -50,28 +49,24 @@
             <!-- Stan: koniec -->
             <div id="finish-screen" class="screen">
                 <div class="finish-box">
-                    <h2>🎉 Gratulacje!</h2>
-                    <p>Przeszedłeś przez wszystkie pytania w quizie.</p>
+                    <h2>Gratulacje!</h2>
+                    <p>Przeszedłes przez wszystkie pytania w quizie.</p>
                     <div class="finish-buttons">
                         <button id="btn-restart" class="btn-primary btn-large">
-                            🔄 Zacznij od Nowa
+                            Zacznij od Nowa
                         </button>
-                        <a href="/" class="btn-secondary btn-large">
-                            📋 Menu główne
+                        <a href="index.html" class="btn-secondary btn-large">
+                            Menu glowne
                         </a>
                     </div>
                 </div>
             </div>
 
             <!-- Loading indicator -->
-            <div id="loading" class="loading">Ładowanie...</div>
+            <div id="loading" class="loading">Ladowanie...</div>
         </main>
     </div>
 
-    <!-- Przekazanie konfiguracji quizu do JavaScript -->
-    <script>
-        window.QUIZ_CONFIG = {{ quiz | tojson | safe }};
-    </script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizy Statystyczne</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Quizy Statystyczne</h1>
+            <p class="subtitle">Wybierz quiz, ktory chcesz rozpoczac</p>
+        </header>
+
+        <main class="menu-container">
+            <div id="quiz-grid" class="quiz-grid">
+                <!-- Quizy beda zaladowane przez JavaScript -->
+            </div>
+        </main>
+
+        <footer class="menu-footer">
+            <p>Narzedzia do nauki statystyki</p>
+        </footer>
+    </div>
+
+    <script>
+        // Zaladuj konfiguracje quizow i wygeneruj menu
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('data/quiz_config.json');
+                const config = await response.json();
+                const quizGrid = document.getElementById('quiz-grid');
+
+                config.quizzes.forEach(quiz => {
+                    const card = document.createElement('a');
+                    card.href = `quiz.html?id=${quiz.id}`;
+                    card.className = 'quiz-card';
+                    card.innerHTML = `
+                        <div class="quiz-emoji">${quiz.emoji}</div>
+                        <h2 class="quiz-title">${quiz.name}</h2>
+                        <p class="quiz-description">${quiz.description}</p>
+                        <div class="quiz-cta">Rozpocznij &rarr;</div>
+                    `;
+                    quizGrid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Blad ladowania konfiguracji:', error);
+                document.getElementById('quiz-grid').innerHTML =
+                    '<p style="color: red;">Blad ladowania quizow. Sprawdz konsole.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
