@@ -116,15 +116,15 @@ pyinstaller --onefile --windowed main.py
 
 ## Roadmap
 
-### Faza 1: Fundament (w trakcie)
+### Faza 1: Fundament
 - [x] Setup projektu
 - [x] Dokumentacja architektury
-- [ ] Pierwsza zabawka (histogram)
-- [ ] Pipeline budowania .exe
-- [ ] Dokumentacja dla studentów
+- [x] Pierwsza zabawka (histogram)
+- [x] Pipeline budowania .exe
+- [x] Dokumentacja dla studentów
 
 ### Faza 2: Rozbudowa
-- [ ] 3-5 podstawowych zabawek
+- [x] 3 podstawowe zabawki (histogram, quiz, przedziały ufności)
 - [ ] Testy użytkownika (feedback od studentów)
 - [ ] Iteracja na podstawie feedbacku
 

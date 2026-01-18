@@ -21,8 +21,10 @@ toys/nazwa_zabawki/
 
 ## Dostępne Zabawki
 
-### Planowane
-- [ ] **histogram** - Histogram z rozkładem normalnym
+### Gotowe
+- [x] **histogram** - Histogram z rozkładem normalnym
+- [x] **quiz_app** - Quiz statystyczny (typy zmiennych, rozkłady, wybór testu)
+- [x] **confidence_intervals** - Przedziały ufności
 
 ### Przyszłe Pomysły
 - Test t-Studenta

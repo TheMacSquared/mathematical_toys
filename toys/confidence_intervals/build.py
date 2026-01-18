@@ -1,5 +1,10 @@
 import PyInstaller.__main__
 import os
+import sys
+
+# Dodaj katalog nadrzędny do ścieżki, aby zaimportować common
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from common.build_utils import add_data_arg
 
 def build_exe():
     """Buduj .exe dla aplikacji przedziałów ufności"""
@@ -21,10 +26,10 @@ def build_exe():
         '--name=confidence_intervals',
         '--onefile',
         '--windowed',
-        '--add-data=templates;templates',
-        '--add-data=static;static',
-        '--add-data=questions;questions',  # Pakuj cały katalog questions
-        '--add-data=ci_config.json;.',     # Pakuj konfigurację
+        add_data_arg('templates', 'templates'),
+        add_data_arg('static', 'static'),
+        add_data_arg('questions', 'questions'),
+        add_data_arg('ci_config.json', '.'),
         '--hidden-import=bottle',
         '--hidden-import=proxy_tools',
         '--clean',

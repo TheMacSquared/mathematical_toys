@@ -8,6 +8,10 @@ import PyInstaller.__main__
 import os
 import sys
 
+# Dodaj katalog nadrzędny do ścieżki, aby zaimportować common
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from common.build_utils import add_data_arg
+
 def build():
     """Zbuduj plik .exe"""
     # Ścieżki
@@ -32,17 +36,13 @@ def build():
     print(f"Static: {static_dir}")
     print()
 
-    # Parametry PyInstaller
-    # UWAGA: Na Windows separator to ';', na Linux/Mac to ':'
-    separator = ';' if sys.platform == 'win32' else ':'
-
     args = [
         'main.py',
         '--onefile',              # Pojedynczy plik .exe
         '--windowed',             # Bez okna konsoli
         '--name=Histogram',       # Nazwa .exe
-        f'--add-data={templates_dir}{separator}templates',  # Dołącz templates
-        f'--add-data={static_dir}{separator}static',        # Dołącz static
+        add_data_arg(templates_dir, 'templates'),
+        add_data_arg(static_dir, 'static'),
         '--clean',                # Wyczyść cache przed buildem
         '--noconfirm',            # Nie pytaj o potwierdzenie
         # Hidden imports (czasem potrzebne dla niektórych pakietów)
@@ -57,7 +57,7 @@ def build():
         PyInstaller.__main__.run(args)
         print()
         print("="*60)
-        print("✓ Build zakończony sukcesem!")
+        print("Build zakończony sukcesem!")
         print("="*60)
         print(f"Plik .exe znajduje się w: {os.path.join(current_dir, 'dist', 'Histogram.exe')}")
         print()
@@ -65,7 +65,7 @@ def build():
     except Exception as e:
         print()
         print("="*60)
-        print("✗ Build nie powiódł się!")
+        print("Build nie powiódł się!")
         print("="*60)
         print(f"Błąd: {e}")
         sys.exit(1)
