@@ -57,17 +57,15 @@ def build():
         PyInstaller.__main__.run(args)
         print()
         print("="*60)
-        print("Build zakończony sukcesem!")
+        print("Build completed successfully!")
         print("="*60)
-        print(f"Plik .exe znajduje się w: {os.path.join(current_dir, 'dist', 'Histogram.exe')}")
-        print()
-        print("Testuj .exe przed dystrybucją!")
+        print(f"EXE file: {os.path.join(current_dir, 'dist', 'Histogram.exe')}")
     except Exception as e:
         print()
         print("="*60)
-        print("Build nie powiódł się!")
+        print("Build FAILED!")
         print("="*60)
-        print(f"Błąd: {e}")
+        print(f"Error: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':
