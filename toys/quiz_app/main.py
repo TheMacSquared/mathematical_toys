@@ -3,9 +3,11 @@ from threading import Thread
 import time
 from app import app
 
+PORT = 15001  # Wyższy port - mniejsze ryzyko blokady przez firewall
+
 def start_flask():
     """Uruchom Flask w tle (daemon thread)"""
-    app.run(port=5001, debug=False, use_reloader=False)
+    app.run(port=PORT, debug=False, use_reloader=False)
 
 def main():
     # Uruchom Flask
@@ -18,7 +20,7 @@ def main():
     # Utwórz okno PyWebView
     window = webview.create_window(
         title='Quizy Statystyczne',
-        url='http://127.0.0.1:5001',
+        url=f'http://127.0.0.1:{PORT}',
         width=1000,
         height=850,
         resizable=True,

@@ -9,9 +9,11 @@ from threading import Thread
 import time
 from app import app
 
+PORT = 15000  # Wyższy port - mniejsze ryzyko blokady przez firewall
+
 def start_flask():
     """Uruchom Flask server w osobnym wątku"""
-    app.run(port=5000, debug=False, use_reloader=False)
+    app.run(port=PORT, debug=False, use_reloader=False)
 
 def main():
     """Główna funkcja - uruchom aplikację"""
@@ -25,7 +27,7 @@ def main():
     # Otwórz natywne okno aplikacji
     window = webview.create_window(
         title='Histogram - Rozkład Normalny',
-        url='http://127.0.0.1:5000',
+        url=f'http://127.0.0.1:{PORT}',
         width=1200,
         height=900,
         resizable=True,
