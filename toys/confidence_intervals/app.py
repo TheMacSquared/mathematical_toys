@@ -4,8 +4,6 @@ import random
 import os
 import sys
 
-app = Flask(__name__)
-
 # === Ładowanie danych z JSON ===
 
 def get_bundle_dir():
@@ -16,6 +14,12 @@ def get_bundle_dir():
     else:
         # Dev mode
         return os.path.dirname(__file__)
+
+# Ustawienie ścieżek dla Flask (ważne dla PyInstaller)
+bundle_dir = get_bundle_dir()
+app = Flask(__name__,
+            template_folder=os.path.join(bundle_dir, 'templates'),
+            static_folder=os.path.join(bundle_dir, 'static'))
 
 def load_json(filename):
     """Wczytuje plik JSON"""
