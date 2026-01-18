@@ -36,7 +36,7 @@ def build_exe():
         '--noconfirm'
     ])
 
-    print("\n✅ Build zakończony!")
+    print("\nBuild zakończony!")
     print("Plik .exe znajduje się w: dist/confidence_intervals.exe")
 
 if __name__ == '__main__':

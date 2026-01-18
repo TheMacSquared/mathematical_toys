@@ -36,7 +36,7 @@ def build_exe():
         '--noconfirm'
     ])
 
-    print("\n✅ Build zakończony!")
+    print("\nBuild zakończony!")
     print("Plik .exe znajduje się w: dist/quiz_app.exe")
 
 if __name__ == '__main__':
