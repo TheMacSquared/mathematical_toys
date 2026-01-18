@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Statystyczny</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-button">&larr; Menu glowne</a>
+            <h1 id="quiz-title">Quiz</h1>
+            <p id="quiz-subtitle" class="subtitle"></p>
+        </header>
+
+        <main class="quiz-container">
+            <!-- Stan: przed startem -->
+            <div id="start-screen" class="screen active">
+                <p class="welcome-text">
+                    Rozpocznij quiz i sprawdz swoja wiedze!
+                    Po kazdej odpowiedzi otrzymasz szczegolowe wyjasnienie.
+                </p>
+                <button id="btn-start" class="btn-primary btn-large">
+                    Rozpocznij Quiz
+                </button>
+            </div>
+
+            <!-- Stan: pytanie -->
+            <div id="question-screen" class="screen">
+                <div class="question-box">
+                    <p id="question-text" class="question-text"></p>
+                </div>
+
+                <!-- Dynamiczne przyciski odpowiedzi -->
+                <div id="answers-grid" class="answers-grid">
+                </div>
+
+                <div id="feedback-box" class="feedback-box hidden">
+                    <div id="feedback-header" class="feedback-header"></div>
+                    <p id="feedback-text" class="feedback-text"></p>
+                    <button id="btn-next" class="btn-primary">
+                        Nastepne pytanie
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stan: koniec -->
+            <div id="finish-screen" class="screen">
+                <div class="finish-box">
+                    <h2>Gratulacje!</h2>
+                    <p>Przeszedłes przez wszystkie pytania w quizie.</p>
+                    <div class="finish-buttons">
+                        <button id="btn-restart" class="btn-primary btn-large">
+                            Zacznij od Nowa
+                        </button>
+                        <a href="index.html" class="btn-secondary btn-large">
+                            Menu glowne
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="loading" class="loading">Ladowanie...</div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
