@@ -27,9 +27,6 @@ const PLOT_RANGE = {
     y: [-2, 18]
 };
 
-// Tolerancja klikniecia do usuniecia punktu (w jednostkach wykresu)
-const CLICK_TOLERANCE = 0.5;
-
 // === INICJALIZACJA ===
 document.addEventListener('DOMContentLoaded', function() {
     setupPlot();
@@ -109,44 +106,77 @@ function setupPlot() {
 
     Plotly.newPlot('plot', traces, layout, config);
 
-    // Klikniecie na wykresie
+    // Klikniecie na wykresie - uzyj natywnego click zamiast plotly_click,
+    // bo plotly_click nie dziala na pustym wykresie ani na pustej przestrzeni
     const plotEl = document.getElementById('plot');
+
+    // Obsluga klikniecia na istniejacy punkt (usuwanie)
     plotEl.on('plotly_click', function(data) {
-        handlePlotClick(data);
-    });
-}
-
-function handlePlotClick(data) {
-    if (!data || !data.points || data.points.length === 0) return;
-
-    const clickedPoint = data.points[0];
-
-    // Sprawdz czy kliknieto istniejacy punkt (trace 0 = dane)
-    if (clickedPoint.curveNumber === 0) {
-        // Usun punkt
-        const idx = clickedPoint.pointIndex;
-        if (idx >= 0 && idx < state.points.length) {
-            state.points.splice(idx, 1);
-            onPointsChanged();
-            return;
+        if (!data || !data.points || data.points.length === 0) return;
+        var clickedPoint = data.points[0];
+        // Jesli kliknieto punkt danych (trace 0), usun go
+        if (clickedPoint.curveNumber === 0) {
+            var idx = clickedPoint.pointIndex;
+            if (idx >= 0 && idx < state.points.length) {
+                state.points.splice(idx, 1);
+                onPointsChanged();
+            }
         }
-    }
-
-    // Dodaj nowy punkt w kliknietym miejscu
-    const x = parseFloat(clickedPoint.x);
-    const y = parseFloat(clickedPoint.y);
-
-    if (isNaN(x) || isNaN(y)) return;
-
-    // Sprawdz limit punktow
-    if (state.points.length >= 100) return;
-
-    state.points.push({
-        x: Math.round(x * 100) / 100,
-        y: Math.round(y * 100) / 100
     });
-    onPointsChanged();
+
+    // Obsluga klikniecia na pusta przestrzen (dodawanie punktow)
+    plotEl.addEventListener('click', function(evt) {
+        // Jesli klikniecie pochodzi z punktu danych, plotly_click juz je obsluzyl
+        // Sprawdz czy kliknieto w obszar plotArea (nie przyciski, legendy itp.)
+        var target = evt.target;
+        var isPlotArea = false;
+        var el = target;
+        while (el && el !== plotEl) {
+            if (el.classList && (el.classList.contains('nsewdrag') || el.classList.contains('drag'))) {
+                isPlotArea = true;
+                break;
+            }
+            el = el.parentElement;
+        }
+        if (!isPlotArea) return;
+
+        var xaxis = plotEl._fullLayout.xaxis;
+        var yaxis = plotEl._fullLayout.yaxis;
+        var bb = plotEl.getBoundingClientRect();
+        var x = xaxis.p2d(evt.clientX - bb.left - plotEl._fullLayout.margin.l);
+        var y = yaxis.p2d(evt.clientY - bb.top - plotEl._fullLayout.margin.t);
+
+        // Sprawdz czy klikniecie jest w zakresie osi
+        var xRange = xaxis.range;
+        var yRange = yaxis.range;
+        var xMin = Math.min(xRange[0], xRange[1]);
+        var xMax = Math.max(xRange[0], xRange[1]);
+        var yMin = Math.min(yRange[0], yRange[1]);
+        var yMax = Math.max(yRange[0], yRange[1]);
+
+        if (x < xMin || x > xMax || y < yMin || y > yMax) return;
+        if (isNaN(x) || isNaN(y)) return;
+
+        // Sprawdz czy kliknieto blisko istniejacego punktu - jesli tak, nie dodawaj
+        // (plotly_click obsluguje usuwanie)
+        var clickThreshold = (xMax - xMin) * 0.02;
+        for (var i = 0; i < state.points.length; i++) {
+            var dx = state.points[i].x - x;
+            var dy = state.points[i].y - y;
+            if (Math.sqrt(dx * dx + dy * dy) < clickThreshold) return;
+        }
+
+        // Sprawdz limit punktow
+        if (state.points.length >= 100) return;
+
+        state.points.push({
+            x: Math.round(x * 100) / 100,
+            y: Math.round(y * 100) / 100
+        });
+        onPointsChanged();
+    });
 }
+
 
 function onPointsChanged() {
     updatePlotPoints();
@@ -411,9 +441,9 @@ function updateStats() {
     // Kolorowanie r
     const rDisplay = document.getElementById('r-display');
     rDisplay.classList.remove('pc-r-display--positive', 'pc-r-display--negative', 'pc-r-display--neutral');
-    if (res.r > 0.05) {
+    if (res.r > 0) {
         rDisplay.classList.add('pc-r-display--positive');
-    } else if (res.r < -0.05) {
+    } else if (res.r < 0) {
         rDisplay.classList.add('pc-r-display--negative');
     } else {
         rDisplay.classList.add('pc-r-display--neutral');
@@ -441,7 +471,7 @@ function updateStats() {
     const interpBox = document.getElementById('interpretation-box');
     interpBox.classList.remove('pc-interpretation--positive', 'pc-interpretation--negative', 'pc-interpretation--weak');
 
-    let interpText = res.strength_label;
+    let interpText = res.strength_label + ' korelacja';
     if (res.direction === 'dodatnia') {
         interpText += ' dodatnia';
         interpBox.classList.add('pc-interpretation--positive');
@@ -469,14 +499,14 @@ function updateStats() {
     const interceptStr = res.intercept >= 0
         ? '+ ' + res.intercept.toFixed(4)
         : '- ' + Math.abs(res.intercept).toFixed(4);
-    regEl.textContent = `\u0177 = ${slopeStr}\u00B7x ${interceptStr}`;
+    regEl.textContent = `y\u0302 = ${slopeStr}\u00B7x ${interceptStr}`;
 }
 
 function updateFormula() {
     const res = state.results;
     const container = document.getElementById('formula-values');
     if (!res) {
-        container.innerHTML = '';
+        container.textContent = '';
         return;
     }
 
@@ -486,15 +516,33 @@ function updateFormula() {
     const denominator = Math.sqrt(res.sum_dx_sq * res.sum_dy_sq);
     const denomStr = denominator.toFixed(4);
 
-    container.innerHTML =
-        '<div class="pc-formula__computed">' +
-            'r = ' +
-            '<span class="pc-formula__frac">' +
-                '<span class="pc-formula__num">' + sumProd + '</span>' +
-                '<span class="pc-formula__den">\u221A(' + sumDxSq + ' \u00B7 ' + sumDySq + ') = ' + denomStr + '</span>' +
-            '</span>' +
-            ' = <strong>' + res.r.toFixed(4) + '</strong>' +
-        '</div>';
+    container.textContent = '';
+    var computed = document.createElement('div');
+    computed.className = 'pc-formula__computed';
+
+    computed.appendChild(document.createTextNode('r = '));
+
+    var frac = document.createElement('span');
+    frac.className = 'pc-formula__frac';
+
+    var num = document.createElement('span');
+    num.className = 'pc-formula__num';
+    num.textContent = sumProd;
+    frac.appendChild(num);
+
+    var den = document.createElement('span');
+    den.className = 'pc-formula__den';
+    den.textContent = '\u221A(' + sumDxSq + ' \u00B7 ' + sumDySq + ') = ' + denomStr;
+    frac.appendChild(den);
+
+    computed.appendChild(frac);
+    computed.appendChild(document.createTextNode(' = '));
+
+    var strong = document.createElement('strong');
+    strong.textContent = res.r.toFixed(4);
+    computed.appendChild(strong);
+
+    container.appendChild(computed);
 }
 
 function clearResults() {
@@ -507,7 +555,7 @@ function clearResults() {
     document.getElementById('stat-regression').textContent = '-';
     document.getElementById('stat-mean-x').textContent = '-';
     document.getElementById('stat-mean-y').textContent = '-';
-    document.getElementById('formula-values').innerHTML = '';
+    document.getElementById('formula-values').textContent = '';
 
     const rDisplay = document.getElementById('r-display');
     rDisplay.classList.remove('pc-r-display--positive', 'pc-r-display--negative', 'pc-r-display--neutral');

@@ -6,7 +6,6 @@ linie regresji i szczegolowy rozklad skladowych wzoru.
 """
 
 from flask import Flask, render_template, jsonify, request
-import math
 import numpy as np
 from scipy import stats
 import os
@@ -32,9 +31,12 @@ register_common_static(app, bundle_dir if getattr(sys, 'frozen', False) else Non
 
 
 def safe_float(val):
-    """Bezpieczna konwersja na float - zwraca None dla NaN/Inf."""
-    f = float(val)
-    if math.isnan(f) or math.isinf(f):
+    """Bezpieczna konwersja na float - zwraca None dla NaN/Inf/blednych wartosci."""
+    try:
+        f = float(val)
+    except (ValueError, TypeError):
+        return None
+    if np.isnan(f) or np.isinf(f):
         return None
     return f
 
@@ -79,9 +81,9 @@ def _validate_points(points_raw):
         except (ValueError, TypeError):
             raise ValueError(f"Punkt {i+1}: wspolrzedne musza byc liczbami")
 
-        if math.isnan(x) or math.isinf(x):
+        if np.isnan(x) or np.isinf(x):
             raise ValueError(f"Punkt {i+1}: wspolrzedna x musi byc liczba skonczona")
-        if math.isnan(y) or math.isinf(y):
+        if np.isnan(y) or np.isinf(y):
             raise ValueError(f"Punkt {i+1}: wspolrzedna y musi byc liczba skonczona")
 
         xs.append(x)
@@ -91,9 +93,9 @@ def _validate_points(points_raw):
     y_arr = np.array(ys)
 
     # Sprawdz czy nie ma zerowej wariancji
-    if np.std(x_arr) == 0:
+    if np.all(x_arr == x_arr[0]):
         raise ValueError("Wszystkie wartosci x sa identyczne - korelacja niezdefiniowana")
-    if np.std(y_arr) == 0:
+    if np.all(y_arr == y_arr[0]):
         raise ValueError("Wszystkie wartosci y sa identyczne - korelacja niezdefiniowana")
 
     return x_arr, y_arr
@@ -140,13 +142,13 @@ def _compute_pearson(x_arr, y_arr):
     abs_r = abs(r_value)
     if abs_r < 0.3:
         strength = "slaba"
-        strength_label = "Slaba korelacja"
+        strength_label = "Slaba"
     elif abs_r < 0.7:
         strength = "umiarkowana"
-        strength_label = "Umiarkowana korelacja"
+        strength_label = "Umiarkowana"
     else:
         strength = "silna"
-        strength_label = "Silna korelacja"
+        strength_label = "Silna"
 
     # Kierunek
     if r_value > 0:
@@ -211,8 +213,6 @@ def _generate_dataset(dataset_type):
     Returns:
         list of dicts [{x, y}, ...]
     """
-    np.random.seed()
-
     if dataset_type == 'perfect_positive':
         # Silna korelacja dodatnia z malym szumem
         n = 20
@@ -242,7 +242,7 @@ def _generate_dataset(dataset_type):
         n = 20
         x = np.random.normal(5, 1, n)
         y = np.random.normal(5, 1, n)
-        # Dodaj outfier daleko od reszty
+        # Dodaj outlier daleko od reszty
         x = np.append(x, 15)
         y = np.append(y, 15)
 
