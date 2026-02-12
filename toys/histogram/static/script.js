@@ -83,7 +83,7 @@ async function updatePlot() {
 
     try {
         // Pokaż loading indicator
-        loadingEl.classList.add('active');
+        loadingEl.classList.add('st-loading--active');
 
         // Wyślij request do Flask backend
         const response = await fetch('/api/generate', {
@@ -116,7 +116,7 @@ async function updatePlot() {
         alert('Błąd połączenia z serwerem: ' + error.message);
     } finally {
         // Ukryj loading indicator
-        loadingEl.classList.remove('active');
+        loadingEl.classList.remove('st-loading--active');
     }
 }
 
@@ -135,9 +135,9 @@ function plotHistogram(histData, params) {
         name: 'Histogram',
         width: binWidth * 0.98,  // 98% szerokości binu (praktycznie bez przerw)
         marker: {
-            color: '#667eea',
+            color: '#6366f1',
             line: {
-                color: '#5568d3',
+                color: '#4f46e5',
                 width: 0  // Bez ramek między słupkami
             }
         },
@@ -174,8 +174,8 @@ function plotHistogram(histData, params) {
             title: 'Częstość',
             gridcolor: '#e0e0e0'
         },
-        plot_bgcolor: '#fafafa',
-        paper_bgcolor: '#fafafa',
+        plot_bgcolor: '#f8fafc',
+        paper_bgcolor: '#f8fafc',
         margin: { t: 60, b: 60, l: 70, r: 40 },
         showlegend: true,
         legend: {
@@ -229,7 +229,7 @@ function generateNormalCurve(mean, sd, n, binWidth) {
         mode: 'lines',
         name: 'Krzywa teoretyczna',
         line: {
-            color: '#764ba2',
+            color: '#8b5cf6',
             width: 3,
             shape: 'spline'
         },

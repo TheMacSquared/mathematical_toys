@@ -15,6 +15,10 @@ let btnStart, btnNext, btnRestart;
 let questionText, feedbackBox, feedbackHeader, feedbackText;
 let answersGrid;
 let questionCounter, scoreResult, scorePercent, scoreBar;
+let progressBar, progressFill;
+
+// Etykiety odpowiedzi (A, B, C, D...)
+const ANSWER_LABELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
 
 document.addEventListener('DOMContentLoaded', function() {
     // Pobranie elementów
@@ -36,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
     scoreResult = document.getElementById('score-result');
     scorePercent = document.getElementById('score-percent');
     scoreBar = document.getElementById('score-bar');
+    progressBar = document.getElementById('progress-bar');
+    progressFill = document.getElementById('progress-fill');
 
     // Event listeners
     btnStart.addEventListener('click', startQuiz);
@@ -50,7 +56,6 @@ async function startQuiz() {
     try {
         showLoading();
 
-        // Wywołaj /api/quiz/{id}/start
         const response = await fetch(`/api/quiz/${QUIZ_ID}/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
@@ -61,12 +66,14 @@ async function startQuiz() {
         const data = await response.json();
 
         if (data.success) {
-            // Reset wyników
             totalQuestions = data.total_questions;
             correctCount = 0;
             totalAnswered = 0;
 
-            // Przejdź do ekranu pytań
+            // Pokaż progress bar
+            progressBar.style.display = '';
+            updateProgress();
+
             showScreen('question');
             loadNextQuestion();
         } else {
@@ -87,11 +94,9 @@ async function loadNextQuestion() {
     try {
         showLoading();
 
-        // Reset stanu
         answered = false;
-        feedbackBox.classList.add('hidden');
+        feedbackBox.classList.add('st-feedback--hidden');
 
-        // Pobierz pytanie z /api/quiz/{id}/next
         const response = await fetch(`/api/quiz/${QUIZ_ID}/next`);
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -100,18 +105,15 @@ async function loadNextQuestion() {
 
         if (data.success) {
             if (data.finished) {
-                // Koniec pytań - pokaż wynik
                 showFinishScreen();
             } else {
-                // Wyświetl pytanie
                 currentQuestion = data.question;
                 questionText.textContent = currentQuestion.question;
 
-                // Aktualizuj licznik pytań
                 const questionNum = totalAnswered + 1;
                 questionCounter.textContent = `Pytanie ${questionNum} / ${totalQuestions}`;
+                updateProgress();
 
-                // Wygeneruj przyciski odpowiedzi
                 generateAnswerButtons();
             }
         } else {
@@ -126,46 +128,57 @@ async function loadNextQuestion() {
 }
 
 /**
- * Generuj przyciski odpowiedzi na podstawie konfiguracji quizu
+ * Aktualizuj progress bar
+ */
+function updateProgress() {
+    const progress = totalQuestions > 0
+        ? ((totalAnswered) / totalQuestions) * 100
+        : 0;
+    progressFill.style.width = `${progress}%`;
+}
+
+/**
+ * Generuj przyciski odpowiedzi
  */
 function generateAnswerButtons() {
-    // Wyczyść poprzednie przyciski
     answersGrid.innerHTML = '';
 
     let options = [];
 
-    // Określ opcje odpowiedzi na podstawie typu quizu
     if (QUIZ_CONFIG.answer_type === 'multiple_choice_4' ||
         QUIZ_CONFIG.answer_type === 'multiple_choice_3') {
-        // Stałe opcje (typy zmiennych, rozkłady)
         options = QUIZ_CONFIG.options;
     } else if (QUIZ_CONFIG.answer_type === 'multiple_choice_random') {
-        // Losowe 3 opcje wybrane przez backend (zawsze zawierają poprawną odpowiedź)
         options = currentQuestion.options;
     }
 
-    // Dostosuj grid do liczby opcji
-    if (options.length === 3) {
-        answersGrid.className = 'answers-grid grid-3';
-    } else if (options.length === 4) {
-        answersGrid.className = 'answers-grid grid-4';
+    // Grid layout based on option count
+    if (options.length <= 3) {
+        answersGrid.className = 'st-answer-grid st-answer-grid--cols-1';
+    } else {
+        answersGrid.className = 'st-answer-grid st-answer-grid--cols-2';
     }
 
-    // Utwórz przyciski
-    options.forEach(option => {
+    options.forEach((option, index) => {
         const btn = document.createElement('button');
-        btn.className = 'btn-answer';
+        btn.className = 'st-btn-answer';
+
+        const label = document.createElement('span');
+        label.className = 'st-btn-answer__label';
+        label.textContent = ANSWER_LABELS[index];
+
+        const text = document.createElement('span');
 
         if (typeof option === 'string') {
-            // Dla testów - opcje są stringami
             btn.dataset.answer = option;
-            btn.textContent = option;
+            text.textContent = option;
         } else {
-            // Dla innych quizów - opcje to obiekty {value, label}
             btn.dataset.answer = option.value;
-            btn.textContent = option.label;
+            text.textContent = option.label;
         }
 
+        btn.appendChild(label);
+        btn.appendChild(text);
         btn.addEventListener('click', handleAnswer);
         answersGrid.appendChild(btn);
     });
@@ -175,14 +188,15 @@ function generateAnswerButtons() {
  * Obsługa wyboru odpowiedzi
  */
 async function handleAnswer(event) {
-    if (answered) return;  // Już odpowiedziano
+    if (answered) return;
 
-    const selectedAnswer = event.target.dataset.answer;
+    const btn = event.target.closest('.st-btn-answer');
+    if (!btn) return;
+    const selectedAnswer = btn.dataset.answer;
 
     try {
         showLoading();
 
-        // Wyślij odpowiedź do /api/quiz/{id}/check
         const response = await fetch(`/api/quiz/${QUIZ_ID}/check`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -201,20 +215,24 @@ async function handleAnswer(event) {
             totalAnswered++;
             if (data.correct) correctCount++;
             disableAnswerButtons();
+            updateProgress();
 
-            // Pokaż feedback
+            // Feedback
+            const icon = data.correct
+                ? '<span class="st-feedback__icon st-feedback__icon--correct"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>'
+                : '<span class="st-feedback__icon st-feedback__icon--incorrect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>';
+
             if (data.correct) {
-                feedbackHeader.textContent = '✅ Poprawna odpowiedź!';
-                feedbackHeader.className = 'feedback-header correct';
+                feedbackHeader.innerHTML = icon + ' Poprawna odpowiedź!';
+                feedbackHeader.className = 'st-feedback__header st-feedback__header--correct';
             } else {
-                feedbackHeader.textContent = '❌ Niepoprawna odpowiedź';
-                feedbackHeader.className = 'feedback-header incorrect';
+                feedbackHeader.innerHTML = icon + ' Niepoprawna odpowiedź';
+                feedbackHeader.className = 'st-feedback__header st-feedback__header--incorrect';
             }
 
             feedbackText.textContent = data.explanation;
-            feedbackBox.classList.remove('hidden');
+            feedbackBox.classList.remove('st-feedback--hidden');
 
-            // Podświetl poprawną odpowiedź
             highlightCorrectAnswer(data.correct_answer, selectedAnswer);
         } else {
             alert('Błąd: ' + data.error);
@@ -228,79 +246,76 @@ async function handleAnswer(event) {
 }
 
 /**
- * Podświetl poprawną odpowiedź (zielone) i niepoprawną (czerwone)
+ * Podświetl odpowiedzi
  */
 function highlightCorrectAnswer(correctAnswer, userAnswer) {
-    const answerButtons = answersGrid.querySelectorAll('.btn-answer');
+    const answerButtons = answersGrid.querySelectorAll('.st-btn-answer');
 
     answerButtons.forEach(btn => {
         const answer = btn.dataset.answer;
 
         if (answer === correctAnswer) {
-            btn.classList.add('correct');
+            btn.classList.add('st-btn-answer--correct');
         } else if (answer === userAnswer && userAnswer !== correctAnswer) {
-            btn.classList.add('incorrect');
+            btn.classList.add('st-btn-answer--incorrect');
+        } else {
+            btn.classList.add('st-btn-answer--dimmed');
         }
     });
 }
 
 /**
- * Wyłącz przyciski odpowiedzi (po odpowiedzi)
+ * Wyłącz przyciski odpowiedzi
  */
 function disableAnswerButtons() {
-    const answerButtons = answersGrid.querySelectorAll('.btn-answer');
-
+    const answerButtons = answersGrid.querySelectorAll('.st-btn-answer');
     answerButtons.forEach(btn => {
         btn.disabled = true;
-        btn.style.cursor = 'not-allowed';
     });
 }
 
 /**
- * Pokaż określony ekran (start/question/finish)
+ * Pokaż określony ekran
  */
 function showScreen(screenName) {
-    startScreen.classList.remove('active');
-    questionScreen.classList.remove('active');
-    finishScreen.classList.remove('active');
+    startScreen.classList.remove('st-screen--active');
+    questionScreen.classList.remove('st-screen--active');
+    finishScreen.classList.remove('st-screen--active');
 
-    if (screenName === 'start') startScreen.classList.add('active');
-    else if (screenName === 'question') questionScreen.classList.add('active');
-    else if (screenName === 'finish') finishScreen.classList.add('active');
+    if (screenName === 'start') startScreen.classList.add('st-screen--active');
+    else if (screenName === 'question') questionScreen.classList.add('st-screen--active');
+    else if (screenName === 'finish') finishScreen.classList.add('st-screen--active');
 }
 
-/**
- * Pokaż/ukryj loading indicator
- */
 function showLoading() {
-    loadingEl.classList.add('active');
+    loadingEl.classList.add('st-loading--active');
 }
 
 function hideLoading() {
-    loadingEl.classList.remove('active');
+    loadingEl.classList.remove('st-loading--active');
 }
 
 /**
- * Pokaż ekran końcowy z wynikiem
+ * Pokaż ekran końcowy
  */
 function showFinishScreen() {
     const percent = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
 
-    // Tekst wyniku
     scoreResult.textContent = `${correctCount} / ${totalAnswered}`;
     scorePercent.textContent = `${percent}%`;
 
-    // Pasek postępu
     scoreBar.style.width = `${percent}%`;
 
-    // Kolor paska w zależności od wyniku
     if (percent >= 70) {
-        scoreBar.className = 'score-bar-fill excellent';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--excellent';
     } else if (percent >= 50) {
-        scoreBar.className = 'score-bar-fill good';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--good';
     } else {
-        scoreBar.className = 'score-bar-fill needs-work';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--needs-work';
     }
+
+    // Ukryj progress bar na ekranie końcowym
+    progressBar.style.display = 'none';
 
     showScreen('finish');
 }
