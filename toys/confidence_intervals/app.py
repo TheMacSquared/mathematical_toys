@@ -4,6 +4,8 @@ import random
 import os
 import sys
 
+from common.flask_app import register_common_static
+
 # === Ładowanie danych z JSON ===
 
 def get_bundle_dir():
@@ -20,6 +22,9 @@ bundle_dir = get_bundle_dir()
 app = Flask(__name__,
             template_folder=os.path.join(bundle_dir, 'templates'),
             static_folder=os.path.join(bundle_dir, 'static'))
+
+# Wspólne pliki statyczne (shared.css)
+register_common_static(app, bundle_dir if getattr(sys, 'frozen', False) else None)
 
 def load_json(filename):
     """Wczytuje plik JSON"""

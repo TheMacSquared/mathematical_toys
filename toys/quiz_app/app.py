@@ -4,6 +4,8 @@ import random
 import os
 import sys
 
+from common.flask_app import register_common_static
+
 # === Ładowanie konfiguracji i pytań ===
 def get_bundle_dir():
     """Zwraca ścieżkę do katalogu z plikami (dev vs .exe)"""
@@ -19,6 +21,9 @@ bundle_dir = get_bundle_dir()
 app = Flask(__name__,
             template_folder=os.path.join(bundle_dir, 'templates'),
             static_folder=os.path.join(bundle_dir, 'static'))
+
+# Wspólne pliki statyczne (shared.css)
+register_common_static(app, bundle_dir if getattr(sys, 'frozen', False) else None)
 
 def load_quiz_config():
     """Wczytuje konfigurację quizów z quiz_config.json"""

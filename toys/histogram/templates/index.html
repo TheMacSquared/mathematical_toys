@@ -5,95 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histogram - Rozkład Normalny</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
-
-    <!-- Plotly.js dla wykresów -->
     <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
-
-    <!-- Nasze style -->
+    <link rel="stylesheet" href="/common/shared.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>📊 Generator Histogramu</h1>
-            <p class="subtitle">Wizualizacja rozkładu normalnego N(μ, σ²)</p>
+<body class="st-app st-page">
+    <div class="st-card st-card--wide">
+        <header class="st-header">
+            <h1 class="st-header__title">Generator Histogramu</h1>
+            <p class="st-header__subtitle">Wizualizacja rozkładu normalnego N(μ, σ²)</p>
         </header>
 
-        <div class="app-layout">
-            <!-- Sidebar - parametry po lewej -->
-            <aside class="sidebar">
-                <h2>Parametry</h2>
+        <div class="st-layout-2col">
+            <aside class="st-sidebar">
+                <h2 class="st-sidebar__title">Parametry</h2>
 
-                <div class="param-group">
+                <div class="st-input-group">
                     <label for="param-n">Liczba próbek (n)</label>
-                    <input type="number" id="param-n" value="100" min="10" max="10000" step="10">
+                    <input type="number" id="param-n" class="st-input" value="100" min="10" max="10000" step="10">
                 </div>
 
-                <div class="param-group">
+                <div class="st-input-group">
                     <label for="param-mean">Średnia (μ)</label>
-                    <input type="number" id="param-mean" value="0" step="0.1">
+                    <input type="number" id="param-mean" class="st-input" value="0" step="0.1">
                 </div>
 
-                <div class="param-group">
+                <div class="st-input-group">
                     <label for="param-sd">Odchylenie (σ)</label>
-                    <input type="number" id="param-sd" value="1" min="0.1" step="0.1">
+                    <input type="number" id="param-sd" class="st-input" value="1" min="0.1" step="0.1">
                 </div>
 
-                <div class="param-group">
+                <div class="st-input-group">
                     <label for="param-binwidth">Szerokość binu</label>
-                    <input type="number" id="param-binwidth" placeholder="Auto" step="0.1" min="0.01">
-                    <small>Puste = automatyczne (Sturges)</small>
+                    <input type="number" id="param-binwidth" class="st-input" placeholder="Auto" step="0.1" min="0.01">
+                    <span class="st-input-hint">Puste = automatyczne (Sturges)</span>
                 </div>
 
-                <button id="btn-regenerate" class="btn-primary">
-                    🔄 Wygeneruj Nową Próbkę
+                <button id="btn-regenerate" class="st-btn st-btn--primary st-btn--block">
+                    Wygeneruj Nową Próbkę
                 </button>
             </aside>
 
-            <!-- Main content - wykres po prawej -->
-            <main class="main-content">
-                <div class="plot-container">
-                    <div id="plot"></div>
-                    <div id="loading" class="loading">Generowanie...</div>
+            <main>
+                <div class="st-plot">
+                    <div id="plot" style="width: 100%; height: 450px;"></div>
+                    <div id="loading" class="st-loading">Generowanie...</div>
                 </div>
 
-                <div class="stats-panel">
-                    <h3>Statystyki Próbki</h3>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-label">Średnia (x̄)</span>
-                            <span id="stat-mean" class="stat-value">-</span>
+                <div class="st-stats">
+                    <h3 class="st-stats__title">Statystyki Próbki</h3>
+                    <div class="st-stats-grid">
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Średnia (x̄)</span>
+                            <span id="stat-mean" class="st-stat-item__value">-</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Odchylenie (s)</span>
-                            <span id="stat-sd" class="stat-value">-</span>
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Odchylenie (s)</span>
+                            <span id="stat-sd" class="st-stat-item__value">-</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Mediana</span>
-                            <span id="stat-median" class="stat-value">-</span>
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Mediana</span>
+                            <span id="stat-median" class="st-stat-item__value">-</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Min</span>
-                            <span id="stat-min" class="stat-value">-</span>
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Min</span>
+                            <span id="stat-min" class="st-stat-item__value">-</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Q1</span>
-                            <span id="stat-q25" class="stat-value">-</span>
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Q1</span>
+                            <span id="stat-q25" class="st-stat-item__value">-</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Q3</span>
-                            <span id="stat-q75" class="stat-value">-</span>
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Q3</span>
+                            <span id="stat-q75" class="st-stat-item__value">-</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Max</span>
-                            <span id="stat-max" class="stat-value">-</span>
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Max</span>
+                            <span id="stat-max" class="st-stat-item__value">-</span>
                         </div>
                     </div>
                 </div>
             </main>
         </div>
 
-        <div class="description">
+        <div class="st-description">
             <h3>O Rozkładzie Normalnym</h3>
             <p>
                 Rozkład normalny (Gaussa) to jeden z najważniejszych rozkładów prawdopodobieństwa w statystyce.
@@ -113,7 +108,6 @@
         </div>
     </div>
 
-    <!-- Nasz JavaScript -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

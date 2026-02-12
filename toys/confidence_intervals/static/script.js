@@ -2,7 +2,6 @@
  * script.js - Logika quizu przedziałów ufności
  */
 
-// Konfiguracja trybu (z quiz.html)
 const MODE_CONFIG = window.MODE_CONFIG;
 const MODE_ID = document.body.dataset.modeId;
 
@@ -21,9 +20,9 @@ let questionText, feedbackBox, feedbackHeader, feedbackText;
 let answerButtons;
 let questionCounter;
 let scoreResult, scorePercent, scoreBar;
+let progressBar, progressFill;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Pobranie elementów
     startScreen = document.getElementById('start-screen');
     questionScreen = document.getElementById('question-screen');
     finishScreen = document.getElementById('finish-screen');
@@ -38,13 +37,14 @@ document.addEventListener('DOMContentLoaded', function() {
     feedbackHeader = document.getElementById('feedback-header');
     feedbackText = document.getElementById('feedback-text');
 
-    answerButtons = document.querySelectorAll('.btn-answer');
+    answerButtons = document.querySelectorAll('.st-btn-answer');
     questionCounter = document.getElementById('question-counter');
     scoreResult = document.getElementById('score-result');
     scorePercent = document.getElementById('score-percent');
     scoreBar = document.getElementById('score-bar');
+    progressBar = document.getElementById('progress-bar');
+    progressFill = document.getElementById('progress-fill');
 
-    // Event listeners
     btnStart.addEventListener('click', startQuiz);
     btnRestart.addEventListener('click', startQuiz);
     btnNext.addEventListener('click', loadNextQuestion);
@@ -55,13 +55,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Rozpocznij quiz - inicjalizacja sesji
+ * Aktualizuj progress bar
  */
+function updateProgress() {
+    const progress = totalQuestions > 0
+        ? ((totalAnswered) / totalQuestions) * 100
+        : 0;
+    progressFill.style.width = `${progress}%`;
+}
+
 async function startQuiz() {
     try {
         showLoading();
 
-        // Wywołaj /api/quiz/{mode_id}/start
         const response = await fetch(`/api/quiz/${MODE_ID}/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
@@ -72,13 +78,14 @@ async function startQuiz() {
         const data = await response.json();
 
         if (data.success) {
-            // Reset wyników
             totalQuestions = data.total_questions;
             questionCount = 0;
             correctCount = 0;
             totalAnswered = 0;
 
-            // Przejdź do ekranu pytań
+            progressBar.style.display = '';
+            updateProgress();
+
             showScreen('question');
             loadNextQuestion();
         } else {
@@ -92,19 +99,14 @@ async function startQuiz() {
     }
 }
 
-/**
- * Załaduj kolejne pytanie
- */
 async function loadNextQuestion() {
     try {
         showLoading();
 
-        // Reset stanu
         answered = false;
-        feedbackBox.classList.add('hidden');
+        feedbackBox.classList.add('st-feedback--hidden');
         enableAnswerButtons();
 
-        // Pobierz pytanie z /api/quiz/{mode_id}/next
         const response = await fetch(`/api/quiz/${MODE_ID}/next`);
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -113,19 +115,15 @@ async function loadNextQuestion() {
 
         if (data.success) {
             if (data.finished) {
-                // Koniec pytań - pokaż wynik
                 showFinishScreen();
             } else {
-                // Wyświetl pytanie
                 currentQuestion = data.question;
                 questionCount = totalQuestions - data.remaining + 1;
 
                 questionText.textContent = currentQuestion.question;
                 questionCounter.textContent = `Pytanie ${questionCount} / ${totalQuestions}`;
+                updateProgress();
 
-                // Rysuj wizualizację (początkowy stan - bez feedbacku)
-                // Wizualizacja pojawia się od razu, aby użytkownik mógł zobaczyć przedziały
-                // Opóźnienie daje czas na wyrenderowanie kontenera
                 setTimeout(() => {
                     CIVisualizer.draw(MODE_ID, currentQuestion, false, false);
                 }, 100);
@@ -141,18 +139,14 @@ async function loadNextQuestion() {
     }
 }
 
-/**
- * Obsługa wyboru odpowiedzi
- */
 async function handleAnswer(event) {
-    if (answered) return;  // Już odpowiedziano
+    if (answered) return;
 
     const selectedAnswer = event.target.dataset.answer;
 
     try {
         showLoading();
 
-        // Wyślij odpowiedź do /api/quiz/{mode_id}/check
         const response = await fetch(`/api/quiz/${MODE_ID}/check`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -171,24 +165,26 @@ async function handleAnswer(event) {
             totalAnswered++;
             if (data.correct) correctCount++;
             disableAnswerButtons();
+            updateProgress();
 
-            // Pokaż feedback
+            // Feedback with SVG icons
+            const icon = data.correct
+                ? '<span class="st-feedback__icon st-feedback__icon--correct"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>'
+                : '<span class="st-feedback__icon st-feedback__icon--incorrect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>';
+
             if (data.correct) {
-                feedbackHeader.textContent = '✅ Poprawna odpowiedź!';
-                feedbackHeader.className = 'feedback-header correct';
+                feedbackHeader.innerHTML = icon + ' Poprawna odpowiedź!';
+                feedbackHeader.className = 'st-feedback__header st-feedback__header--correct';
             } else {
-                feedbackHeader.textContent = '❌ Niepoprawna odpowiedź';
-                feedbackHeader.className = 'feedback-header incorrect';
+                feedbackHeader.innerHTML = icon + ' Niepoprawna odpowiedź';
+                feedbackHeader.className = 'st-feedback__header st-feedback__header--incorrect';
             }
 
             feedbackText.textContent = data.explanation;
-            feedbackBox.classList.remove('hidden');
+            feedbackBox.classList.remove('st-feedback--hidden');
 
-            // Podświetl wybraną odpowiedź
             highlightAnswerButton(selectedAnswer, data.correct_answer);
 
-            // Zaktualizuj wizualizację (podświetlenie)
-            // Opóźnienie zapewnia że feedback jest już wyświetlony
             setTimeout(() => {
                 CIVisualizer.draw(MODE_ID, data.question_data, true, data.correct);
             }, 50);
@@ -203,89 +199,67 @@ async function handleAnswer(event) {
     }
 }
 
-/**
- * Podświetl przycisk odpowiedzi
- */
 function highlightAnswerButton(userAnswer, correctAnswer) {
     answerButtons.forEach(btn => {
         const answer = btn.dataset.answer;
 
         if (answer === correctAnswer) {
-            btn.classList.add('correct');
+            btn.classList.add('st-btn-answer--correct');
         } else if (answer === userAnswer && userAnswer !== correctAnswer) {
-            btn.classList.add('incorrect');
+            btn.classList.add('st-btn-answer--incorrect');
+        } else {
+            btn.classList.add('st-btn-answer--dimmed');
         }
     });
 }
 
-/**
- * Wyłącz przyciski odpowiedzi (po odpowiedzi)
- */
 function disableAnswerButtons() {
     answerButtons.forEach(btn => {
         btn.disabled = true;
-        btn.style.cursor = 'not-allowed';
-        btn.style.opacity = '0.6';
     });
 }
 
-/**
- * Włącz przyciski odpowiedzi (nowe pytanie)
- */
 function enableAnswerButtons() {
     answerButtons.forEach(btn => {
         btn.disabled = false;
-        btn.style.cursor = 'pointer';
-        btn.style.opacity = '1';
-        btn.classList.remove('correct', 'incorrect');
+        btn.classList.remove('st-btn-answer--correct', 'st-btn-answer--incorrect', 'st-btn-answer--dimmed');
     });
 }
 
-/**
- * Pokaż określony ekran (start/question/finish)
- */
 function showScreen(screenName) {
-    startScreen.classList.remove('active');
-    questionScreen.classList.remove('active');
-    finishScreen.classList.remove('active');
+    startScreen.classList.remove('st-screen--active');
+    questionScreen.classList.remove('st-screen--active');
+    finishScreen.classList.remove('st-screen--active');
 
-    if (screenName === 'start') startScreen.classList.add('active');
-    else if (screenName === 'question') questionScreen.classList.add('active');
-    else if (screenName === 'finish') finishScreen.classList.add('active');
+    if (screenName === 'start') startScreen.classList.add('st-screen--active');
+    else if (screenName === 'question') questionScreen.classList.add('st-screen--active');
+    else if (screenName === 'finish') finishScreen.classList.add('st-screen--active');
 }
 
-/**
- * Pokaż/ukryj loading indicator
- */
 function showLoading() {
-    loadingEl.classList.add('active');
+    loadingEl.classList.add('st-loading--active');
 }
 
 function hideLoading() {
-    loadingEl.classList.remove('active');
+    loadingEl.classList.remove('st-loading--active');
 }
 
-/**
- * Pokaż ekran końcowy z wynikiem
- */
 function showFinishScreen() {
     const percent = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
 
-    // Tekst wyniku
     scoreResult.textContent = `${correctCount} / ${totalAnswered}`;
     scorePercent.textContent = `${percent}%`;
 
-    // Pasek postępu
     scoreBar.style.width = `${percent}%`;
 
-    // Kolor paska w zależności od wyniku
     if (percent >= 70) {
-        scoreBar.className = 'score-bar-fill excellent';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--excellent';
     } else if (percent >= 50) {
-        scoreBar.className = 'score-bar-fill good';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--good';
     } else {
-        scoreBar.className = 'score-bar-fill needs-work';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--needs-work';
     }
 
+    progressBar.style.display = 'none';
     showScreen('finish');
 }

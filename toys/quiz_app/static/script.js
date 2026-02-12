@@ -18,6 +18,10 @@ let btnStart, btnStartAfterErrors, btnNext, btnRestart;
 let questionText, questionBox, feedbackBox, feedbackHeader, feedbackText;
 let answersGrid;
 let questionCounter, scoreResult, scorePercent, scoreBar;
+let progressBar, progressFill;
+
+// Etykiety odpowiedzi (A, B, C, D...)
+const ANSWER_LABELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
 
 // Elementy dla quizu interpretacyjnego
 let interpretationContext, contextText, resultsBox;
@@ -38,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     btnRestart = document.getElementById('btn-restart');
 
     questionText = document.getElementById('question-text');
-    questionBox = document.querySelector('.question-box');
+    questionBox = document.querySelector('.st-question');
     feedbackBox = document.getElementById('feedback-box');
     feedbackHeader = document.getElementById('feedback-header');
     feedbackText = document.getElementById('feedback-text');
@@ -47,6 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
     scoreResult = document.getElementById('score-result');
     scorePercent = document.getElementById('score-percent');
     scoreBar = document.getElementById('score-bar');
+    progressBar = document.getElementById('progress-bar');
+    progressFill = document.getElementById('progress-fill');
 
     // Elementy dla quizu interpretacyjnego
     interpretationContext = document.getElementById('interpretation-context');
@@ -77,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function handleStartClick() {
     if (IS_INTERPRETATION) {
-        // Pokaż ekran z błędami
         showScreen('errors');
     } else {
         startQuiz();
@@ -126,21 +131,21 @@ function displayErrorsInfo(errorsData) {
 
     errorsData.errors.forEach(error => {
         const card = document.createElement('div');
-        card.className = 'error-card';
+        card.className = 'st-error-card';
 
         card.innerHTML = `
-            <div class="error-card-header">
-                <span class="error-icon">${error.icon}</span>
-                <span class="error-name">${error.name}</span>
+            <div class="st-error-card__header">
+                <span class="st-error-card__icon">${error.icon}</span>
+                <span class="st-error-card__name">${error.name}</span>
             </div>
-            <p class="error-description">${error.description}</p>
-            <div class="error-examples">
-                <div class="example-bad">
-                    <div class="example-label">Niepoprawnie:</div>
+            <p class="st-error-card__description">${error.description}</p>
+            <div class="st-error-examples">
+                <div class="st-example-bad">
+                    <div class="st-example-label">Niepoprawnie:</div>
                     <div>"${error.example_bad}"</div>
                 </div>
-                <div class="example-good">
-                    <div class="example-label">Poprawnie:</div>
+                <div class="st-example-good">
+                    <div class="st-example-label">Poprawnie:</div>
                     <div>"${error.example_good}"</div>
                 </div>
             </div>
@@ -157,7 +162,6 @@ async function startQuiz() {
     try {
         showLoading();
 
-        // Wywołaj /api/quiz/{id}/start
         const response = await fetch(`/api/quiz/${QUIZ_ID}/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
@@ -168,12 +172,14 @@ async function startQuiz() {
         const data = await response.json();
 
         if (data.success) {
-            // Reset wyników
             totalQuestions = data.total_questions;
             correctCount = 0;
             totalAnswered = 0;
 
-            // Przejdź do ekranu pytań
+            // Pokaż progress bar
+            progressBar.style.display = '';
+            updateProgress();
+
             showScreen('question');
             loadNextQuestion();
         } else {
@@ -194,14 +200,12 @@ async function loadNextQuestion() {
     try {
         showLoading();
 
-        // Reset stanu
         answered = false;
-        feedbackBox.classList.add('hidden');
+        feedbackBox.classList.add('st-feedback--hidden');
         if (correctAnswerBox) {
-            correctAnswerBox.classList.add('hidden');
+            correctAnswerBox.classList.add('st-correct-answer--hidden');
         }
 
-        // Pobierz pytanie z /api/quiz/{id}/next
         const response = await fetch(`/api/quiz/${QUIZ_ID}/next`);
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -210,10 +214,8 @@ async function loadNextQuestion() {
 
         if (data.success) {
             if (data.finished) {
-                // Koniec pytań - pokaż wynik
                 showFinishScreen();
             } else {
-                // Wyświetl pytanie
                 currentQuestion = data.question;
 
                 if (IS_INTERPRETATION) {
@@ -222,14 +224,13 @@ async function loadNextQuestion() {
                     questionText.textContent = currentQuestion.question;
                     // Upewnij się że question-box jest widoczny
                     if (questionBox) questionBox.style.display = '';
-                    if (interpretationContext) interpretationContext.classList.add('hidden');
+                    if (interpretationContext) interpretationContext.classList.add('st-interpretation-context--hidden');
                 }
 
-                // Aktualizuj licznik pytań
                 const questionNum = totalAnswered + 1;
                 questionCounter.textContent = `Pytanie ${questionNum} / ${totalQuestions}`;
+                updateProgress();
 
-                // Wygeneruj przyciski odpowiedzi
                 generateAnswerButtons();
             }
         } else {
@@ -244,12 +245,22 @@ async function loadNextQuestion() {
 }
 
 /**
+ * Aktualizuj progress bar
+ */
+function updateProgress() {
+    const progress = totalQuestions > 0
+        ? ((totalAnswered) / totalQuestions) * 100
+        : 0;
+    progressFill.style.width = `${progress}%`;
+}
+
+/**
  * Wyświetl pytanie interpretacyjne (z kontekstem i wynikami)
  */
 function displayInterpretationQuestion(question) {
     // Ukryj standardowy question-box, pokaż interpretation-context
     if (questionBox) questionBox.style.display = 'none';
-    if (interpretationContext) interpretationContext.classList.remove('hidden');
+    if (interpretationContext) interpretationContext.classList.remove('st-interpretation-context--hidden');
 
     // Wypełnij kontekst
     if (contextText) contextText.textContent = question.context;
@@ -266,10 +277,9 @@ function displayInterpretationQuestion(question) {
 }
 
 /**
- * Generuj przyciski odpowiedzi na podstawie konfiguracji quizu
+ * Generuj przyciski odpowiedzi
  */
 function generateAnswerButtons() {
-    // Wyczyść poprzednie przyciski
     answersGrid.innerHTML = '';
 
     let options = [];
@@ -277,14 +287,23 @@ function generateAnswerButtons() {
     if (IS_INTERPRETATION) {
         // Quiz interpretacyjny - odpowiedzi z pytania
         options = currentQuestion.answers;
-        answersGrid.className = 'answers-grid grid-3 interpretation-answers';
+        answersGrid.className = 'st-answer-grid st-answer-grid--cols-1';
 
-        const letters = ['A', 'B', 'C'];
         options.forEach((option, index) => {
             const btn = document.createElement('button');
-            btn.className = 'btn-answer btn-answer-long';
+            btn.className = 'st-btn-answer';
             btn.dataset.answerText = option.text;
-            btn.innerHTML = `<span class="answer-letter">${letters[index]}.</span> ${option.text}`;
+
+            const label = document.createElement('span');
+            label.className = 'st-btn-answer__label';
+            label.textContent = ANSWER_LABELS[index];
+
+            const text = document.createElement('span');
+            text.textContent = option.text;
+            text.style.textAlign = 'left';
+
+            btn.appendChild(label);
+            btn.appendChild(text);
             btn.addEventListener('click', handleAnswer);
             answersGrid.appendChild(btn);
         });
@@ -297,28 +316,36 @@ function generateAnswerButtons() {
             options = currentQuestion.options;
         }
 
-        // Dostosuj grid do liczby opcji
-        if (options.length === 3) {
-            answersGrid.className = 'answers-grid grid-3';
-        } else if (options.length === 4) {
-            // Długie opcje (np. hipotezy) → layout jednokolumnowy
+        // Grid layout based on option count and length
+        if (options.length <= 3) {
+            answersGrid.className = 'st-answer-grid st-answer-grid--cols-1';
+        } else {
             const maxLen = Math.max(...options.map(o => (typeof o === 'string' ? o : o.label).length));
-            answersGrid.className = maxLen > 50 ? 'answers-grid grid-4-list' : 'answers-grid grid-4';
+            answersGrid.className = maxLen > 50
+                ? 'st-answer-grid st-answer-grid--cols-1'
+                : 'st-answer-grid st-answer-grid--cols-2';
         }
 
-        // Utwórz przyciski
-        options.forEach(option => {
+        options.forEach((option, index) => {
             const btn = document.createElement('button');
-            btn.className = 'btn-answer';
+            btn.className = 'st-btn-answer';
+
+            const label = document.createElement('span');
+            label.className = 'st-btn-answer__label';
+            label.textContent = ANSWER_LABELS[index];
+
+            const text = document.createElement('span');
 
             if (typeof option === 'string') {
                 btn.dataset.answer = option;
-                btn.textContent = option;
+                text.textContent = option;
             } else {
                 btn.dataset.answer = option.value;
-                btn.textContent = option.label;
+                text.textContent = option.label;
             }
 
+            btn.appendChild(label);
+            btn.appendChild(text);
             btn.addEventListener('click', handleAnswer);
             answersGrid.appendChild(btn);
         });
@@ -329,9 +356,10 @@ function generateAnswerButtons() {
  * Obsługa wyboru odpowiedzi
  */
 async function handleAnswer(event) {
-    if (answered) return;  // Już odpowiedziano
+    if (answered) return;
 
-    const btn = event.target.closest('.btn-answer');
+    const btn = event.target.closest('.st-btn-answer');
+    if (!btn) return;
 
     try {
         showLoading();
@@ -349,7 +377,6 @@ async function handleAnswer(event) {
             });
         }
 
-        // Wyślij odpowiedź do /api/quiz/{id}/check
         const response = await fetch(`/api/quiz/${QUIZ_ID}/check`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -365,26 +392,29 @@ async function handleAnswer(event) {
             totalAnswered++;
             if (data.correct) correctCount++;
             disableAnswerButtons();
+            updateProgress();
 
-            // Pokaż feedback
+            // Feedback with SVG icons
+            const icon = data.correct
+                ? '<span class="st-feedback__icon st-feedback__icon--correct"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></span>'
+                : '<span class="st-feedback__icon st-feedback__icon--incorrect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>';
+
             if (data.correct) {
-                feedbackHeader.textContent = '✅ Poprawna odpowiedź!';
-                feedbackHeader.className = 'feedback-header correct';
-                btn.classList.add('correct');
+                feedbackHeader.innerHTML = icon + ' Poprawna odpowiedź!';
+                feedbackHeader.className = 'st-feedback__header st-feedback__header--correct';
             } else {
-                feedbackHeader.textContent = '❌ Niepoprawna odpowiedź';
-                feedbackHeader.className = 'feedback-header incorrect';
-                btn.classList.add('incorrect');
+                feedbackHeader.innerHTML = icon + ' Niepoprawna odpowiedź';
+                feedbackHeader.className = 'st-feedback__header st-feedback__header--incorrect';
 
                 // Pokaż poprawną odpowiedź (dla quizu interpretacyjnego)
                 if (IS_INTERPRETATION && correctAnswerBox && correctAnswerText) {
                     correctAnswerText.textContent = data.correct_answer;
-                    correctAnswerBox.classList.remove('hidden');
+                    correctAnswerBox.classList.remove('st-correct-answer--hidden');
                 }
             }
 
             feedbackText.textContent = data.explanation;
-            feedbackBox.classList.remove('hidden');
+            feedbackBox.classList.remove('st-feedback--hidden');
 
             // Podświetl poprawną odpowiedź
             if (IS_INTERPRETATION) {
@@ -404,18 +434,20 @@ async function handleAnswer(event) {
 }
 
 /**
- * Podświetl poprawną odpowiedź (zielone) i niepoprawną (czerwone)
+ * Podświetl odpowiedzi
  */
 function highlightCorrectAnswer(correctAnswer, userAnswer) {
-    const answerButtons = answersGrid.querySelectorAll('.btn-answer');
+    const answerButtons = answersGrid.querySelectorAll('.st-btn-answer');
 
     answerButtons.forEach(btn => {
         const answer = btn.dataset.answer;
 
         if (answer === correctAnswer) {
-            btn.classList.add('correct');
+            btn.classList.add('st-btn-answer--correct');
         } else if (answer === userAnswer && userAnswer !== correctAnswer) {
-            btn.classList.add('incorrect');
+            btn.classList.add('st-btn-answer--incorrect');
+        } else {
+            btn.classList.add('st-btn-answer--dimmed');
         }
     });
 }
@@ -424,24 +456,22 @@ function highlightCorrectAnswer(correctAnswer, userAnswer) {
  * Podświetl poprawną odpowiedź po tekście (dla quizu interpretacyjnego)
  */
 function highlightCorrectAnswerByText(correctText) {
-    const answerButtons = answersGrid.querySelectorAll('.btn-answer');
+    const answerButtons = answersGrid.querySelectorAll('.st-btn-answer');
 
     answerButtons.forEach(btn => {
         if (btn.dataset.answerText === correctText) {
-            btn.classList.add('correct');
+            btn.classList.add('st-btn-answer--correct');
         }
     });
 }
 
 /**
- * Wyłącz przyciski odpowiedzi (po odpowiedzi)
+ * Wyłącz przyciski odpowiedzi
  */
 function disableAnswerButtons() {
-    const answerButtons = answersGrid.querySelectorAll('.btn-answer');
-
+    const answerButtons = answersGrid.querySelectorAll('.st-btn-answer');
     answerButtons.forEach(btn => {
         btn.disabled = true;
-        btn.style.cursor = 'not-allowed';
     });
 }
 
@@ -449,49 +479,46 @@ function disableAnswerButtons() {
  * Pokaż określony ekran (start/errors/question/finish)
  */
 function showScreen(screenName) {
-    startScreen.classList.remove('active');
-    if (errorsScreen) errorsScreen.classList.remove('active');
-    questionScreen.classList.remove('active');
-    finishScreen.classList.remove('active');
+    startScreen.classList.remove('st-screen--active');
+    if (errorsScreen) errorsScreen.classList.remove('st-screen--active');
+    questionScreen.classList.remove('st-screen--active');
+    finishScreen.classList.remove('st-screen--active');
 
-    if (screenName === 'start') startScreen.classList.add('active');
-    else if (screenName === 'errors' && errorsScreen) errorsScreen.classList.add('active');
-    else if (screenName === 'question') questionScreen.classList.add('active');
-    else if (screenName === 'finish') finishScreen.classList.add('active');
+    if (screenName === 'start') startScreen.classList.add('st-screen--active');
+    else if (screenName === 'errors' && errorsScreen) errorsScreen.classList.add('st-screen--active');
+    else if (screenName === 'question') questionScreen.classList.add('st-screen--active');
+    else if (screenName === 'finish') finishScreen.classList.add('st-screen--active');
 }
 
-/**
- * Pokaż/ukryj loading indicator
- */
 function showLoading() {
-    loadingEl.classList.add('active');
+    loadingEl.classList.add('st-loading--active');
 }
 
 function hideLoading() {
-    loadingEl.classList.remove('active');
+    loadingEl.classList.remove('st-loading--active');
 }
 
 /**
- * Pokaż ekran końcowy z wynikiem
+ * Pokaż ekran końcowy
  */
 function showFinishScreen() {
     const percent = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
 
-    // Tekst wyniku
     scoreResult.textContent = `${correctCount} / ${totalAnswered}`;
     scorePercent.textContent = `${percent}%`;
 
-    // Pasek postępu
     scoreBar.style.width = `${percent}%`;
 
-    // Kolor paska w zależności od wyniku
     if (percent >= 70) {
-        scoreBar.className = 'score-bar-fill excellent';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--excellent';
     } else if (percent >= 50) {
-        scoreBar.className = 'score-bar-fill good';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--good';
     } else {
-        scoreBar.className = 'score-bar-fill needs-work';
+        scoreBar.className = 'st-score__bar-fill st-score__bar-fill--needs-work';
     }
+
+    // Ukryj progress bar na ekranie końcowym
+    progressBar.style.display = 'none';
 
     showScreen('finish');
 }
