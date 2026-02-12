@@ -1,7 +1,12 @@
 from flask import Flask, render_template, jsonify, request
 import numpy as np
 
+from common.flask_app import register_common_static
+
 app = Flask(__name__)
+
+# Wspólne pliki statyczne (shared.css)
+register_common_static(app)
 
 @app.route('/')
 def index():
