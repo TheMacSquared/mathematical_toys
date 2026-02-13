@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szeregi Taylora</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <link rel="stylesheet" href="/common/shared.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="st-app st-page">
+    <div class="st-card st-card--wide">
+        <header class="st-header">
+            <h1 class="st-header__title">Szeregi Taylora</h1>
+            <p class="st-header__subtitle">Interaktywna aproksymacja funkcji wielomianami Taylora</p>
+        </header>
+
+        <div class="st-layout-2col">
+            <aside class="st-sidebar">
+                <h2 class="st-sidebar__title">Parametry</h2>
+
+                <div class="st-input-group">
+                    <label for="func-select">Funkcja f(x)</label>
+                    <select id="func-select" class="st-input">
+                        <option value="sin">sin(x)</option>
+                        <option value="cos">cos(x)</option>
+                        <option value="exp">e^x</option>
+                        <option value="ln1px">ln(1+x)</option>
+                        <option value="atan">arctan(x)</option>
+                        <option value="one_over_1mx">1/(1-x)</option>
+                        <option value="sinh">sinh(x)</option>
+                        <option value="sqrt1px">&radic;(1+x)</option>
+                    </select>
+                </div>
+
+                <div class="st-input-group">
+                    <label for="degree-slider">Stopien wielomianu: <strong id="degree-value">5</strong></label>
+                    <input type="range" id="degree-slider" class="ts-slider" min="0" max="20" value="5">
+                </div>
+
+                <div class="st-input-group">
+                    <label for="center-input">Punkt rozwiniecia (a)</label>
+                    <input type="number" id="center-input" class="st-input" value="0" step="0.5">
+                    <span class="st-input-hint">Punkt wokol ktorego rozwijamy</span>
+                </div>
+
+                <div class="st-input-group">
+                    <label for="eval-point">Punkt ewaluacji bledu</label>
+                    <input type="number" id="eval-point" class="st-input" placeholder="np. 1.0" step="0.1">
+                    <span class="st-input-hint">Oblicz blad |f(x) - T(x)| w punkcie</span>
+                </div>
+
+                <button id="btn-update" class="st-btn st-btn--primary st-btn--block">
+                    Oblicz
+                </button>
+
+                <!-- Informacje o zbieznosci -->
+                <div class="ts-convergence-info" id="convergence-info" style="display: none;">
+                    <span class="ts-convergence-info__label">Promien zbieznosci:</span>
+                    <span id="convergence-radius" class="ts-convergence-info__value"></span>
+                </div>
+
+                <!-- Blad -->
+                <div class="ts-error-display" id="error-display" style="display: none;">
+                    <span class="ts-error-display__label">Blad aproksymacji:</span>
+                    <span id="error-value" class="ts-error-display__value"></span>
+                </div>
+            </aside>
+
+            <main>
+                <div class="st-plot">
+                    <div id="plot" style="width: 100%; height: 500px;"></div>
+                    <div id="loading" class="st-loading">Obliczanie...</div>
+                </div>
+
+                <!-- Wielomian -->
+                <div class="ts-polynomial" id="polynomial-section">
+                    <h3 class="ts-polynomial__title">Wielomian Taylora</h3>
+                    <div class="ts-polynomial__formula" id="polynomial-text">T(x) = ...</div>
+                </div>
+
+                <!-- Tabela wspolczynnikow -->
+                <div class="ts-coefficients" id="coefficients-section">
+                    <h3>Wspolczynniki</h3>
+                    <div class="ts-coefficients__table-wrap">
+                        <table class="ts-coefficients__table" id="coefficients-table">
+                            <thead>
+                                <tr>
+                                    <th>n</th>
+                                    <th>a<sub>n</sub> = f<sup>(n)</sup>(a) / n!</th>
+                                </tr>
+                            </thead>
+                            <tbody id="coefficients-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Opis -->
+        <div class="st-description">
+            <h3>O szeregach Taylora</h3>
+            <p>
+                Szereg Taylora funkcji f(x) wokol punktu a to:
+            </p>
+            <div class="ts-formula-display">
+                f(x) = &sum;<sub>n=0</sub><sup>&infin;</sup>
+                <span class="ts-formula-frac">
+                    <span class="ts-formula-num">f<sup>(n)</sup>(a)</span>
+                    <span class="ts-formula-den">n!</span>
+                </span>
+                (x - a)<sup>n</sup>
+            </div>
+            <p>
+                Wielomian Taylora stopnia N to obciecie tego szeregu do pierwszych N+1 wyrazow.
+                Im wyzszy stopien, tym lepsza aproksymacja &mdash; ale tylko w obrebie
+                <strong>promienia zbieznosci</strong>.
+            </p>
+            <h4>Wazne obserwacje</h4>
+            <ul>
+                <li><strong>sin(x), cos(x), e<sup>x</sup></strong> &mdash; promien zbieznosci
+                    nieskonczonosc, szereg zbiega dla kazdego x.</li>
+                <li><strong>ln(1+x)</strong> &mdash; promien zbieznosci R = 1. Poza nim
+                    wielomian rozbiega.</li>
+                <li><strong>1/(1-x)</strong> &mdash; szereg geometryczny, R = 1.</li>
+            </ul>
+
+            <details class="ts-experiments">
+                <summary><strong>Eksperymenty do wyprobowania</strong></summary>
+                <ol>
+                    <li><strong>Zwiekszaj stopien:</strong> Przesun suwak od 0 do 20 i obserwuj
+                        jak wielomian coraz lepiej przybliza funkcje.</li>
+                    <li><strong>Promien zbieznosci:</strong> Wybierz ln(1+x) i obserwuj
+                        ze wielomian dobrze przybliza tylko w (-1, 1].</li>
+                    <li><strong>Punkt rozwiniecia:</strong> Zmien a na wartosci inne niz 0
+                        i obserwuj ze aproksymacja jest najlepsza w poblizu a.</li>
+                    <li><strong>Symetria:</strong> Porownaj sin(x) (nieparzyste potegi)
+                        z cos(x) (parzyste potegi) w tabeli wspolczynnikow.</li>
+                </ol>
+            </details>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

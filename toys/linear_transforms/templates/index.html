@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformacje Liniowe 2D</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <link rel="stylesheet" href="/common/shared.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="st-app st-page">
+    <div class="st-card st-card--wide">
+        <header class="st-header">
+            <h1 class="st-header__title">Transformacje Liniowe 2D</h1>
+            <p class="st-header__subtitle">Wizualizacja dzialania macierzy 2&times;2 na plaszczyznie</p>
+        </header>
+
+        <!-- Presety -->
+        <div class="lt-presets">
+            <span class="lt-presets__label">Presety:</span>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="identity">Tozsamosc</button>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="rotation_90">Obrot 90&deg;</button>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="rotation_45">Obrot 45&deg;</button>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="reflection_x">Odbicie X</button>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="reflection_y">Odbicie Y</button>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="scale_2">Skalowanie &times;2</button>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="shear_x">Scinanie</button>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="projection_x">Rzut na X</button>
+            <button class="st-btn st-btn--secondary lt-preset-btn" data-type="singular">Osobliwa</button>
+        </div>
+
+        <!-- Glowny uklad -->
+        <div class="lt-main-layout">
+            <!-- Wykres -->
+            <div class="lt-plot-area">
+                <div class="st-plot lt-plot">
+                    <div id="plot" style="width: 100%; height: 100%;"></div>
+                    <div id="loading" class="st-loading">Obliczanie...</div>
+                </div>
+            </div>
+
+            <!-- Panel kontrolek -->
+            <aside class="lt-controls-panel">
+                <h2 class="lt-controls-panel__title">Macierz A</h2>
+
+                <!-- Macierz 2x2 -->
+                <div class="lt-matrix">
+                    <div class="lt-matrix__bracket lt-matrix__bracket--left"></div>
+                    <div class="lt-matrix__grid">
+                        <input type="number" id="m00" class="st-input lt-matrix__input" value="1" step="0.1">
+                        <input type="number" id="m01" class="st-input lt-matrix__input" value="0" step="0.1">
+                        <input type="number" id="m10" class="st-input lt-matrix__input" value="0" step="0.1">
+                        <input type="number" id="m11" class="st-input lt-matrix__input" value="1" step="0.1">
+                    </div>
+                    <div class="lt-matrix__bracket lt-matrix__bracket--right"></div>
+                </div>
+
+                <!-- Wyniki -->
+                <div class="lt-results">
+                    <h3 class="lt-results__title">Wlasciwosci</h3>
+
+                    <div class="lt-det-display" id="det-display">
+                        <span class="lt-det-display__label">det(A) =</span>
+                        <span class="lt-det-display__value" id="stat-det">1</span>
+                    </div>
+
+                    <div class="st-stats-grid lt-stats-grid">
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Rzad</span>
+                            <span id="stat-rank" class="st-stat-item__value">2</span>
+                        </div>
+                        <div class="st-stat-item">
+                            <span class="st-stat-item__label">Slad</span>
+                            <span id="stat-trace" class="st-stat-item__value">2</span>
+                        </div>
+                    </div>
+
+                    <!-- Wartosci wlasne -->
+                    <div class="lt-eigen">
+                        <span class="lt-eigen__label">Wartosci wlasne:</span>
+                        <span id="stat-eigenvalues" class="lt-eigen__value">&lambda;&sub1; = 1, &lambda;&sub2; = 1</span>
+                    </div>
+
+                    <!-- Typ transformacji -->
+                    <div class="lt-type-display" id="type-display">
+                        <span id="stat-type">Tozsamosc</span>
+                    </div>
+
+                    <!-- Opis presetu -->
+                    <div class="lt-preset-desc" id="preset-desc" style="display: none;">
+                        <span id="preset-desc-text"></span>
+                    </div>
+                </div>
+
+                <!-- Opcje wyswietlania -->
+                <div class="lt-display-options">
+                    <label class="lt-toggle">
+                        <input type="checkbox" id="show-circle" checked>
+                        Pokaz okrag jednostkowy
+                    </label>
+                    <label class="lt-toggle">
+                        <input type="checkbox" id="show-eigenvectors">
+                        Pokaz wektory wlasne
+                    </label>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Opis -->
+        <div class="st-description">
+            <h3>O transformacjach liniowych</h3>
+            <p>
+                Transformacja liniowa to funkcja T: R&sup2; &rarr; R&sup2; ktora zachowuje
+                dodawanie wektorow i mnozenie przez skalar. Kazda taka transformacja
+                na plaszczyznie jest reprezentowana przez macierz 2&times;2.
+            </p>
+            <h4>Kluczowe pojecia</h4>
+            <ul>
+                <li><strong>Wyznacznik (det)</strong> &mdash; mierzy jak transformacja zmienia pole.
+                    |det| to wspolczynnik zmiany pola, znak okresla czy orientacja sie odwraca.</li>
+                <li><strong>Wartosci wlasne (&lambda;)</strong> &mdash; wspolczynniki skalowania
+                    wzdluz kierunkow wlasnych. Wektor wlasny zostaje na swojej prostej.</li>
+                <li><strong>Rzad macierzy</strong> &mdash; wymiar obrazu transformacji.
+                    Rzad 2 = transformacja jest odwracalna, rzad 1 = obraz to prosta.</li>
+            </ul>
+
+            <details class="lt-experiments">
+                <summary><strong>Eksperymenty do wyprobowania</strong></summary>
+                <ol>
+                    <li><strong>Obrot:</strong> Zaladuj preset &bdquo;Obrot 90&deg;&rdquo; i obserwuj
+                        jak kwadrat jednostkowy obraca sie. Wyznacznik = 1 (pole zachowane).</li>
+                    <li><strong>Macierz osobliwa:</strong> Zaladuj &bdquo;Osobliwa&rdquo; &mdash;
+                        cala plaszczyzna zostaje zgnieciona do prostej (det = 0).</li>
+                    <li><strong>Scinanie:</strong> Zaladuj &bdquo;Scinanie&rdquo; &mdash; kwadrat
+                        staje sie rownoleglobokiem, ale pole nie ulega zmianie.</li>
+                    <li><strong>Wektory wlasne:</strong> Wlacz opcje &bdquo;Pokaz wektory wlasne&rdquo;
+                        i obserwuj kierunki ktore nie zmieniaja sie pod wplywem transformacji.</li>
+                </ol>
+            </details>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

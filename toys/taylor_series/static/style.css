@@ -1,0 +1,186 @@
+/* Plotly chart responsiveness */
+#plot {
+    width: 100%;
+    height: 500px;
+}
+
+@media (max-width: 768px) {
+    #plot {
+        height: 380px;
+    }
+}
+
+/* === Suwak === */
+.ts-slider {
+    width: 100%;
+    accent-color: var(--st-color-primary);
+}
+
+/* === Info o zbieznosci === */
+.ts-convergence-info {
+    margin-top: var(--st-space-md);
+    padding: var(--st-space-sm) var(--st-space-md);
+    background: rgba(245, 158, 11, 0.08);
+    border-radius: var(--st-radius-sm);
+    border-left: 3px solid #f59e0b;
+}
+
+.ts-convergence-info__label {
+    display: block;
+    font-size: var(--st-text-xs);
+    color: var(--st-color-text-muted);
+    margin-bottom: 2px;
+}
+
+.ts-convergence-info__value {
+    font-size: var(--st-text-base);
+    font-weight: 700;
+    color: #b45309;
+    font-family: 'Courier New', monospace;
+}
+
+/* === Blad === */
+.ts-error-display {
+    margin-top: var(--st-space-sm);
+    padding: var(--st-space-sm) var(--st-space-md);
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-sm);
+    border-left: 3px solid var(--st-color-primary);
+}
+
+.ts-error-display__label {
+    display: block;
+    font-size: var(--st-text-xs);
+    color: var(--st-color-text-muted);
+    margin-bottom: 2px;
+}
+
+.ts-error-display__value {
+    font-size: var(--st-text-base);
+    font-weight: 700;
+    color: var(--st-color-primary);
+    font-family: 'Courier New', monospace;
+}
+
+/* === Wielomian === */
+.ts-polynomial {
+    margin-top: var(--st-space-lg);
+    padding: var(--st-space-md) var(--st-space-lg);
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-md);
+    border: 1px solid var(--st-color-border);
+}
+
+.ts-polynomial__title {
+    font-size: var(--st-text-xs);
+    font-weight: 600;
+    color: var(--st-color-text-muted);
+    margin-bottom: var(--st-space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.ts-polynomial__formula {
+    font-family: 'Courier New', monospace;
+    font-size: var(--st-text-sm);
+    color: var(--st-color-text);
+    line-height: 1.6;
+    word-break: break-all;
+}
+
+/* === Wspolczynniki === */
+.ts-coefficients {
+    margin-top: var(--st-space-lg);
+}
+
+.ts-coefficients h3 {
+    font-size: var(--st-text-base);
+    font-weight: 700;
+    color: var(--st-color-text);
+    margin-bottom: var(--st-space-sm);
+}
+
+.ts-coefficients__table-wrap {
+    overflow-x: auto;
+}
+
+.ts-coefficients__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--st-text-sm);
+}
+
+.ts-coefficients__table thead th {
+    background: var(--st-color-background);
+    padding: var(--st-space-sm);
+    font-weight: 600;
+    color: var(--st-color-text-secondary);
+    text-align: center;
+    border-bottom: 2px solid var(--st-color-border);
+    font-size: var(--st-text-xs);
+}
+
+.ts-coefficients__table tbody td {
+    padding: var(--st-space-xs) var(--st-space-sm);
+    text-align: center;
+    border-bottom: 1px solid var(--st-color-border-light);
+    font-family: 'Courier New', monospace;
+    font-size: var(--st-text-xs);
+}
+
+.ts-coeff--zero td {
+    color: var(--st-color-text-muted);
+}
+
+.ts-coeff--nonzero td {
+    color: var(--st-color-text);
+    font-weight: 600;
+}
+
+/* === Wzor === */
+.ts-formula-display {
+    text-align: center;
+    font-size: var(--st-text-lg);
+    padding: var(--st-space-md);
+    margin: var(--st-space-sm) 0;
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-md);
+}
+
+.ts-formula-frac {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: middle;
+    text-align: center;
+    margin: 0 4px;
+}
+
+.ts-formula-num {
+    border-bottom: 2px solid var(--st-color-text-secondary);
+    padding-bottom: 2px;
+    font-size: var(--st-text-base);
+}
+
+.ts-formula-den {
+    padding-top: 2px;
+    font-size: var(--st-text-base);
+}
+
+/* === Eksperymenty === */
+.ts-experiments {
+    margin-top: var(--st-space-md);
+}
+
+.ts-experiments summary {
+    cursor: pointer;
+    color: var(--st-color-primary);
+}
+
+.ts-experiments ol {
+    margin-top: var(--st-space-sm);
+}
+
+.ts-experiments li {
+    margin-bottom: var(--st-space-sm);
+}

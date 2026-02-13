@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Macierzy</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="/common/shared.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="st-app st-page">
+    <div class="st-card st-card--wide">
+        <header class="st-header">
+            <h1 class="st-header__title">Kalkulator Macierzy</h1>
+            <p class="st-header__subtitle">Wyznacznik, rzad, RREF, macierz odwrotna i eliminacja Gaussa</p>
+        </header>
+
+        <!-- Presety -->
+        <div class="mc-presets">
+            <span class="mc-presets__label">Presety:</span>
+            <button class="st-btn st-btn--secondary mc-preset-btn" data-type="identity_3">Jednostkowa 3&times;3</button>
+            <button class="st-btn st-btn--secondary mc-preset-btn" data-type="invertible">Odwracalna</button>
+            <button class="st-btn st-btn--secondary mc-preset-btn" data-type="singular">Osobliwa</button>
+            <button class="st-btn st-btn--secondary mc-preset-btn" data-type="symmetric">Symetryczna</button>
+            <button class="st-btn st-btn--secondary mc-preset-btn" data-type="upper_triangular">Trojkatna</button>
+            <button class="st-btn st-btn--secondary mc-preset-btn" data-type="rank_2_4x4">Rzad 2 (4&times;4)</button>
+        </div>
+
+        <!-- Rozmiar i tabela -->
+        <div class="mc-input-section">
+            <div class="mc-size-controls">
+                <label>Rozmiar:</label>
+                <select id="size-rows" class="st-input mc-size-select">
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+                <span>&times;</span>
+                <select id="size-cols" class="st-input mc-size-select">
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+
+                <button id="btn-compute" class="st-btn st-btn--primary">Oblicz</button>
+            </div>
+
+            <!-- Tabela macierzy -->
+            <div class="mc-matrix-wrapper">
+                <div class="mc-matrix-bracket mc-matrix-bracket--left"></div>
+                <table class="mc-matrix-table" id="matrix-table">
+                    <tbody id="matrix-tbody"></tbody>
+                </table>
+                <div class="mc-matrix-bracket mc-matrix-bracket--right"></div>
+            </div>
+        </div>
+
+        <!-- Wyniki -->
+        <div id="results-section" class="mc-results" style="display: none;">
+            <!-- Wlasciwosci podstawowe -->
+            <div class="mc-props">
+                <h3 class="mc-section-title">Wlasciwosci</h3>
+                <div class="st-stats-grid mc-stats-grid">
+                    <div class="st-stat-item">
+                        <span class="st-stat-item__label">Rozmiar</span>
+                        <span id="stat-size" class="st-stat-item__value">-</span>
+                    </div>
+                    <div class="st-stat-item">
+                        <span class="st-stat-item__label">Rzad</span>
+                        <span id="stat-rank" class="st-stat-item__value">-</span>
+                    </div>
+                    <div class="st-stat-item" id="det-item">
+                        <span class="st-stat-item__label">Wyznacznik</span>
+                        <span id="stat-det" class="st-stat-item__value">-</span>
+                    </div>
+                    <div class="st-stat-item" id="trace-item">
+                        <span class="st-stat-item__label">Slad</span>
+                        <span id="stat-trace" class="st-stat-item__value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wartosci wlasne -->
+            <div id="eigen-section" class="mc-eigen-section" style="display: none;">
+                <h3 class="mc-section-title">Wartosci wlasne</h3>
+                <div id="eigenvalues-display" class="mc-eigenvalues"></div>
+            </div>
+
+            <!-- Macierz odwrotna -->
+            <div id="inverse-section" class="mc-inverse-section" style="display: none;">
+                <h3 class="mc-section-title">Macierz odwrotna A<sup>-1</sup></h3>
+                <div id="inverse-display" class="mc-result-matrix"></div>
+            </div>
+
+            <!-- Macierz transponowana -->
+            <div class="mc-transpose-section">
+                <h3 class="mc-section-title">Macierz transponowana A<sup>T</sup></h3>
+                <div id="transpose-display" class="mc-result-matrix"></div>
+            </div>
+
+            <!-- Eliminacja Gaussa -->
+            <div class="mc-gauss-section">
+                <h3 class="mc-section-title">Eliminacja Gaussa (RREF)</h3>
+                <div id="gauss-steps" class="mc-gauss-steps"></div>
+            </div>
+        </div>
+
+        <!-- Opis -->
+        <div class="st-description">
+            <h3>O operacjach na macierzach</h3>
+            <p>
+                Macierze sa podstawowym narzedziem algebry liniowej. Sluza do
+                reprezentacji ukladow rownan, transformacji liniowych i wielu
+                innych zastosowan w matematyce i naukach stosowanych.
+            </p>
+            <h4>Kluczowe pojecia</h4>
+            <ul>
+                <li><strong>Wyznacznik (det)</strong> &mdash; wartosc skalarna ktora mowi
+                    czy macierz jest odwracalna (det &ne; 0) i jak zmienia objetosci.</li>
+                <li><strong>Rzad macierzy</strong> &mdash; maksymalna liczba liniowo
+                    niezaleznych wierszy (lub kolumn). Okresla wymiar obrazu.</li>
+                <li><strong>RREF</strong> &mdash; zredukowana postac schodkowa wierszowa.
+                    Wynik eliminacji Gaussa-Jordana.</li>
+                <li><strong>Macierz odwrotna</strong> &mdash; istnieje tylko gdy det &ne; 0.
+                    Spelnia A &middot; A<sup>-1</sup> = I.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
