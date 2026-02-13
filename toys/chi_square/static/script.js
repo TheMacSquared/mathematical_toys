@@ -25,11 +25,11 @@ const state = {
 // Debouncing
 let debounceTimer = null;
 
-// Kolory wierszy dla wykresu
-const ROW_COLORS = ['#6366f1', '#f59e0b', '#22c55e', '#ef4444'];
-const ROW_COLORS_LIGHT = ['rgba(99,102,241,0.35)', 'rgba(245,158,11,0.35)', 'rgba(34,197,94,0.35)', 'rgba(239,68,68,0.35)'];
-// Kontrastowe kolory dla linii oczekiwanych na wykresie (jaśniejszy niebieski, ciemniejszy żółty)
-const ROW_COLORS_EXPECTED = ['#a5b4fc', '#b45309', '#15803d', '#b91c1c'];
+// Kolory wierszy dla wykresu (paleta Okabe-Ito, colorblind-safe)
+const ROW_COLORS = ['#0072B2', '#E69F00', '#CC79A7', '#D55E00'];
+const ROW_COLORS_LIGHT = ['rgba(0,114,178,0.35)', 'rgba(230,159,0,0.35)', 'rgba(204,121,167,0.35)', 'rgba(213,94,0,0.35)'];
+// Ciemniejsze warianty Okabe-Ito dla linii oczekiwanych na wykresie
+const ROW_COLORS_EXPECTED = ['#004166', '#805800', '#7A3D64', '#7A3600'];
 
 // === PRESETY ===
 const PRESETS = {
