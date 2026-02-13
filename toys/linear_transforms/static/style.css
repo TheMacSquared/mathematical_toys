@@ -1,0 +1,256 @@
+/* === Presety === */
+.lt-presets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--st-space-xs);
+    margin-bottom: var(--st-space-lg);
+}
+
+.lt-presets__label {
+    font-size: var(--st-text-sm);
+    font-weight: 600;
+    color: var(--st-color-text-secondary);
+    margin-right: var(--st-space-xs);
+}
+
+.lt-preset-btn {
+    font-size: var(--st-text-xs) !important;
+    padding: var(--st-space-xs) var(--st-space-sm) !important;
+}
+
+/* === Glowny uklad === */
+.lt-main-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--st-space-lg);
+    margin-bottom: var(--st-space-xl);
+}
+
+@media (min-width: 1024px) {
+    .lt-main-layout {
+        grid-template-columns: 1fr 320px;
+    }
+}
+
+/* === Wykres === */
+.lt-plot-area {
+    min-width: 0;
+}
+
+.lt-plot {
+    min-height: 450px;
+}
+
+@media (min-width: 768px) {
+    .lt-plot {
+        min-height: 550px;
+    }
+}
+
+/* === Panel kontrolek === */
+.lt-controls-panel {
+    background: var(--st-color-background);
+    padding: var(--st-space-lg);
+    border-radius: var(--st-radius-lg);
+    height: fit-content;
+}
+
+@media (min-width: 1024px) {
+    .lt-controls-panel {
+        position: sticky;
+        top: var(--st-space-lg);
+    }
+}
+
+.lt-controls-panel__title {
+    font-size: var(--st-text-lg);
+    font-weight: 700;
+    color: var(--st-color-text);
+    margin-bottom: var(--st-space-md);
+}
+
+/* === Macierz 2x2 === */
+.lt-matrix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--st-space-xs);
+    margin-bottom: var(--st-space-lg);
+}
+
+.lt-matrix__bracket {
+    width: 8px;
+    height: 90px;
+    border: 2.5px solid var(--st-color-primary);
+}
+
+.lt-matrix__bracket--left {
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+}
+
+.lt-matrix__bracket--right {
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+}
+
+.lt-matrix__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--st-space-sm);
+}
+
+.lt-matrix__input {
+    width: 70px !important;
+    text-align: center;
+    font-weight: 600;
+    font-size: var(--st-text-base) !important;
+    padding: var(--st-space-sm) !important;
+}
+
+/* === Wyniki === */
+.lt-results__title {
+    font-size: var(--st-text-base);
+    font-weight: 700;
+    color: var(--st-color-text);
+    margin-bottom: var(--st-space-sm);
+}
+
+/* === Wyznacznik === */
+.lt-det-display {
+    text-align: center;
+    padding: var(--st-space-md);
+    margin-bottom: var(--st-space-md);
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-lg);
+    border: 2px solid var(--st-color-border);
+    transition: border-color var(--st-transition-base),
+                background var(--st-transition-base);
+}
+
+.lt-det-display__label {
+    font-size: var(--st-text-base);
+    color: var(--st-color-text-secondary);
+    font-weight: 500;
+}
+
+.lt-det-display__value {
+    font-size: var(--st-text-2xl);
+    font-weight: 700;
+    color: var(--st-color-text);
+    font-family: 'Courier New', monospace;
+}
+
+.lt-det-display--positive {
+    border-color: var(--st-color-success);
+    background: var(--st-color-success-bg);
+}
+
+.lt-det-display--positive .lt-det-display__value {
+    color: var(--st-color-success-dark);
+}
+
+.lt-det-display--negative {
+    border-color: var(--st-color-error);
+    background: var(--st-color-error-bg);
+}
+
+.lt-det-display--negative .lt-det-display__value {
+    color: var(--st-color-error-dark);
+}
+
+.lt-det-display--zero {
+    border-color: var(--st-color-warning, #f59e0b);
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.lt-det-display--zero .lt-det-display__value {
+    color: #b45309;
+}
+
+/* === Siatka statystyk === */
+.lt-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    margin-bottom: var(--st-space-md);
+}
+
+/* === Wartosci wlasne === */
+.lt-eigen {
+    padding: var(--st-space-sm) var(--st-space-md);
+    margin-bottom: var(--st-space-sm);
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-sm);
+}
+
+.lt-eigen__label {
+    display: block;
+    font-size: var(--st-text-xs);
+    color: var(--st-color-text-muted);
+    margin-bottom: 2px;
+}
+
+.lt-eigen__value {
+    font-size: var(--st-text-sm);
+    font-weight: 600;
+    color: var(--st-color-primary);
+    font-family: 'Courier New', monospace;
+}
+
+/* === Typ transformacji === */
+.lt-type-display {
+    padding: var(--st-space-sm) var(--st-space-md);
+    border-radius: var(--st-radius-md);
+    margin-bottom: var(--st-space-md);
+    font-size: var(--st-text-sm);
+    font-weight: 500;
+    text-align: center;
+    background: var(--st-color-primary-bg);
+    color: var(--st-color-primary);
+    border-left: 3px solid var(--st-color-primary);
+}
+
+/* === Opis presetu === */
+.lt-preset-desc {
+    padding: var(--st-space-sm) var(--st-space-md);
+    margin-bottom: var(--st-space-md);
+    background: var(--st-color-background-alt);
+    border-radius: var(--st-radius-sm);
+    font-size: var(--st-text-xs);
+    color: var(--st-color-text-secondary);
+    font-style: italic;
+}
+
+/* === Opcje wyswietlania === */
+.lt-display-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--st-space-xs);
+}
+
+.lt-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--st-space-xs);
+    font-size: var(--st-text-xs);
+    color: var(--st-color-text-secondary);
+    cursor: pointer;
+}
+
+/* === Eksperymenty === */
+.lt-experiments {
+    margin-top: var(--st-space-md);
+}
+
+.lt-experiments summary {
+    cursor: pointer;
+    color: var(--st-color-primary);
+}
+
+.lt-experiments ol {
+    margin-top: var(--st-space-sm);
+}
+
+.lt-experiments li {
+    margin-bottom: var(--st-space-sm);
+}

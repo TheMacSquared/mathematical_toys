@@ -66,6 +66,21 @@ def pearson_correlation_module():
     return _load_toy_module("pearson_correlation")
 
 
+@pytest.fixture(scope="session")
+def linear_transforms_module():
+    return _load_toy_module("linear_transforms")
+
+
+@pytest.fixture(scope="session")
+def matrix_calculator_module():
+    return _load_toy_module("matrix_calculator")
+
+
+@pytest.fixture(scope="session")
+def taylor_series_module():
+    return _load_toy_module("taylor_series")
+
+
 # ── Function-scoped client fixtures (reset state each test) ────────
 
 @pytest.fixture
@@ -111,6 +126,30 @@ def pearson_client(pearson_correlation_module):
     """Flask test client for pearson_correlation (stateless)."""
     pearson_correlation_module.app.config['TESTING'] = True
     with pearson_correlation_module.app.test_client() as client:
+        yield client
+
+
+@pytest.fixture
+def linear_transforms_client(linear_transforms_module):
+    """Flask test client for linear_transforms (stateless)."""
+    linear_transforms_module.app.config['TESTING'] = True
+    with linear_transforms_module.app.test_client() as client:
+        yield client
+
+
+@pytest.fixture
+def matrix_calculator_client(matrix_calculator_module):
+    """Flask test client for matrix_calculator (stateless)."""
+    matrix_calculator_module.app.config['TESTING'] = True
+    with matrix_calculator_module.app.test_client() as client:
+        yield client
+
+
+@pytest.fixture
+def taylor_series_client(taylor_series_module):
+    """Flask test client for taylor_series (stateless)."""
+    taylor_series_module.app.config['TESTING'] = True
+    with taylor_series_module.app.test_client() as client:
         yield client
 
 
