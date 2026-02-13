@@ -55,57 +55,35 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller pywebview flask numpy scipy
 
-      - name: Build Histogram
-        working-directory: toys/histogram
+      - name: Build Linear Transforms
+        working-directory: toys/linear_transforms
         run: python build.py
 
-      - name: Build Quiz App
-        working-directory: toys/quiz_app
+      - name: Build Matrix Calculator
+        working-directory: toys/matrix_calculator
         run: python build.py
 
-      - name: Build Confidence Intervals
-        working-directory: toys/confidence_intervals
+      - name: Build Taylor Series
+        working-directory: toys/taylor_series
         run: python build.py
 
-      - name: Build Chi-Square
-        working-directory: toys/chi_square
-        run: python build.py
-
-      - name: Build Pearson Correlation
-        working-directory: toys/pearson_correlation
-        run: python build.py
-
-      - name: Upload Histogram to Release
+      - name: Upload Linear Transforms to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: toys/histogram/dist/Histogram.exe
+          files: toys/linear_transforms/dist/TransformacjeLiniowe.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Quiz App to Release
+      - name: Upload Matrix Calculator to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: toys/quiz_app/dist/quiz_app.exe
+          files: toys/matrix_calculator/dist/KalkulatorMacierzy.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Confidence Intervals to Release
+      - name: Upload Taylor Series to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: toys/confidence_intervals/dist/confidence_intervals.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Chi-Square to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: toys/chi_square/dist/ChiSquare.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Pearson Correlation to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: toys/pearson_correlation/dist/PearsonCorrelation.exe
+          files: toys/taylor_series/dist/SzeRegiTaylora.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
