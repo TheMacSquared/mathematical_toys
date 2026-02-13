@@ -1,7 +1,7 @@
 """
-Narzędzia do budowania .exe dla zabawek statystycznych.
+Narzedzia do budowania .exe dla zabawek matematycznych.
 
-Użycie:
+Uzycie:
     from common.build_utils import get_separator, add_data_arg
 """
 import sys

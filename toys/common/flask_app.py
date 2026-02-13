@@ -1,10 +1,10 @@
 """
-Wspólne funkcje Flask dla zabawek statystycznych.
+Wspolne funkcje Flask dla zabawek matematycznych.
 
-UWAGA: get_bundle_dir() powinno pozostać w każdym app.py osobno,
-ponieważ przy PyInstaller bundle ścieżki są specyficzne dla aplikacji.
+UWAGA: get_bundle_dir() powinno pozostac w kazdym app.py osobno,
+poniewaz przy PyInstaller bundle sciezki sa specyficzne dla aplikacji.
 
-Użycie:
+Uzycie:
     from common.flask_app import load_json, register_common_static
 """
 import os
