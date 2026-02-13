@@ -28,6 +28,8 @@ let debounceTimer = null;
 // Kolory wierszy dla wykresu
 const ROW_COLORS = ['#6366f1', '#f59e0b', '#22c55e', '#ef4444'];
 const ROW_COLORS_LIGHT = ['rgba(99,102,241,0.35)', 'rgba(245,158,11,0.35)', 'rgba(34,197,94,0.35)', 'rgba(239,68,68,0.35)'];
+// Kontrastowe kolory dla linii oczekiwanych na wykresie (jaśniejszy niebieski, ciemniejszy żółty)
+const ROW_COLORS_EXPECTED = ['#a5b4fc', '#b45309', '#15803d', '#b91c1c'];
 
 // === PRESETY ===
 const PRESETS = {
@@ -71,9 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupSplitSlider();
     setupExpectedToggle();
 
-    buildSliderControls();
-    buildTable();
-    triggerComputation();
+    loadPreset('independent');
 });
 
 // === TRYB ===
@@ -648,6 +648,7 @@ function plotGroupedBars() {
         });
 
         // Oczekiwane - kropki z linia pozioma
+        const expColor = ROW_COLORS_EXPECTED[r % ROW_COLORS_EXPECTED.length];
         traces.push({
             x: state.colLabels.slice(0, nCols),
             y: expected[r],
@@ -657,8 +658,8 @@ function plotGroupedBars() {
             marker: {
                 symbol: 'line-ew-open',
                 size: 18,
-                color: color,
-                line: { width: 3, color: color }
+                color: expColor,
+                line: { width: 3, color: expColor }
             },
             legendgroup: rowLabel,
             hovertemplate: `<b>${rowLabel}</b><br>Oczekiwane: %{y:.1f}<extra></extra>`
