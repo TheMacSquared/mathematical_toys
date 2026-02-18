@@ -95,6 +95,6 @@ jobs:
       - name: Upload Function Composition to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: toys/function_composition/dist/KompozycjaFunkcji.exe
+          files: toys/function_composition/dist/FunkcjaZlozona.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

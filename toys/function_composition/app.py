@@ -1,5 +1,5 @@
 """
-Kompozycja funkcji - interaktywna wizualizacja f(g(x)).
+Funkcja złożona - interaktywna wizualizacja f(g(x)).
 
 Backend Flask obliczający złożenia funkcji i generujący
 dane do wykresu porównującego f(g(x)), g(f(x)) oraz

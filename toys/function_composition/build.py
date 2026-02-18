@@ -19,7 +19,7 @@ PyInstaller.__main__.run([
     os.path.join(current_dir, 'main.py'),
     '--onefile',
     '--windowed',
-    '--name=KompozycjaFunkcji',
+    '--name=FunkcjaZlozona',
     add_data_arg(templates_dir, 'templates'),
     add_data_arg(static_dir, 'static'),
     add_data_arg(common_static, os.path.join('common', 'static')),
