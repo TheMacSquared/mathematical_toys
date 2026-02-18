@@ -52,7 +52,9 @@ def test_compute_square_shift(function_composition_client):
     assert 'g_curve' in data
     assert 'f_curve' in data
     assert 'fg_curve' in data
+    assert 'gf_curve' in data
     assert len(data['fg_curve']['x']) == 500
+    assert len(data['gf_curve']['x']) == 500
 
 
 def test_compute_reverse_composition(function_composition_client):
@@ -81,6 +83,7 @@ def test_compute_labels(function_composition_client):
     assert 'f_label' in data
     assert 'g_label' in data
     assert 'fg_label' in data
+    assert 'gf_label' in data
     assert 't\u00b2' in data['f_label']  # t²
 
 
@@ -265,6 +268,29 @@ def test_compute_abs_composition(function_composition_client):
     assert data['success'] is True
     assert abs(data['g_x0'] - (-3.0)) < 1e-6
     assert abs(data['f_g_x0'] - 3.0) < 1e-6
+
+
+def test_gf_curve_differs_from_fg(function_composition_client):
+    """g(f(x)) curve is different from f(g(x)) for non-commuting functions."""
+    resp = function_composition_client.post('/api/compute', json={
+        'f_id': 'power', 'f_param': 2,
+        'g_id': 'shift', 'g_param': 3,
+        'x0': 2.0,
+    })
+    data = resp.get_json()
+    assert data['success'] is True
+    # gf_curve should exist and differ from fg_curve
+    fg_y = data['fg_curve']['y']
+    gf_y = data['gf_curve']['y']
+    assert len(gf_y) == 500
+    # At x=2 (approximately index 350): fg = (2+3)^2 = 25, gf = 2^2 + 3 = 7
+    # Curves should differ at most points
+    diffs = sum(1 for a, b in zip(fg_y, gf_y)
+                if a is not None and b is not None and abs(a - b) > 0.01)
+    assert diffs > 100  # Most points differ
+    # gf_label should be present
+    assert 'gf_label' in data
+    assert data['gf_label'] != data['fg_label']
 
 
 def test_compute_y_range_present(function_composition_client):

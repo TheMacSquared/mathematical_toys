@@ -27,7 +27,7 @@ toys/nazwa_zabawki/
 
 ### Analiza matematyczna
 - [x] **taylor_series** - Szeregi Taylora: aproksymacja funkcji wielomianami z wizualizacja zbieznosci (port 15007)
-- [x] **function_composition** - Kompozycja funkcji: wizualizacja f(g(x)) i lancucha operacji (port 15008)
+- [x] **function_composition** - Funkcja złożona: wizualizacja f(g(x)) i łańcucha operacji (port 15008)
 
 ### Przyszle Pomysly
 - Calki Riemanna (wizualizacja sum Riemanna)
