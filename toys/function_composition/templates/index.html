@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kompozycja funkcji</title>
+    <title>Funkcja złożona</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
     <link rel="stylesheet" href="/common/shared.css">
@@ -12,8 +12,8 @@
 <body class="st-app st-page">
     <div class="st-card st-card--wide">
         <header class="st-header">
-            <h1 class="st-header__title">Kompozycja funkcji</h1>
-            <p class="st-header__subtitle">Wizualizacja f(g(x)) &mdash; jak dziala skladanie funkcji</p>
+            <h1 class="st-header__title">Funkcja złożona</h1>
+            <p class="st-header__subtitle">Wizualizacja f(g(x)) &mdash; jak działa składanie funkcji</p>
         </header>
 
         <div class="st-layout-2col">
@@ -21,10 +21,10 @@
                 <h2 class="st-sidebar__title">Parametry</h2>
 
                 <div class="st-input-group">
-                    <label for="f-select">f (zewnetrzna)</label>
+                    <label for="f-select">f (zewnętrzna)</label>
                     <select id="f-select" class="st-input">
-                        <option value="power">t^a (potega)</option>
-                        <option value="shift">t + a (przesuniecie)</option>
+                        <option value="power">t^a (potęga)</option>
+                        <option value="shift">t + a (przesunięcie)</option>
                         <option value="scale">a&middot;t (skalowanie)</option>
                         <option value="sin">sin(a&middot;t)</option>
                         <option value="cos">cos(a&middot;t)</option>
@@ -40,11 +40,11 @@
                 </div>
 
                 <div class="st-input-group">
-                    <label for="g-select">g (wewnetrzna)</label>
+                    <label for="g-select">g (wewnętrzna)</label>
                     <select id="g-select" class="st-input">
-                        <option value="shift" selected>t + a (przesuniecie)</option>
+                        <option value="shift" selected>t + a (przesunięcie)</option>
                         <option value="scale">a&middot;t (skalowanie)</option>
-                        <option value="power">t^a (potega)</option>
+                        <option value="power">t^a (potęga)</option>
                         <option value="sin">sin(a&middot;t)</option>
                         <option value="cos">cos(a&middot;t)</option>
                         <option value="exp">e^(a&middot;t)</option>
@@ -77,17 +77,17 @@
                     <div class="fc-result-box fc-result-box--reverse">
                         <span class="fc-result-box__label">g(f(x<sub>0</sub>))</span>
                         <span class="fc-result-box__value" id="result-gf"></span>
-                        <span class="fc-result-box__tag">odwrotna kolejnosc</span>
+                        <span class="fc-result-box__tag">odwrotna kolejność</span>
                     </div>
                     <div class="fc-result-box fc-result-box--wrong">
                         <span class="fc-result-box__label">f(x<sub>0</sub>) + g(x<sub>0</sub>)</span>
                         <span class="fc-result-box__value" id="result-sum"></span>
-                        <span class="fc-result-box__tag">typowy blad</span>
+                        <span class="fc-result-box__tag">typowy błąd</span>
                     </div>
                     <div class="fc-result-box fc-result-box--wrong">
                         <span class="fc-result-box__label">f(x<sub>0</sub>) &middot; g(x<sub>0</sub>)</span>
                         <span class="fc-result-box__value" id="result-prod"></span>
-                        <span class="fc-result-box__tag">typowy blad</span>
+                        <span class="fc-result-box__tag">typowy błąd</span>
                     </div>
                 </div>
             </aside>
@@ -100,7 +100,7 @@
 
                 <!-- Pipeline diagram -->
                 <div class="fc-pipeline" id="pipeline-section">
-                    <h3 class="fc-pipeline__title">Lancuch obliczen</h3>
+                    <h3 class="fc-pipeline__title">Łańcuch obliczeń</h3>
                     <div class="fc-pipeline__row" id="pipeline-fg">
                         <span class="fc-pipeline__label">f &compfn; g :</span>
                     </div>
@@ -113,40 +113,40 @@
 
         <!-- Opis -->
         <div class="st-description">
-            <h3>O kompozycji funkcji</h3>
+            <h3>O funkcji złożonej</h3>
             <p>
-                Kompozycja (zlozenie) funkcji f &compfn; g oznacza:
+                Złożenie funkcji f &#8728; g oznacza:
                 <strong>najpierw zastosuj g, potem f</strong>.
-                Formalnie: (f &compfn; g)(x) = f(g(x)).
+                Formalnie: (f &#8728; g)(x) = f(g(x)).
             </p>
             <p>
-                Kluczowa obserwacja: <strong>wynik g(x) staje sie wejsciem f</strong>.
+                Kluczowa obserwacja: <strong>wynik g(x) staje się wejściem f</strong>.
                 Dlatego (x+3)&sup2; &ne; x&sup2; + 9 &mdash; najpierw dodajemy 3, a
-                <em>potem</em> podnosimy do kwadratu cala sume.
+                <em>potem</em> podnosimy do kwadratu całą sumę.
             </p>
-            <h4>Wazne wlasnosci</h4>
+            <h4>Ważne własności</h4>
             <ul>
-                <li><strong>Kolejnosc ma znaczenie:</strong> f(g(x)) &ne; g(f(x))
-                    w ogolnosci. Porownaj oba pipeline.</li>
-                <li><strong>Zlozenie to nie iloczyn/suma:</strong>
+                <li><strong>Kolejność ma znaczenie:</strong> f(g(x)) &ne; g(f(x))
+                    w ogólności. Porównaj oba łańcuchy obliczeń.</li>
+                <li><strong>Złożenie to nie iloczyn/suma:</strong>
                     f(g(x)) &ne; f(x)&middot;g(x) i f(g(x)) &ne; f(x) + g(x).</li>
                 <li><strong>Funkcje liniowe:</strong> Jedyny przypadek gdy
-                    f &compfn; g = g &compfn; f to gdy obie sa liniowe (skalowanie).</li>
+                    f &#8728; g = g &#8728; f to gdy obie są liniowe (skalowanie).</li>
             </ul>
 
             <details>
-                <summary><strong>Eksperymenty do wyprobowania</strong></summary>
+                <summary><strong>Eksperymenty do wypróbowania</strong></summary>
                 <ol>
-                    <li><strong>Klasyczny blad:</strong> Ustaw f = t&sup2;, g = t+3.
-                        Porownaj f(g(2)) = 25 z f(2)+g(2) = 9.</li>
-                    <li><strong>Kolejnosc:</strong> Przy tych samych f i g,
-                        porownaj f(g(x)) z g(f(x)) &mdash; to rozne funkcje!</li>
+                    <li><strong>Klasyczny błąd:</strong> Ustaw f = t&sup2;, g = t+3.
+                        Porównaj f(g(2)) = 25 z f(2)+g(2) = 9.</li>
+                    <li><strong>Kolejność:</strong> Przy tych samych f i g,
+                        porównaj f(g(x)) z g(f(x)) &mdash; to różne funkcje!</li>
                     <li><strong>Tryg + skalowanie:</strong> f = sin(t), g = 2t
-                        daje sin(2x) &mdash; podwojona czestotliwosc.</li>
-                    <li><strong>Przesun suwak x<sub>0</sub>:</strong> Obserwuj jak
-                        punkt wedluje po krzywej i pipeline sie aktualizuje.</li>
-                    <li><strong>Identycznosc:</strong> Ustaw g = 1&middot;t (scale, a=1).
-                        Teraz f(g(x)) = f(x) &mdash; krzywe sie pokrywaja.</li>
+                        daje sin(2x) &mdash; podwojona częstotliwość.</li>
+                    <li><strong>Przesuń suwak x<sub>0</sub>:</strong> Obserwuj jak
+                        punkt wędruje po krzywej i łańcuch się aktualizuje.</li>
+                    <li><strong>Tożsamość:</strong> Ustaw g = 1&middot;t (scale, a=1).
+                        Teraz f(g(x)) = f(x) &mdash; krzywe się pokrywają.</li>
                 </ol>
             </details>
         </div>

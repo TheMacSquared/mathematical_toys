@@ -1,9 +1,9 @@
-"""Build script for Kompozycja funkcji."""
+"""Build script for Funkcja złożona."""
 import os
 import sys
 import PyInstaller.__main__
 
-# Dodaj toys/ do path zeby importy common dzialaly
+# Dodaj toys/ do path żeby importy common działały
 current_dir = os.path.dirname(os.path.abspath(__file__))
 toys_dir = os.path.dirname(current_dir)
 if toys_dir not in sys.path:

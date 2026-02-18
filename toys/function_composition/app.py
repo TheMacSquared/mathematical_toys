@@ -1,9 +1,9 @@
 """
 Kompozycja funkcji - interaktywna wizualizacja f(g(x)).
 
-Backend Flask obliczajacy zlozenia funkcji i generujacy
-dane do wykresu porownujacego f(g(x)), g(f(x)) oraz
-typowe bledy studentow.
+Backend Flask obliczający złożenia funkcji i generujący
+dane do wykresu porównującego f(g(x)), g(f(x)) oraz
+typowe błędy studentów.
 """
 
 from flask import Flask, render_template, jsonify, request
@@ -16,7 +16,7 @@ from common.flask_app import register_common_static
 
 
 def get_bundle_dir():
-    """Zwraca sciezke do katalogu z plikami (dev vs .exe)"""
+    """Zwraca ścieżkę do katalogu z plikami (dev vs .exe)"""
     if getattr(sys, 'frozen', False):
         return sys._MEIPASS
     else:
@@ -31,13 +31,13 @@ app = Flask(__name__,
 register_common_static(app, bundle_dir if getattr(sys, 'frozen', False) else None)
 
 
-# Dostepne funkcje - wspolna lista dla f (zewnetrzna) i g (wewnetrzna)
+# Dostępne funkcje - wspólna lista dla f (zewnętrzna) i g (wewnętrzna)
 FUNCTIONS = {
     'shift': {
         'name': 't + a',
-        'description': 'Przesuniecie o a',
+        'description': 'Przesunięcie o a',
         'has_param': True,
-        'param_label': 'przesuniecie',
+        'param_label': 'przesunięcie',
         'param_min': -5,
         'param_max': 5,
         'param_step': 0.5,
@@ -55,17 +55,17 @@ FUNCTIONS = {
     },
     'power': {
         'name': 't^a',
-        'description': 'Potega a (t >= 0 dla niecalkowitych)',
+        'description': 'Potęga a (t >= 0 dla niecałkowitych)',
         'has_param': True,
-        'param_label': 'wykladnik',
+        'param_label': 'wykładnik',
         'param_values': [-2, -1, 0.5, 1, 2, 3],
         'param_default': 2,
     },
     'sin': {
         'name': 'sin(a\u00b7t)',
-        'description': 'Sinus z czestotliwoscia a',
+        'description': 'Sinus z częstotliwością a',
         'has_param': True,
-        'param_label': 'czestotliwosc',
+        'param_label': 'częstotliwość',
         'param_min': 0.1,
         'param_max': 5,
         'param_step': 0.1,
@@ -73,9 +73,9 @@ FUNCTIONS = {
     },
     'cos': {
         'name': 'cos(a\u00b7t)',
-        'description': 'Cosinus z czestotliwoscia a',
+        'description': 'Cosinus z częstotliwością a',
         'has_param': True,
-        'param_label': 'czestotliwosc',
+        'param_label': 'częstotliwość',
         'param_min': 0.1,
         'param_max': 5,
         'param_step': 0.1,
@@ -83,9 +83,9 @@ FUNCTIONS = {
     },
     'exp': {
         'name': 'e^(a\u00b7t)',
-        'description': 'Eksponenta ze wspolczynnikiem a',
+        'description': 'Eksponenta ze współczynnikiem a',
         'has_param': True,
-        'param_label': 'wspolczynnik',
+        'param_label': 'współczynnik',
         'param_min': -2,
         'param_max': 2,
         'param_step': 0.1,
@@ -93,7 +93,7 @@ FUNCTIONS = {
     },
     'abs': {
         'name': '|t|',
-        'description': 'Wartosc bezwzgledna',
+        'description': 'Wartość bezwzględna',
         'has_param': False,
         'param_default': None,
     },
@@ -107,7 +107,7 @@ FUNCTIONS = {
 
 
 def _evaluate_func(func_id, param, t_arr):
-    """Oblicza wartosci funkcji na tablicy numpy."""
+    """Oblicza wartości funkcji na tablicy numpy."""
     with np.errstate(all='ignore'):
         if func_id == 'shift':
             return t_arr + param
@@ -115,11 +115,11 @@ def _evaluate_func(func_id, param, t_arr):
             return param * t_arr
         elif func_id == 'power':
             if param == int(param) and int(param) % 2 != 0 and param >= -3:
-                # Nieparzyste calkowite potegi: dzialaja dla ujemnych t
+                # Nieparzyste całkowite potęgi: działają dla ujemnych t
                 sign = np.sign(t_arr)
                 return sign * (np.abs(t_arr) ** param)
             elif param < 0:
-                # Ujemna potega: unikaj dzielenia przez zero
+                # Ujemna potęga: unikaj dzielenia przez zero
                 result = np.full_like(t_arr, np.nan, dtype=float)
                 mask = np.abs(t_arr) > 1e-10
                 result[mask] = np.power(np.abs(t_arr[mask]), param)
@@ -128,7 +128,7 @@ def _evaluate_func(func_id, param, t_arr):
                     result[neg_mask] = -result[neg_mask]
                 return result
             else:
-                # Niecalkowita lub parzysta potega: wymaga t >= 0
+                # Niecałkowita lub parzysta potęga: wymaga t >= 0
                 result = np.full_like(t_arr, np.nan, dtype=float)
                 mask = t_arr >= 0
                 result[mask] = np.power(t_arr[mask], param)
@@ -139,7 +139,7 @@ def _evaluate_func(func_id, param, t_arr):
             return np.cos(param * t_arr)
         elif func_id == 'exp':
             result = np.exp(param * t_arr)
-            # Ograniczenie wartosci zeby wykres nie uciekal
+            # Ograniczenie wartości żeby wykres nie uciekał
             result = np.where(np.isfinite(result), result, np.nan)
             return result
         elif func_id == 'abs':
@@ -153,7 +153,7 @@ def _evaluate_func(func_id, param, t_arr):
 
 
 def _evaluate_single(func_id, param, t):
-    """Oblicza wartosc funkcji w jednym punkcie."""
+    """Oblicza wartość funkcji w jednym punkcie."""
     arr = np.array([float(t)])
     result = _evaluate_func(func_id, param, arr)
     val = float(result[0])
@@ -163,7 +163,7 @@ def _evaluate_single(func_id, param, t):
 
 
 def _make_label(func_id, param):
-    """Generuje czytelna etykiete funkcji."""
+    """Generuje czytelną etykietę funkcji."""
     if func_id == 'shift':
         if param == 0:
             return 't'
@@ -211,7 +211,7 @@ def _make_label(func_id, param):
 
 
 def _make_composition_label(f_id, f_param, g_id, g_param):
-    """Generuje etykiete zlozenia f(g(x))."""
+    """Generuje etykietę złożenia f(g(x))."""
     g_label = _make_label(g_id, g_param)
     # Zastap t przez x w etykiecie g
     g_of_x = g_label.replace('t', 'x')
@@ -302,7 +302,7 @@ def _format_detail(func_id, param, input_val, output_val):
 
 
 def _build_pipeline(f_id, f_param, g_id, g_param, x0):
-    """Buduje opisy krokow pipeline dla f(g(x)) i g(f(x))."""
+    """Buduje opisy kroków pipeline dla f(g(x)) i g(f(x))."""
     g_x0 = _evaluate_single(g_id, g_param, x0)
     f_x0 = _evaluate_single(f_id, f_param, x0)
 
@@ -344,7 +344,7 @@ def _build_pipeline(f_id, f_param, g_id, g_param, x0):
 
 
 def _validate_request_json():
-    """Waliduje ze request zawiera poprawny JSON."""
+    """Waliduje że request zawiera poprawny JSON."""
     data = request.json
     if data is None:
         raise ValueError("Wymagane dane w formacie JSON")
@@ -366,24 +366,24 @@ def safe_float(val):
 
 @app.route('/')
 def index():
-    """Strona glowna"""
+    """Strona główna"""
     return render_template('index.html')
 
 
 @app.route('/api/compute', methods=['POST'])
 def compute():
     """
-    Oblicza zlozenie funkcji i dane do wykresu.
+    Oblicza złożenie funkcji i dane do wykresu.
 
     Request JSON:
-        f_id: string - identyfikator funkcji zewnetrznej
+        f_id: string - identyfikator funkcji zewnętrznej
         f_param: float - parametr f (lub null)
-        g_id: string - identyfikator funkcji wewnetrznej
+        g_id: string - identyfikator funkcji wewnętrznej
         g_param: float - parametr g (lub null)
-        x0: float - punkt ewaluacji lancucha
+        x0: float - punkt ewaluacji łańcucha
 
     Response JSON:
-        Krzywe g(x), f(x), f(g(x)), ewaluacja w x0,
+        Krzywe g(x), f(x), f(g(x)), g(f(x)), ewaluacja w x0,
         pipeline steps, etykiety.
     """
     try:
@@ -404,19 +404,19 @@ def compute():
         if f_info.get('has_param') and data.get('f_param') is not None:
             f_param = float(data['f_param'])
             if math.isnan(f_param) or math.isinf(f_param):
-                raise ValueError("Parametr f musi byc liczba skonczona")
+                raise ValueError("Parametr f musi być liczbą skończoną")
 
         g_param = g_info['param_default']
         if g_info.get('has_param') and data.get('g_param') is not None:
             g_param = float(data['g_param'])
             if math.isnan(g_param) or math.isinf(g_param):
-                raise ValueError("Parametr g musi byc liczba skonczona")
+                raise ValueError("Parametr g musi być liczbą skończoną")
 
         x0 = float(data.get('x0', 2.0))
         if math.isnan(x0) or math.isinf(x0):
-            raise ValueError("x0 musi byc liczba skonczona")
+            raise ValueError("x0 musi być liczbą skończoną")
         if abs(x0) > 100:
-            raise ValueError("x0 musi byc z zakresu [-100, 100]")
+            raise ValueError("x0 musi być z zakresu [-100, 100]")
 
         # Zakres wykresu
         x_range = [-5, 5]
@@ -426,6 +426,7 @@ def compute():
         g_y = _evaluate_func(g_id, g_param, x_arr)
         f_y = _evaluate_func(f_id, f_param, x_arr)
         fg_y = _evaluate_func(f_id, f_param, g_y)
+        gf_y = _evaluate_func(g_id, g_param, f_y)
 
         # Ewaluacja w x0
         g_x0 = _evaluate_single(g_id, g_param, x0)
@@ -453,9 +454,10 @@ def compute():
         f_label = _make_label(f_id, f_param)
         g_label = _make_label(g_id, g_param)
         fg_label = _make_composition_label(f_id, f_param, g_id, g_param)
+        gf_label = _make_composition_label(g_id, g_param, f_id, f_param)
 
         # Zakres Y - dynamiczny
-        all_y = np.concatenate([g_y, f_y, fg_y])
+        all_y = np.concatenate([g_y, f_y, fg_y, gf_y])
         finite_y = all_y[np.isfinite(all_y)]
         if len(finite_y) > 0:
             y_min = float(np.nanmin(finite_y))
@@ -463,7 +465,7 @@ def compute():
         else:
             y_min, y_max = -10, 10
         y_pad = max((y_max - y_min) * 0.15, 2)
-        # Ograniczenie zakresu zeby nie ucieka w nieskonczonosc
+        # Ograniczenie zakresu żeby nie uciekał w nieskończoność
         y_display_min = max(y_min - y_pad, -50)
         y_display_max = min(y_max + y_pad, 50)
 
@@ -480,10 +482,12 @@ def compute():
             'f_label': f_label,
             'g_label': g_label,
             'fg_label': fg_label,
+            'gf_label': gf_label,
 
             'g_curve': {'x': x_arr.tolist(), 'y': to_json_list(g_y)},
             'f_curve': {'x': x_arr.tolist(), 'y': to_json_list(f_y)},
             'fg_curve': {'x': x_arr.tolist(), 'y': to_json_list(fg_y)},
+            'gf_curve': {'x': x_arr.tolist(), 'y': to_json_list(gf_y)},
 
             'x0': safe_float(x0),
             'g_x0': safe_float(g_x0),
@@ -506,13 +510,13 @@ def compute():
     except Exception:
         return jsonify({
             'success': False,
-            'error': 'Nieoczekiwany blad serwera'
+            'error': 'Nieoczekiwany błąd serwera'
         }), 500
 
 
 @app.route('/api/functions')
 def functions():
-    """Zwraca liste dostepnych funkcji z metadanymi."""
+    """Zwraca listę dostępnych funkcji z metadanymi."""
     result = {}
     for key, info in FUNCTIONS.items():
         entry = {

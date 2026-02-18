@@ -15,12 +15,14 @@ var COLORS = {
     g: '#3b82f6',
     f: '#22c55e',
     fg: '#6366f1',
+    gf: '#ef4444',
     markerG: '#3b82f6',
     markerFG: '#6366f1',
+    markerGF: '#ef4444',
     x0Line: '#94a3b8'
 };
 
-// === PARAMETRY FUNKCJI (fallback jesli /api/functions nie zaladuje) ===
+// === PARAMETRY FUNKCJI (fallback jeśli /api/functions nie załaduje) ===
 var PARAM_CONFIG = {
     'shift':  { min: -5, max: 5, step: 0.5, def: 3 },
     'scale':  { min: -3, max: 3, step: 0.5, def: 2 },
@@ -243,7 +245,7 @@ function drawPlot() {
 
     var traces = [];
 
-    // g(x) - wewnetrzna (niebieska, przerywana)
+    // g(x) - wewnętrzna (niebieska, przerywana)
     traces.push({
         x: res.g_curve.x,
         y: res.g_curve.y,
@@ -254,7 +256,7 @@ function drawPlot() {
         hovertemplate: 'g(%{x:.2f}) = %{y:.4f}<extra></extra>'
     });
 
-    // f(x) - zewnetrzna (zielona, przerywana)
+    // f(x) - zewnętrzna (zielona, przerywana)
     traces.push({
         x: res.f_curve.x,
         y: res.f_curve.y,
@@ -265,7 +267,7 @@ function drawPlot() {
         hovertemplate: 'f(%{x:.2f}) = %{y:.4f}<extra></extra>'
     });
 
-    // f(g(x)) - zlozenie (fioletowa, gruba)
+    // f(g(x)) - złożenie (fioletowa, gruba)
     traces.push({
         x: res.fg_curve.x,
         y: res.fg_curve.y,
@@ -274,6 +276,17 @@ function drawPlot() {
         line: { color: COLORS.fg, width: 3 },
         connectgaps: false,
         hovertemplate: 'f(g(%{x:.2f})) = %{y:.4f}<extra></extra>'
+    });
+
+    // g(f(x)) - złożenie odwrotne (czerwona, gruba)
+    traces.push({
+        x: res.gf_curve.x,
+        y: res.gf_curve.y,
+        mode: 'lines',
+        name: 'g(f(x)) = ' + res.gf_label,
+        line: { color: COLORS.gf, width: 3 },
+        connectgaps: false,
+        hovertemplate: 'g(f(%{x:.2f})) = %{y:.4f}<extra></extra>'
     });
 
     // Marker: (x0, g(x0)) na krzywej g
@@ -301,6 +314,22 @@ function drawPlot() {
                 line: { color: 'white', width: 2 }
             },
             hovertemplate: 'f(g(x\u2080)) = ' + formatNum(res.f_g_x0) + '<extra></extra>'
+        });
+    }
+
+    // Marker: (x0, g(f(x0))) na krzywej g(f)
+    if (res.g_f_x0 !== null) {
+        traces.push({
+            x: [res.x0],
+            y: [res.g_f_x0],
+            mode: 'markers',
+            name: 'g(f(' + res.x0 + ')) = ' + formatNum(res.g_f_x0),
+            marker: {
+                color: COLORS.markerGF, size: 13,
+                symbol: 'x',
+                line: { color: 'white', width: 2 }
+            },
+            hovertemplate: 'g(f(x\u2080)) = ' + formatNum(res.g_f_x0) + '<extra></extra>'
         });
     }
 
