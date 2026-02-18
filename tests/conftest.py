@@ -80,3 +80,16 @@ def taylor_series_client(taylor_series_module):
     taylor_series_module.app.config['TESTING'] = True
     with taylor_series_module.app.test_client() as client:
         yield client
+
+
+@pytest.fixture(scope="session")
+def function_composition_module():
+    return _load_toy_module("function_composition")
+
+
+@pytest.fixture
+def function_composition_client(function_composition_module):
+    """Flask test client for function_composition (stateless)."""
+    function_composition_module.app.config['TESTING'] = True
+    with function_composition_module.app.test_client() as client:
+        yield client
