@@ -23,7 +23,7 @@
                 <div class="st-input-group">
                     <label for="func-select">Funkcja f(x)</label>
                     <select id="func-select" class="st-input">
-                        <!-- Wypelniane dynamicznie -->
+                        <!-- Wypełniane dynamicznie -->
                     </select>
                 </div>
 
@@ -31,9 +31,9 @@
                 <div id="params-container"></div>
 
                 <div class="st-input-group">
-                    <label for="x0-input">Punkt stycznosci (x<sub>0</sub>)</label>
+                    <label for="x0-input">Punkt styczności (x<sub>0</sub>)</label>
                     <input type="number" id="x0-input" class="st-input" value="1" step="0.1">
-                    <span class="st-input-hint">Punkt w ktorym rysujemy styczna</span>
+                    <span class="st-input-hint">Punkt w którym rysujemy styczną</span>
                 </div>
 
                 <div class="st-input-group">
@@ -57,7 +57,7 @@
                 <!-- Informacje o stycznej -->
                 <div class="tl-tangent-info" id="tangent-info" style="display: none;">
                     <div class="tl-tangent-info__item">
-                        <span class="tl-tangent-info__label">Wartosc funkcji f(x<sub>0</sub>):</span>
+                        <span class="tl-tangent-info__label">Wartość funkcji f(x<sub>0</sub>):</span>
                         <span id="info-fvalue" class="tl-tangent-info__value"></span>
                     </div>
                     <div class="tl-tangent-info__item">
@@ -65,7 +65,7 @@
                         <span id="info-slope" class="tl-tangent-info__value"></span>
                     </div>
                     <div class="tl-tangent-info__item">
-                        <span class="tl-tangent-info__label">Kat stycznej:</span>
+                        <span class="tl-tangent-info__label">Kąt stycznej:</span>
                         <span id="info-angle" class="tl-tangent-info__value"></span>
                     </div>
                 </div>
@@ -76,11 +76,11 @@
                     <div id="plot"></div>
                     <div id="loading" class="st-loading">Obliczanie...</div>
                 </div>
-                <p class="tl-click-hint">Kliknij na wykres, aby zmienic punkt stycznosci</p>
+                <p class="tl-click-hint">Kliknij na wykres, aby zmienić punkt styczności</p>
 
-                <!-- Rownanie stycznej -->
+                <!-- Równanie stycznej -->
                 <div class="tl-equation" id="equation-section">
-                    <div class="tl-equation__title">Rownanie stycznej</div>
+                    <div class="tl-equation__title">Równanie stycznej</div>
                     <div class="tl-equation__formula" id="equation-text">y = ...</div>
                 </div>
             </main>
@@ -91,36 +91,36 @@
             <h3>O prostej stycznej</h3>
             <p>
                 Prosta styczna do wykresu funkcji f(x) w punkcie x<sub>0</sub> to prosta,
-                ktora najlepiej przybliza wykres w otoczeniu tego punktu. Jej rownanie to:
+                która najlepiej przybliża wykres w otoczeniu tego punktu. Jej równanie to:
             </p>
             <div class="tl-formula-display">
                 y = f(x<sub>0</sub>) + f'(x<sub>0</sub>) &middot; (x - x<sub>0</sub>)
             </div>
             <p>
-                Nachylenie stycznej jest rowne wartosci pochodnej w punkcie stycznosci.
-                Kat nachylenia &alpha; mozna obliczyc ze wzoru <strong>tan(&alpha;) = f'(x<sub>0</sub>)</strong>.
+                Nachylenie stycznej jest równe wartości pochodnej w punkcie styczności.
+                Kąt nachylenia &alpha; można obliczyć ze wzoru <strong>tan(&alpha;) = f'(x<sub>0</sub>)</strong>.
             </p>
 
-            <h4>Wazne przypadki</h4>
+            <h4>Ważne przypadki</h4>
             <ul>
-                <li><strong>f'(x<sub>0</sub>) = 0</strong> &mdash; styczna pozioma (np. w wierzcholku paraboli)</li>
-                <li><strong>f'(x<sub>0</sub>) > 0</strong> &mdash; funkcja rosnie, styczna skierowana w gore</li>
-                <li><strong>f'(x<sub>0</sub>) < 0</strong> &mdash; funkcja maleje, styczna skierowana w dol</li>
+                <li><strong>f'(x<sub>0</sub>) = 0</strong> &mdash; styczna pozioma (np. w wierzchołku paraboli)</li>
+                <li><strong>f'(x<sub>0</sub>) > 0</strong> &mdash; funkcja rośnie, styczna skierowana w górę</li>
+                <li><strong>f'(x<sub>0</sub>) < 0</strong> &mdash; funkcja maleje, styczna skierowana w dół</li>
             </ul>
 
             <details class="tl-experiments">
-                <summary><strong>Eksperymenty do wyprobowania</strong></summary>
+                <summary><strong>Eksperymenty do wypróbowania</strong></summary>
                 <ol>
-                    <li><strong>Parabola:</strong> Wybierz x&sup2; i przesun punkt stycznosci od -3 do 3.
-                        Obserwuj jak nachylenie zmienia sie z ujemnego przez zero do dodatniego.</li>
+                    <li><strong>Parabola:</strong> Wybierz x&sup2; i przesuń punkt styczności od -3 do 3.
+                        Obserwuj jak nachylenie zmienia się z ujemnego przez zero do dodatniego.</li>
                     <li><strong>Styczna pozioma:</strong> Dla x&sup2; ustaw x<sub>0</sub> = 0 &mdash;
                         to minimum funkcji i styczna jest pozioma.</li>
-                    <li><strong>sin(x):</strong> Ustaw x<sub>0</sub> = 0 i obserwuj, ze styczna
+                    <li><strong>sin(x):</strong> Ustaw x<sub>0</sub> = 0 i obserwuj, że styczna
                         to y = x (bo sin'(0) = cos(0) = 1).</li>
                     <li><strong>e<sup>x</sup>:</strong> W x<sub>0</sub> = 0 styczna ma nachylenie 1,
                         bo (e<sup>x</sup>)' = e<sup>x</sup> i e<sup>0</sup> = 1.</li>
-                    <li><strong>Klikanie:</strong> Kliknij na wykres w roznych miejscach,
-                        aby szybko zmienic punkt stycznosci.</li>
+                    <li><strong>Klikanie:</strong> Kliknij na wykres w różnych miejscach,
+                        aby szybko zmienić punkt styczności.</li>
                 </ol>
             </details>
         </div>
