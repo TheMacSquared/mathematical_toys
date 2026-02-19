@@ -1,7 +1,7 @@
 """
 Prosta styczna - interaktywna wizualizacja.
 
-Backend Flask obliczajacy styczna do wykresu funkcji
+Backend Flask obliczający styczną do wykresu funkcji
 w zadanym punkcie, z wykorzystaniem pochodnej analitycznej.
 """
 
@@ -19,7 +19,7 @@ from common.functions import (
 
 
 def get_bundle_dir():
-    """Zwraca sciezke do katalogu z plikami (dev vs .exe)"""
+    """Zwraca ścieżkę do katalogu z plikami (dev vs .exe)"""
     if getattr(sys, 'frozen', False):
         return sys._MEIPASS
     else:
@@ -61,7 +61,7 @@ def _compute_y_range(y_arr):
 
 
 def _safe_y_list(y_arr):
-    """Konwertuje numpy array na liste bezpieczna dla JSON."""
+    """Konwertuje numpy array na listę bezpieczną dla JSON."""
     return [
         None if (math.isnan(v) or math.isinf(v)) else round(float(v), 8)
         for v in y_arr
@@ -69,7 +69,7 @@ def _safe_y_list(y_arr):
 
 
 def _format_tangent_equation(slope, y0, x0):
-    """Formatuje rownanie stycznej jako string."""
+    """Formatuje równanie stycznej jako string."""
     intercept = y0 - slope * x0
 
     if abs(slope) < 1e-10:
@@ -91,7 +91,7 @@ def _format_tangent_equation(slope, y0, x0):
 
 
 def _validate_request_json():
-    """Waliduje ze request zawiera poprawny JSON."""
+    """Waliduje że request zawiera poprawny JSON."""
     data = request.json
     if data is None:
         raise ValueError("Wymagane dane w formacie JSON")
@@ -100,36 +100,36 @@ def _validate_request_json():
 
 @app.route('/')
 def index():
-    """Strona glowna"""
+    """Strona główna"""
     return render_template('index.html')
 
 
 @app.route('/api/functions')
 def functions():
-    """Zwraca liste dostepnych funkcji z parametrami."""
+    """Zwraca listę dostępnych funkcji z parametrami."""
     return jsonify({'success': True, 'functions': get_all_functions()})
 
 
 @app.route('/api/compute', methods=['POST'])
 def compute():
     """
-    Oblicza styczna do wykresu funkcji w punkcie.
+    Oblicza styczną do wykresu funkcji w punkcie.
 
     Request JSON:
         func: string - identyfikator funkcji
         params: dict - parametry funkcji
-        x0: float - punkt stycznosci
-        x_min: float (opcjonalny) - poczatek zakresu
+        x0: float - punkt styczności
+        x_min: float (opcjonalny) - początek zakresu
         x_max: float (opcjonalny) - koniec zakresu
 
     Response JSON:
         func_data: {x, y} - dane funkcji
         tangent_data: {x, y} - dane stycznej
-        tangent_point: {x, y} - punkt stycznosci
+        tangent_point: {x, y} - punkt styczności
         slope: float - nachylenie stycznej
         func_value_at_x0: float - f(x0)
         derivative_at_x0: float - f'(x0)
-        tangent_equation: string - rownanie stycznej
+        tangent_equation: string - równanie stycznej
         y_range: [min, max] - zakres Y
     """
     try:
@@ -144,10 +144,10 @@ def compute():
 
         x0 = data.get('x0', 0)
         if x0 is None:
-            raise ValueError("Wymagany punkt stycznosci x0")
+            raise ValueError("Wymagany punkt styczności x0")
         x0 = float(x0)
         if math.isnan(x0) or math.isinf(x0):
-            raise ValueError("x0 musi byc liczba skonczona")
+            raise ValueError("x0 musi być liczbą skończoną")
 
         func_info = FUNCTION_REGISTRY[func_id]
 
@@ -158,13 +158,13 @@ def compute():
         x_max = float(x_max)
 
         if math.isnan(x_min) or math.isinf(x_min):
-            raise ValueError("x_min musi byc liczba skonczona")
+            raise ValueError("x_min musi być liczbą skończoną")
         if math.isnan(x_max) or math.isinf(x_max):
-            raise ValueError("x_max musi byc liczba skonczona")
+            raise ValueError("x_max musi być liczbą skończoną")
         if x_min >= x_max:
-            raise ValueError("x_min musi byc mniejszy od x_max")
+            raise ValueError("x_min musi być mniejszy od x_max")
         if x_max - x_min > 200:
-            raise ValueError("Zakres X nie moze przekraczac 200")
+            raise ValueError("Zakres X nie może przekraczać 200")
 
         # Oblicz f(x0) i f'(x0)
         x0_arr = np.array([x0], dtype=float)
@@ -194,7 +194,7 @@ def compute():
         ])
         y_range = _compute_y_range(all_y) if len(all_y) > 0 else [-10, 10]
 
-        # Ogranicz styczna do rozsadnego zakresu
+        # Ogranicz styczną do rozsądnego zakresu
         y_tangent_clipped = np.clip(y_tangent, y_range[0], y_range[1])
 
         tangent_equation = _format_tangent_equation(slope, y0, x0)
@@ -227,7 +227,7 @@ def compute():
     except Exception:
         return jsonify({
             'success': False,
-            'error': 'Nieoczekiwany blad serwera'
+            'error': 'Nieoczekiwany błąd serwera'
         }), 500
 
 

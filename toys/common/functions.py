@@ -1,9 +1,9 @@
 """
-Wspolna biblioteka funkcji matematycznych z pochodnymi analitycznymi.
+Wspólna biblioteka funkcji matematycznych z pochodnymi analitycznymi.
 
-Uzywana przez function_derivatives i tangent_line.
-Kazda funkcja ma konfigurowalne parametry, analityczna pochodna,
-informacje o dziedzinie i zakresie domyslnym.
+Używana przez function_derivatives i tangent_line.
+Każda funkcja ma konfigurowalne parametry, analityczną pochodną,
+informacje o dziedzinie i zakresie domyślnym.
 """
 
 import numpy as np
@@ -33,7 +33,7 @@ FUNCTION_REGISTRY = {
         'default_range': [-5, 5],
     },
     'cubic': {
-        'name': 'Szescienne: ax\u00b3 + bx\u00b2 + cx + d',
+        'name': 'Sześcienne: ax\u00b3 + bx\u00b2 + cx + d',
         'formula': 'f(x) = ax\u00b3 + bx\u00b2 + cx + d',
         'derivative_formula': "f'(x) = 3ax\u00b2 + 2bx + c",
         'params': [
@@ -67,7 +67,7 @@ FUNCTION_REGISTRY = {
         'default_range': [-2 * math.pi, 2 * math.pi],
     },
     'exp': {
-        'name': 'Eksponenta: a\u00b7e^(bx)',
+        'name': 'Wykładnicza: a\u00b7e^(bx)',
         'formula': 'f(x) = a\u00b7e^(bx)',
         'derivative_formula': "f'(x) = ab\u00b7e^(bx)",
         'params': [
@@ -88,7 +88,7 @@ FUNCTION_REGISTRY = {
         'default_range': [-5, 10],
     },
     'power': {
-        'name': 'Potegowa: a\u00b7x^n',
+        'name': 'Potęgowa: a\u00b7x^n',
         'formula': 'f(x) = a\u00b7x^n',
         'derivative_formula': "f'(x) = a\u00b7n\u00b7x^(n-1)",
         'params': [
@@ -124,17 +124,17 @@ FUNCTION_REGISTRY = {
 
 def resolve_params(func_id, raw_params):
     """
-    Laczy podane parametry z domyslnymi dla danej funkcji.
+    Łączy podane parametry z domyślnymi dla danej funkcji.
 
     Args:
         func_id: klucz z FUNCTION_REGISTRY
-        raw_params: dict z wartosciami parametrow (moze byc niepelny)
+        raw_params: dict z wartościami parametrów (może być niepełny)
 
     Returns:
         dict z kompletnymi parametrami
 
     Raises:
-        ValueError: jesli func_id nie istnieje lub parametr poza zakresem
+        ValueError: jeśli func_id nie istnieje lub parametr poza zakresem
     """
     if func_id not in FUNCTION_REGISTRY:
         raise ValueError(f"Nieznana funkcja: {func_id}")
@@ -149,10 +149,10 @@ def resolve_params(func_id, raw_params):
         if pid in raw_params:
             val = float(raw_params[pid])
             if math.isnan(val) or math.isinf(val):
-                raise ValueError(f"Parametr {pid} musi byc liczba skonczona")
+                raise ValueError(f"Parametr {pid} musi być liczbą skończoną")
             if val < p['min'] or val > p['max']:
                 raise ValueError(
-                    f"Parametr {pid} musi byc z zakresu [{p['min']}, {p['max']}]"
+                    f"Parametr {pid} musi być z zakresu [{p['min']}, {p['max']}]"
                 )
             result[pid] = val
         else:
@@ -163,15 +163,15 @@ def resolve_params(func_id, raw_params):
 
 def evaluate_function(func_id, x_arr, params):
     """
-    Oblicza wartosci funkcji z zadanymi parametrami.
+    Oblicza wartości funkcji z zadanymi parametrami.
 
     Args:
         func_id: klucz z FUNCTION_REGISTRY
-        x_arr: numpy array wartosci x
-        params: dict parametrow (wynik resolve_params)
+        x_arr: numpy array wartości x
+        params: dict parametrów (wynik resolve_params)
 
     Returns:
-        numpy array wartosci y (NaN poza dziedzina)
+        numpy array wartości y (NaN poza dziedziną)
     """
     with np.errstate(all='ignore'):
         if func_id == 'linear':
@@ -209,7 +209,7 @@ def evaluate_function(func_id, x_arr, params):
             if n_is_int:
                 return a * x_arr ** n
             else:
-                # Ulamkowy wykladnik - dziedzina x >= 0
+                # Ułamkowy wykładnik - dziedzina x >= 0
                 result = np.full_like(x_arr, np.nan, dtype=float)
                 mask = x_arr >= 0
                 result[mask] = a * x_arr[mask] ** n
@@ -235,15 +235,15 @@ def evaluate_function(func_id, x_arr, params):
 
 def evaluate_derivative(func_id, x_arr, params):
     """
-    Oblicza wartosci pochodnej analitycznej z zadanymi parametrami.
+    Oblicza wartości pochodnej analitycznej z zadanymi parametrami.
 
     Args:
         func_id: klucz z FUNCTION_REGISTRY
-        x_arr: numpy array wartosci x
-        params: dict parametrow (wynik resolve_params)
+        x_arr: numpy array wartości x
+        params: dict parametrów (wynik resolve_params)
 
     Returns:
-        numpy array wartosci f'(x) (NaN poza dziedzina)
+        numpy array wartości f'(x) (NaN poza dziedziną)
     """
     with np.errstate(all='ignore'):
         if func_id == 'linear':
@@ -284,7 +284,7 @@ def evaluate_derivative(func_id, x_arr, params):
             elif n_is_int and n == 0:
                 return np.zeros_like(x_arr)
             else:
-                # Ulamkowy wykladnik lub ujemny calkowity
+                # Ułamkowy wykładnik lub ujemny całkowity
                 result = np.full_like(x_arr, np.nan, dtype=float)
                 if n < 0:
                     # Pochodna istnieje dla x != 0
@@ -315,7 +315,7 @@ def evaluate_derivative(func_id, x_arr, params):
 
 def get_all_functions():
     """
-    Zwraca metadane wszystkich dostepnych funkcji.
+    Zwraca metadane wszystkich dostępnych funkcji.
 
     Returns:
         dict z informacjami o funkcjach (bez logiki obliczeniowej)

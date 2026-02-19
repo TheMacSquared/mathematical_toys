@@ -195,7 +195,7 @@ async function updatePlot() {
             drawPlots();
         }
     } catch (error) {
-        console.error('Blad:', error.message);
+        console.error('Błąd:', error.message);
     } finally {
         loadingEl.classList.remove('st-loading--active');
     }
