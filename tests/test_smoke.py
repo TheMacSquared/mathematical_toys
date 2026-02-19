@@ -1,4 +1,4 @@
-"""Smoke tests: verify all 5 app modules load and expose a Flask app."""
+"""Smoke tests: verify all app modules load and expose a Flask app."""
 from flask import Flask
 
 
@@ -22,6 +22,14 @@ def test_taylor_series_module_loads(taylor_series_module):
     assert hasattr(taylor_series_module, 'app')
     assert isinstance(taylor_series_module.app, Flask)
     rules = [r.rule for r in taylor_series_module.app.url_map.iter_rules()]
+    assert '/api/compute' in rules
+    assert '/api/functions' in rules
+
+
+def test_function_composition_module_loads(function_composition_module):
+    assert hasattr(function_composition_module, 'app')
+    assert isinstance(function_composition_module.app, Flask)
+    rules = [r.rule for r in function_composition_module.app.url_map.iter_rules()]
     assert '/api/compute' in rules
     assert '/api/functions' in rules
 

@@ -67,6 +67,10 @@ jobs:
         working-directory: toys/taylor_series
         run: python build.py
 
+      - name: Build Function Composition
+        working-directory: toys/function_composition
+        run: python build.py
+
       - name: Build Function Derivatives
         working-directory: toys/function_derivatives
         run: python build.py
@@ -93,6 +97,13 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: toys/taylor_series/dist/SzeRegiTaylora.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Function Composition to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: toys/function_composition/dist/FunkcjaZlozona.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

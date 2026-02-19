@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funkcja złożona</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <link rel="stylesheet" href="/common/shared.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="st-app st-page">
+    <div class="st-card st-card--wide">
+        <header class="st-header">
+            <h1 class="st-header__title">Funkcja złożona</h1>
+            <p class="st-header__subtitle">Wizualizacja f(g(x)) &mdash; jak działa składanie funkcji</p>
+        </header>
+
+        <div class="st-layout-2col">
+            <aside class="st-sidebar">
+                <h2 class="st-sidebar__title">Parametry</h2>
+
+                <div class="st-input-group">
+                    <label for="f-select">f (zewnętrzna)</label>
+                    <select id="f-select" class="st-input">
+                        <option value="power">t^a (potęga)</option>
+                        <option value="shift">t + a (przesunięcie)</option>
+                        <option value="scale">a&middot;t (skalowanie)</option>
+                        <option value="sin">sin(a&middot;t)</option>
+                        <option value="cos">cos(a&middot;t)</option>
+                        <option value="exp">e^(a&middot;t)</option>
+                        <option value="abs">|t|</option>
+                        <option value="ln">ln(t)</option>
+                    </select>
+                </div>
+
+                <div class="st-input-group" id="f-param-group">
+                    <label for="f-param">Parametr f: a = <strong id="f-param-value">2</strong></label>
+                    <input type="range" id="f-param" class="fc-slider" min="-5" max="5" step="0.5" value="2">
+                </div>
+
+                <div class="st-input-group">
+                    <label for="g-select">g (wewnętrzna)</label>
+                    <select id="g-select" class="st-input">
+                        <option value="shift" selected>t + a (przesunięcie)</option>
+                        <option value="scale">a&middot;t (skalowanie)</option>
+                        <option value="power">t^a (potęga)</option>
+                        <option value="sin">sin(a&middot;t)</option>
+                        <option value="cos">cos(a&middot;t)</option>
+                        <option value="exp">e^(a&middot;t)</option>
+                        <option value="abs">|t|</option>
+                        <option value="ln">ln(t)</option>
+                    </select>
+                </div>
+
+                <div class="st-input-group" id="g-param-group">
+                    <label for="g-param">Parametr g: a = <strong id="g-param-value">3</strong></label>
+                    <input type="range" id="g-param" class="fc-slider" min="-5" max="5" step="0.5" value="3">
+                </div>
+
+                <div class="st-input-group">
+                    <label for="x0-slider">Punkt x<sub>0</sub> = <strong id="x0-value">2</strong></label>
+                    <input type="range" id="x0-slider" class="fc-slider" min="-5" max="5" step="0.1" value="2">
+                </div>
+
+                <button id="btn-update" class="st-btn st-btn--primary st-btn--block">
+                    Oblicz
+                </button>
+
+                <!-- Wyniki -->
+                <div class="fc-results" id="results-panel" style="display: none;">
+                    <div class="fc-result-box fc-result-box--correct">
+                        <span class="fc-result-box__label">f(g(x<sub>0</sub>))</span>
+                        <span class="fc-result-box__value" id="result-fg"></span>
+                        <span class="fc-result-box__tag">poprawne złożenie</span>
+                    </div>
+                    <div class="fc-result-box fc-result-box--reverse">
+                        <span class="fc-result-box__label">g(f(x<sub>0</sub>))</span>
+                        <span class="fc-result-box__value" id="result-gf"></span>
+                        <span class="fc-result-box__tag">odwrotna kolejność</span>
+                    </div>
+                    <div class="fc-result-box fc-result-box--wrong">
+                        <span class="fc-result-box__label">f(x<sub>0</sub>) + g(x<sub>0</sub>)</span>
+                        <span class="fc-result-box__value" id="result-sum"></span>
+                        <span class="fc-result-box__tag">typowy błąd</span>
+                    </div>
+                    <div class="fc-result-box fc-result-box--wrong">
+                        <span class="fc-result-box__label">f(x<sub>0</sub>) &middot; g(x<sub>0</sub>)</span>
+                        <span class="fc-result-box__value" id="result-prod"></span>
+                        <span class="fc-result-box__tag">typowy błąd</span>
+                    </div>
+                </div>
+            </aside>
+
+            <main>
+                <div class="st-plot">
+                    <div id="plot" style="width: 100%; height: 500px;"></div>
+                    <div id="loading" class="st-loading">Obliczanie...</div>
+                </div>
+
+                <!-- Pipeline diagram -->
+                <div class="fc-pipeline" id="pipeline-section">
+                    <h3 class="fc-pipeline__title">Łańcuch obliczeń</h3>
+                    <div class="fc-pipeline__row" id="pipeline-fg">
+                        <span class="fc-pipeline__label">f &compfn; g :</span>
+                    </div>
+                    <div class="fc-pipeline__row fc-pipeline__row--reverse" id="pipeline-gf">
+                        <span class="fc-pipeline__label">g &compfn; f :</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Opis -->
+        <div class="st-description">
+            <h3>O funkcji złożonej</h3>
+            <p>
+                Złożenie funkcji f &#8728; g oznacza:
+                <strong>najpierw zastosuj g, potem f</strong>.
+                Formalnie: (f &#8728; g)(x) = f(g(x)).
+            </p>
+            <p>
+                Kluczowa obserwacja: <strong>wynik g(x) staje się wejściem f</strong>.
+                Dlatego (x+3)&sup2; &ne; x&sup2; + 9 &mdash; najpierw dodajemy 3, a
+                <em>potem</em> podnosimy do kwadratu całą sumę.
+            </p>
+            <h4>Ważne własności</h4>
+            <ul>
+                <li><strong>Kolejność ma znaczenie:</strong> f(g(x)) &ne; g(f(x))
+                    w ogólności. Porównaj oba łańcuchy obliczeń.</li>
+                <li><strong>Złożenie to nie iloczyn/suma:</strong>
+                    f(g(x)) &ne; f(x)&middot;g(x) i f(g(x)) &ne; f(x) + g(x).</li>
+                <li><strong>Funkcje liniowe:</strong> Jedyny przypadek gdy
+                    f &#8728; g = g &#8728; f to gdy obie są liniowe (skalowanie).</li>
+            </ul>
+
+            <details>
+                <summary><strong>Eksperymenty do wypróbowania</strong></summary>
+                <ol>
+                    <li><strong>Klasyczny błąd:</strong> Ustaw f = t&sup2;, g = t+3.
+                        Porównaj f(g(2)) = 25 z f(2)+g(2) = 9.</li>
+                    <li><strong>Kolejność:</strong> Przy tych samych f i g,
+                        porównaj f(g(x)) z g(f(x)) &mdash; to różne funkcje!</li>
+                    <li><strong>Tryg + skalowanie:</strong> f = sin(t), g = 2t
+                        daje sin(2x) &mdash; podwojona częstotliwość.</li>
+                    <li><strong>Przesuń suwak x<sub>0</sub>:</strong> Obserwuj jak
+                        punkt wędruje po krzywej i łańcuch się aktualizuje.</li>
+                    <li><strong>Tożsamość:</strong> Ustaw g = 1&middot;t (scale, a=1).
+                        Teraz f(g(x)) = f(x) &mdash; krzywe się pokrywają.</li>
+                </ol>
+            </details>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
