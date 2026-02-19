@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykresy Funkcji i Pochodnych</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <link rel="stylesheet" href="/common/shared.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="st-app st-page">
+    <div class="st-card st-card--wide">
+        <header class="st-header">
+            <h1 class="st-header__title">Wykresy Funkcji i Pochodnych</h1>
+            <p class="st-header__subtitle">Interaktywna wizualizacja funkcji f(x) i jej pochodnej f'(x)</p>
+        </header>
+
+        <div class="st-layout-2col">
+            <aside class="st-sidebar">
+                <h2 class="st-sidebar__title">Parametry</h2>
+
+                <div class="st-input-group">
+                    <label for="func-select">Funkcja f(x)</label>
+                    <select id="func-select" class="st-input">
+                        <!-- Wypelniane dynamicznie -->
+                    </select>
+                </div>
+
+                <!-- Dynamiczne parametry funkcji -->
+                <div id="params-container"></div>
+
+                <div class="st-input-group">
+                    <label>Zakres X</label>
+                    <div class="fd-range-grid">
+                        <div class="st-input-group">
+                            <input type="number" id="x-min" class="st-input" value="-6.28" step="0.5">
+                            <span class="st-input-hint">min</span>
+                        </div>
+                        <div class="st-input-group">
+                            <input type="number" id="x-max" class="st-input" value="6.28" step="0.5">
+                            <span class="st-input-hint">max</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="st-input-group">
+                    <label>Tryb widoku</label>
+                    <div class="fd-view-mode">
+                        <div class="fd-view-mode__option fd-view-mode__option--active" data-mode="separate">
+                            Oddzielne
+                        </div>
+                        <div class="fd-view-mode__option" data-mode="combined">
+                            Wspolny
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-update" class="st-btn st-btn--primary st-btn--block">
+                    Oblicz
+                </button>
+
+                <!-- Wzory -->
+                <div class="fd-formulas" id="formulas-section">
+                    <div class="fd-formulas__title">Wzory</div>
+                    <div class="fd-formulas__item">
+                        <span class="fd-formulas__func" id="formula-func">f(x) = ...</span>
+                    </div>
+                    <div class="fd-formulas__item">
+                        <span class="fd-formulas__deriv" id="formula-deriv">f'(x) = ...</span>
+                    </div>
+                </div>
+            </aside>
+
+            <main>
+                <!-- Tryb oddzielny -->
+                <div id="separate-plots">
+                    <div class="fd-plot-half">
+                        <h3>Funkcja f(x)</h3>
+                        <div class="st-plot">
+                            <div id="plot-func"></div>
+                        </div>
+                    </div>
+                    <div class="fd-plot-half">
+                        <h3>Pochodna f'(x)</h3>
+                        <div class="st-plot">
+                            <div id="plot-deriv"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tryb wspolny -->
+                <div id="combined-plot" class="fd-plot-hidden">
+                    <div class="st-plot">
+                        <div id="plot-combined"></div>
+                    </div>
+                </div>
+
+                <div id="loading" class="st-loading">Obliczanie...</div>
+            </main>
+        </div>
+
+        <!-- Opis -->
+        <div class="st-description">
+            <h3>O pochodnych</h3>
+            <p>
+                Pochodna funkcji f(x) w punkcie x mierzy szybkosc zmiany
+                funkcji. Geometrycznie jest to nachylenie stycznej do wykresu
+                w danym punkcie.
+            </p>
+            <div class="fd-formula-display">
+                f'(x) = lim<sub>h&rarr;0</sub>
+                <span style="display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 4px;">
+                    <span style="border-bottom: 2px solid var(--st-color-text-secondary); padding-bottom: 2px;">f(x + h) - f(x)</span>
+                    <span style="padding-top: 2px;">h</span>
+                </span>
+            </div>
+            <h4>Podstawowe reguly rozniczkowania</h4>
+            <ul>
+                <li><strong>(x<sup>n</sup>)' = n&middot;x<sup>n-1</sup></strong> &mdash; regula potegowa</li>
+                <li><strong>(sin x)' = cos x</strong> &mdash; pochodna sinusa</li>
+                <li><strong>(cos x)' = -sin x</strong> &mdash; pochodna cosinusa</li>
+                <li><strong>(e<sup>x</sup>)' = e<sup>x</sup></strong> &mdash; eksponenta jest rowna swojej pochodnej</li>
+                <li><strong>(ln x)' = 1/x</strong> &mdash; pochodna logarytmu naturalnego</li>
+            </ul>
+
+            <details class="fd-experiments">
+                <summary><strong>Eksperymenty do wyprobowania</strong></summary>
+                <ol>
+                    <li><strong>sin i cos:</strong> Wybierz sin(x) i obserwuj, ze pochodna
+                        to cos(x). Przelacz na tryb wspolny, zeby zobaczyc obie na jednym wykresie.</li>
+                    <li><strong>Wielomiany:</strong> Wybierz funkcje kwadratowa x&sup2; i zauwauz,
+                        ze pochodna 2x jest liniowa.</li>
+                    <li><strong>Eksponenta:</strong> Wybierz e<sup>x</sup> - jedyna funkcja, ktora
+                        jest rowna swojej pochodnej!</li>
+                    <li><strong>Parametry:</strong> Zmien parametr a w sin(x) na 2 i obserwuj,
+                        jak zmienia sie amplituda pochodnej.</li>
+                    <li><strong>Porownanie trybow:</strong> Przelaczaj miedzy trybem oddzielnym
+                        a wspolnym, zeby zobaczyc roznece perspektywy.</li>
+                </ol>
+            </details>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

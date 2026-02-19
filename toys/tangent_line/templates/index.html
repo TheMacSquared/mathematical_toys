@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prosta Styczna</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <link rel="stylesheet" href="/common/shared.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="st-app st-page">
+    <div class="st-card st-card--wide">
+        <header class="st-header">
+            <h1 class="st-header__title">Prosta Styczna</h1>
+            <p class="st-header__subtitle">Interaktywna wizualizacja stycznej do wykresu funkcji</p>
+        </header>
+
+        <div class="st-layout-2col">
+            <aside class="st-sidebar">
+                <h2 class="st-sidebar__title">Parametry</h2>
+
+                <div class="st-input-group">
+                    <label for="func-select">Funkcja f(x)</label>
+                    <select id="func-select" class="st-input">
+                        <!-- Wypelniane dynamicznie -->
+                    </select>
+                </div>
+
+                <!-- Dynamiczne parametry funkcji -->
+                <div id="params-container"></div>
+
+                <div class="st-input-group">
+                    <label for="x0-input">Punkt stycznosci (x<sub>0</sub>)</label>
+                    <input type="number" id="x0-input" class="st-input" value="1" step="0.1">
+                    <span class="st-input-hint">Punkt w ktorym rysujemy styczna</span>
+                </div>
+
+                <div class="st-input-group">
+                    <label>Zakres X</label>
+                    <div class="tl-range-grid">
+                        <div class="st-input-group">
+                            <input type="number" id="x-min" class="st-input" value="-5" step="0.5">
+                            <span class="st-input-hint">min</span>
+                        </div>
+                        <div class="st-input-group">
+                            <input type="number" id="x-max" class="st-input" value="5" step="0.5">
+                            <span class="st-input-hint">max</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-update" class="st-btn st-btn--primary st-btn--block">
+                    Oblicz
+                </button>
+
+                <!-- Informacje o stycznej -->
+                <div class="tl-tangent-info" id="tangent-info" style="display: none;">
+                    <div class="tl-tangent-info__item">
+                        <span class="tl-tangent-info__label">Wartosc funkcji f(x<sub>0</sub>):</span>
+                        <span id="info-fvalue" class="tl-tangent-info__value"></span>
+                    </div>
+                    <div class="tl-tangent-info__item">
+                        <span class="tl-tangent-info__label">Nachylenie f'(x<sub>0</sub>):</span>
+                        <span id="info-slope" class="tl-tangent-info__value"></span>
+                    </div>
+                    <div class="tl-tangent-info__item">
+                        <span class="tl-tangent-info__label">Kat stycznej:</span>
+                        <span id="info-angle" class="tl-tangent-info__value"></span>
+                    </div>
+                </div>
+            </aside>
+
+            <main>
+                <div class="st-plot">
+                    <div id="plot"></div>
+                    <div id="loading" class="st-loading">Obliczanie...</div>
+                </div>
+                <p class="tl-click-hint">Kliknij na wykres, aby zmienic punkt stycznosci</p>
+
+                <!-- Rownanie stycznej -->
+                <div class="tl-equation" id="equation-section">
+                    <div class="tl-equation__title">Rownanie stycznej</div>
+                    <div class="tl-equation__formula" id="equation-text">y = ...</div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Opis -->
+        <div class="st-description">
+            <h3>O prostej stycznej</h3>
+            <p>
+                Prosta styczna do wykresu funkcji f(x) w punkcie x<sub>0</sub> to prosta,
+                ktora najlepiej przybliza wykres w otoczeniu tego punktu. Jej rownanie to:
+            </p>
+            <div class="tl-formula-display">
+                y = f(x<sub>0</sub>) + f'(x<sub>0</sub>) &middot; (x - x<sub>0</sub>)
+            </div>
+            <p>
+                Nachylenie stycznej jest rowne wartosci pochodnej w punkcie stycznosci.
+                Kat nachylenia &alpha; mozna obliczyc ze wzoru <strong>tan(&alpha;) = f'(x<sub>0</sub>)</strong>.
+            </p>
+
+            <h4>Wazne przypadki</h4>
+            <ul>
+                <li><strong>f'(x<sub>0</sub>) = 0</strong> &mdash; styczna pozioma (np. w wierzcholku paraboli)</li>
+                <li><strong>f'(x<sub>0</sub>) > 0</strong> &mdash; funkcja rosnie, styczna skierowana w gore</li>
+                <li><strong>f'(x<sub>0</sub>) < 0</strong> &mdash; funkcja maleje, styczna skierowana w dol</li>
+            </ul>
+
+            <details class="tl-experiments">
+                <summary><strong>Eksperymenty do wyprobowania</strong></summary>
+                <ol>
+                    <li><strong>Parabola:</strong> Wybierz x&sup2; i przesun punkt stycznosci od -3 do 3.
+                        Obserwuj jak nachylenie zmienia sie z ujemnego przez zero do dodatniego.</li>
+                    <li><strong>Styczna pozioma:</strong> Dla x&sup2; ustaw x<sub>0</sub> = 0 &mdash;
+                        to minimum funkcji i styczna jest pozioma.</li>
+                    <li><strong>sin(x):</strong> Ustaw x<sub>0</sub> = 0 i obserwuj, ze styczna
+                        to y = x (bo sin'(0) = cos(0) = 1).</li>
+                    <li><strong>e<sup>x</sup>:</strong> W x<sub>0</sub> = 0 styczna ma nachylenie 1,
+                        bo (e<sup>x</sup>)' = e<sup>x</sup> i e<sup>0</sup> = 1.</li>
+                    <li><strong>Klikanie:</strong> Kliknij na wykres w roznych miejscach,
+                        aby szybko zmienic punkt stycznosci.</li>
+                </ol>
+            </details>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

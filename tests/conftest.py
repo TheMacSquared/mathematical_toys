@@ -80,3 +80,29 @@ def taylor_series_client(taylor_series_module):
     taylor_series_module.app.config['TESTING'] = True
     with taylor_series_module.app.test_client() as client:
         yield client
+
+
+@pytest.fixture(scope="session")
+def function_derivatives_module():
+    return _load_toy_module("function_derivatives")
+
+
+@pytest.fixture(scope="session")
+def tangent_line_module():
+    return _load_toy_module("tangent_line")
+
+
+@pytest.fixture
+def function_derivatives_client(function_derivatives_module):
+    """Flask test client for function_derivatives (stateless)."""
+    function_derivatives_module.app.config['TESTING'] = True
+    with function_derivatives_module.app.test_client() as client:
+        yield client
+
+
+@pytest.fixture
+def tangent_line_client(tangent_line_module):
+    """Flask test client for tangent_line (stateless)."""
+    tangent_line_module.app.config['TESTING'] = True
+    with tangent_line_module.app.test_client() as client:
+        yield client

@@ -7,12 +7,15 @@
   - `python -m pytest tests/test_linear_transforms.py`
   - `python -m pytest tests/test_matrix_calculator.py`
   - `python -m pytest tests/test_taylor_series.py`
+  - `python -m pytest tests/test_function_derivatives.py`
+  - `python -m pytest tests/test_tangent_line.py`
+- When modifying `toys/common/functions.py`, run: `python -m pytest tests/test_common_functions.py`
 - When adding a new endpoint, add tests for it in the corresponding test file
 
 ## Project structure
-- 3 Flask desktop apps in `toys/` (linear_transforms, matrix_calculator, taylor_series)
-- Shared code in `toys/common/`
-- Single-user desktop apps using global in-memory sessions, ports 15005-15007
+- 5 Flask desktop apps in `toys/` (linear_transforms, matrix_calculator, taylor_series, function_derivatives, tangent_line)
+- Shared code in `toys/common/` (flask_app.py, functions.py, build_utils.py)
+- Single-user desktop apps using global in-memory sessions, ports 15005-15009
 - Tests in `tests/` with importlib-based fixtures in `conftest.py`
 
 ## Dependencies
