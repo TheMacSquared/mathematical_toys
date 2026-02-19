@@ -1,0 +1,148 @@
+/* === Plotly chart responsiveness === */
+#plot-func, #plot-deriv {
+    width: 100%;
+    height: 400px;
+}
+
+#plot-combined {
+    width: 100%;
+    height: 500px;
+}
+
+@media (max-width: 768px) {
+    #plot-func, #plot-deriv {
+        height: 320px;
+    }
+    #plot-combined {
+        height: 400px;
+    }
+}
+
+/* === Kontenery wykresow === */
+.fd-plot-half {
+    margin-bottom: var(--st-space-md);
+}
+
+.fd-plot-half h3 {
+    font-size: var(--st-text-sm);
+    font-weight: 600;
+    color: var(--st-color-text-secondary);
+    margin-bottom: var(--st-space-xs);
+}
+
+.fd-plot-hidden {
+    display: none;
+}
+
+/* === Przelacznik trybu === */
+.fd-view-mode {
+    display: flex;
+    gap: var(--st-space-xs);
+    margin-top: var(--st-space-xs);
+}
+
+.fd-view-mode__option {
+    flex: 1;
+    padding: var(--st-space-sm) var(--st-space-xs);
+    border: 2px solid var(--st-color-border);
+    border-radius: var(--st-radius-sm);
+    background: var(--st-color-surface);
+    cursor: pointer;
+    text-align: center;
+    font-size: var(--st-text-xs);
+    color: var(--st-color-text-secondary);
+    transition: all var(--st-transition-fast);
+}
+
+.fd-view-mode__option:hover {
+    border-color: var(--st-color-primary);
+    color: var(--st-color-primary);
+}
+
+.fd-view-mode__option--active {
+    border-color: var(--st-color-primary);
+    background: rgba(99, 102, 241, 0.08);
+    color: var(--st-color-primary);
+    font-weight: 600;
+}
+
+/* === Parametry dynamiczne === */
+.fd-params__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--st-space-sm);
+}
+
+.fd-params__grid .st-input-group {
+    margin-bottom: 0;
+}
+
+/* === Wzory === */
+.fd-formulas {
+    margin-top: var(--st-space-md);
+    padding: var(--st-space-md) var(--st-space-lg);
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-md);
+    border: 1px solid var(--st-color-border);
+}
+
+.fd-formulas__title {
+    font-size: var(--st-text-xs);
+    font-weight: 600;
+    color: var(--st-color-text-muted);
+    margin-bottom: var(--st-space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.fd-formulas__item {
+    font-family: 'Courier New', monospace;
+    font-size: var(--st-text-sm);
+    line-height: 1.8;
+}
+
+.fd-formulas__func {
+    color: #6366f1;
+}
+
+.fd-formulas__deriv {
+    color: #ef4444;
+}
+
+/* === Zakres X === */
+.fd-range-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--st-space-sm);
+}
+
+.fd-range-grid .st-input-group {
+    margin-bottom: 0;
+}
+
+/* === Opis edukacyjny === */
+.fd-formula-display {
+    text-align: center;
+    font-size: var(--st-text-lg);
+    padding: var(--st-space-md);
+    margin: var(--st-space-sm) 0;
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-md);
+}
+
+.fd-experiments {
+    margin-top: var(--st-space-md);
+}
+
+.fd-experiments summary {
+    cursor: pointer;
+    color: var(--st-color-primary);
+}
+
+.fd-experiments ol {
+    margin-top: var(--st-space-sm);
+}
+
+.fd-experiments li {
+    margin-bottom: var(--st-space-sm);
+}

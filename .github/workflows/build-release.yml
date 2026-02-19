@@ -71,6 +71,14 @@ jobs:
         working-directory: toys/function_composition
         run: python build.py
 
+      - name: Build Function Derivatives
+        working-directory: toys/function_derivatives
+        run: python build.py
+
+      - name: Build Tangent Line
+        working-directory: toys/tangent_line
+        run: python build.py
+
       - name: Upload Linear Transforms to Release
         uses: softprops/action-gh-release@v1
         with:
@@ -96,5 +104,19 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: toys/function_composition/dist/FunkcjaZlozona.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Function Derivatives to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: toys/function_derivatives/dist/WykresyPochodnych.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Tangent Line to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: toys/tangent_line/dist/ProstaStyczna.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

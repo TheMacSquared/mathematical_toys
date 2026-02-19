@@ -32,3 +32,19 @@ def test_function_composition_module_loads(function_composition_module):
     rules = [r.rule for r in function_composition_module.app.url_map.iter_rules()]
     assert '/api/compute' in rules
     assert '/api/functions' in rules
+
+
+def test_function_derivatives_module_loads(function_derivatives_module):
+    assert hasattr(function_derivatives_module, 'app')
+    assert isinstance(function_derivatives_module.app, Flask)
+    rules = [r.rule for r in function_derivatives_module.app.url_map.iter_rules()]
+    assert '/api/compute' in rules
+    assert '/api/functions' in rules
+
+
+def test_tangent_line_module_loads(tangent_line_module):
+    assert hasattr(tangent_line_module, 'app')
+    assert isinstance(tangent_line_module.app, Flask)
+    rules = [r.rule for r in tangent_line_module.app.url_map.iter_rules()]
+    assert '/api/compute' in rules
+    assert '/api/functions' in rules

@@ -1,0 +1,125 @@
+/* === Plotly chart responsiveness === */
+#plot {
+    width: 100%;
+    height: 500px;
+}
+
+@media (max-width: 768px) {
+    #plot {
+        height: 380px;
+    }
+}
+
+/* === Informacje o stycznej === */
+.tl-tangent-info {
+    margin-top: var(--st-space-md);
+    padding: var(--st-space-sm) var(--st-space-md);
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-sm);
+    border-left: 3px solid var(--st-color-primary);
+}
+
+.tl-tangent-info__item {
+    margin-bottom: var(--st-space-xs);
+}
+
+.tl-tangent-info__item:last-child {
+    margin-bottom: 0;
+}
+
+.tl-tangent-info__label {
+    display: block;
+    font-size: var(--st-text-xs);
+    color: var(--st-color-text-muted);
+    margin-bottom: 1px;
+}
+
+.tl-tangent-info__value {
+    font-size: var(--st-text-base);
+    font-weight: 700;
+    color: var(--st-color-primary);
+    font-family: 'Courier New', monospace;
+}
+
+/* === Rownanie stycznej === */
+.tl-equation {
+    margin-top: var(--st-space-lg);
+    padding: var(--st-space-md) var(--st-space-lg);
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-md);
+    border: 1px solid var(--st-color-border);
+}
+
+.tl-equation__title {
+    font-size: var(--st-text-xs);
+    font-weight: 600;
+    color: var(--st-color-text-muted);
+    margin-bottom: var(--st-space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.tl-equation__formula {
+    font-family: 'Courier New', monospace;
+    font-size: var(--st-text-sm);
+    color: var(--st-color-text);
+    line-height: 1.6;
+}
+
+/* === Dynamiczne parametry === */
+.tl-params__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--st-space-sm);
+}
+
+.tl-params__grid .st-input-group {
+    margin-bottom: 0;
+}
+
+/* === Zakres X === */
+.tl-range-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--st-space-sm);
+}
+
+.tl-range-grid .st-input-group {
+    margin-bottom: 0;
+}
+
+/* === Opis edukacyjny === */
+.tl-formula-display {
+    text-align: center;
+    font-size: var(--st-text-lg);
+    padding: var(--st-space-md);
+    margin: var(--st-space-sm) 0;
+    background: var(--st-color-surface);
+    border-radius: var(--st-radius-md);
+}
+
+.tl-experiments {
+    margin-top: var(--st-space-md);
+}
+
+.tl-experiments summary {
+    cursor: pointer;
+    color: var(--st-color-primary);
+}
+
+.tl-experiments ol {
+    margin-top: var(--st-space-sm);
+}
+
+.tl-experiments li {
+    margin-bottom: var(--st-space-sm);
+}
+
+/* === Klikanie na wykresie === */
+.tl-click-hint {
+    margin-top: var(--st-space-xs);
+    font-size: var(--st-text-xs);
+    color: var(--st-color-text-muted);
+    font-style: italic;
+    text-align: center;
+}
