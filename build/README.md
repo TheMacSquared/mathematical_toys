@@ -90,9 +90,9 @@ Typowe rozmiary dla naszych zabawek:
 
 To normalne - .exe zawiera cały Python runtime + biblioteki.
 
-## Future: CI/CD
+## CI/CD
 
-W przyszłości możemy dodać GitHub Actions do automatycznego buildowania .exe przy każdym release.
+Projekt korzysta z GitHub Actions do automatycznego budowania plikow `.exe` przy kazdym renderowaniu nowego release. Pipeline buduje wszystkie 6 zabawek i dolacza pliki `.exe` do release.
 
 ## Dokumentacja
 

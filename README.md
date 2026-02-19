@@ -15,11 +15,21 @@ Interaktywne aplikacje do nauki algebry liniowej i analizy matematycznej. Pobier
 
 ## Dostepne aplikacje
 
+### Algebra liniowa
+
 | Aplikacja | Co robi? | Pobierz |
 |-----------|----------|---------|
 | **Transformacje Liniowe 2D** | Wizualizacja jak macierz 2x2 przeksztalca plaszczyzne - obrot, odbicie, scinanie, projekcja | [Pobierz](../../releases) |
 | **Kalkulator Macierzy** | Wyznacznik, rzad, RREF, macierz odwrotna, wartosci wlasne, eliminacja Gaussa krok po kroku | [Pobierz](../../releases) |
+
+### Analiza matematyczna
+
+| Aplikacja | Co robi? | Pobierz |
+|-----------|----------|---------|
 | **Szeregi Taylora** | Aproksymacja funkcji wielomianami Taylora z wizualizacja zbieznosci | [Pobierz](../../releases) |
+| **Funkcja zlozona** | Wizualizacja skladania funkcji f(g(x)) i g(f(x)) z lancuchem operacji | [Pobierz](../../releases) |
+| **Pochodne funkcji** | Wykresy funkcji i ich pochodnych analitycznych z interaktywnymi parametrami | [Pobierz](../../releases) |
+| **Prosta styczna** | Wizualizacja prostej stycznej do wykresu funkcji z rownaniem i nachyleniem | [Pobierz](../../releases) |
 
 ## Jak pobrac i uruchomic?
 
@@ -42,15 +52,47 @@ Windows wyswietla takie komunikaty dla aplikacji, ktore nie maja platnego certyf
 - Kliknij "Wiecej informacji" -> "Uruchom mimo to"
 - Caly kod zrodlowy jest dostepny publicznie w tym repozytorium - mozesz go przejrzec
 
-## Dla Mac/Linux
+## Dla deweloperow
 
-Obecnie aplikacje sa dostepne tylko dla Windows. Uzytownicy Mac/Linux moga uruchomic aplikacje z kodu zrodlowego:
+### Uruchamianie z kodu zrodlowego (Mac/Linux/Windows)
+
+```bash
+pip install -r requirements.txt
+cd toys/nazwa_zabawki
+python main.py
+```
+
+### Struktura projektu
+
+```
+mathematical_toys/
+├── toys/                          # Aplikacje interaktywne
+│   ├── common/                    # Wspolny kod (CSS, funkcje, budowanie)
+│   ├── linear_transforms/         # Transformacje liniowe 2D (port 15005)
+│   ├── matrix_calculator/         # Kalkulator macierzy (port 15006)
+│   ├── taylor_series/             # Szeregi Taylora (port 15007)
+│   ├── function_composition/      # Funkcja zlozona (port 15008)
+│   ├── function_derivatives/      # Pochodne funkcji (port 15008)
+│   └── tangent_line/              # Prosta styczna (port 15009)
+├── tests/                         # Testy (pytest)
+├── docs/                          # Dokumentacja deweloperska
+└── build/                         # Skrypty budowania .exe
+```
+
+### Testy
+
+```bash
+python -m pytest
+```
+
+### Budowanie .exe
 
 ```bash
 cd toys/nazwa_zabawki
-pip install -r requirements.txt
-python main.py
+python build.py
 ```
+
+Wiecej informacji: [docs/TWORZENIE_ZABAWKI.md](docs/TWORZENIE_ZABAWKI.md)
 
 ## Licencja
 
