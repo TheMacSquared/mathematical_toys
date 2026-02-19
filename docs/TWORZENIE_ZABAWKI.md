@@ -105,7 +105,7 @@ toys/nazwa_zabawki/
 
 ## Krok 2: Backend Flask
 
-Stworz plik `app.py` - wzoruj sie na istniejacych apkach (`linear_transforms`, `matrix_calculator`, `taylor_series`):
+Stworz plik `app.py` - wzoruj sie na istniejacych apkach (`linear_transforms`, `matrix_calculator`, `taylor_series`, `function_composition`, `function_derivatives`, `tangent_line`):
 
 ```python
 from flask import Flask, render_template, jsonify, request
@@ -370,6 +370,9 @@ Zobacz istniejace zabawki jako kompletne przyklady:
 - `toys/linear_transforms/` - wizualizacja z Plotly, presety, panel wynikow
 - `toys/matrix_calculator/` - tabela edytowalna, krok po kroku
 - `toys/taylor_series/` - suwaki + wykres, tabela wspolczynnikow
+- `toys/function_composition/` - skladanie funkcji f(g(x)) i g(f(x)), pipeline operacji
+- `toys/function_derivatives/` - wykresy funkcji i pochodnych, wspolny rejestr funkcji
+- `toys/tangent_line/` - prosta styczna, dynamiczne skalowanie osi
 
 ---
 

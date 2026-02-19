@@ -1,6 +1,6 @@
 # Szybki Start - Windows PowerShell
 
-Instrukcja uruchomienia aplikacji Histogram na Windows.
+Instrukcja uruchomienia aplikacji Matematyczne Zabawki na Windows.
 
 ## Pierwsze Uruchomienie
 
@@ -63,39 +63,41 @@ pip install -r requirements.txt
 
 To potrwa kilka minut. Instaluje Flask, PyWebView, NumPy, Matplotlib, PyInstaller.
 
-### 6. Uruchom Aplikację
+### 6. Uruchom Aplikacje
+
+Wybierz zabawke i uruchom ja:
 
 ```powershell
-cd toys\histogram
+cd toys\linear_transforms
 python main.py
 ```
 
-**Okno aplikacji powinno się otworzyć!** 🎉
+Dostepne zabawki: `linear_transforms`, `matrix_calculator`, `taylor_series`, `function_composition`, `function_derivatives`, `tangent_line`.
 
 ## Kolejne Uruchomienia
 
-Przy następnym razie wystarczy:
+Przy nastepnym razie wystarczy:
 
 ```powershell
-# Z głównego katalogu projektu
+# Z glownego katalogu projektu
 .\venv\Scripts\Activate.ps1
 
-cd toys\histogram
+cd toys\linear_transforms   # lub inna zabawka
 python main.py
 ```
 
 ## Budowanie .exe (Opcjonalnie)
 
-Aby stworzyć standalone `.exe` do dystrybucji:
+Aby stworzyc standalone `.exe` do dystrybucji:
 
 ```powershell
-cd toys\histogram
+cd toys\linear_transforms
 python build.py
 ```
 
-Plik `.exe` będzie w `toys\histogram\dist\Histogram.exe`
+Plik `.exe` bedzie w `toys\linear_transforms\dist\`.
 
-Możesz go skopiować i wysłać komuś - nie wymaga instalacji Pythona!
+Mozesz go skopiowac i wyslac komus - nie wymaga instalacji Pythona!
 
 ## Troubleshooting
 
@@ -125,10 +127,10 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ### Problem 4: "No module named 'flask'"
 
-**Rozwiązanie**: Aktywuj venv PRZED uruchomieniem
+**Rozwiazanie**: Aktywuj venv PRZED uruchomieniem
 ```powershell
-.\venv\Scripts\Activate.ps1  # <- Pamiętaj o tym!
-cd toys\histogram
+.\venv\Scripts\Activate.ps1  # <- Pamietaj o tym!
+cd toys\linear_transforms
 python main.py
 ```
 
@@ -142,11 +144,11 @@ python main.py
 
 **Testuj samego Flask (bez GUI)**:
 ```powershell
-cd toys\histogram
+cd toys\linear_transforms
 python app.py
 ```
 
-Potem otwórz http://localhost:5000 w przeglądarce - aplikacja powinna działać.
+Potem otworz http://localhost:5005 w przegladarce - aplikacja powinna dzialac.
 
 ## Dezaktywacja Virtual Environment
 
@@ -156,18 +158,22 @@ Gdy kończysz pracę:
 deactivate
 ```
 
-## Struktura Plików
+## Struktura Plikow
 
-Po setupie powinieneś mieć:
+Po setupie powinienes miec:
 
 ```
-D:\Uczelnia\toys\
-├── venv\                  ← Virtual environment (nie commituj!)
+D:\Uczelnia\mathematical_toys\
+├── venv\                          ← Virtual environment (nie commituj!)
 ├── toys\
-│   └── histogram\
-│       ├── main.py        ← Uruchamiasz to
-│       ├── app.py         ← Backend Flask
-│       └── ...
+│   ├── common\                    ← Wspolny kod
+│   ├── linear_transforms\         ← Transformacje liniowe 2D
+│   ├── matrix_calculator\         ← Kalkulator macierzy
+│   ├── taylor_series\             ← Szeregi Taylora
+│   ├── function_composition\      ← Funkcja zlozona
+│   ├── function_derivatives\      ← Pochodne funkcji
+│   └── tangent_line\              ← Prosta styczna
+├── tests\                         ← Testy
 ├── README.md
 └── requirements.txt
 ```
